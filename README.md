@@ -21,7 +21,7 @@ A Home Assistant Lovelace card that shows what [Predbat](https://github.com/spri
 ## Features
 
 - **Status header** – current Predbat status, mode, last update and version. Tap to open more-info.
-- **Overview tiles** – battery SoC ring, what the battery is doing now with current import/export rates, cost today and plan total, savings yesterday, next charge and next export windows.
+- **Overview tiles** – battery SoC ring, what the battery is doing now with current import/export rates, cost today with a forecast for the rest of the day, predicted saving today (with yesterday's actual saving), next charge and next export windows.
 - **Battery forecast chart** – the best-plan SoC over the next hours, the baseline for comparison, the import rate as a step line, reserve level and shaded charge/export windows. Hover or tap for details.
 - **Plan timeline** – a colour-coded ribbon of every plan slot (charge, hold, freeze, export, demand).
 - **Upcoming actions** – the next forced charge/export windows merged into readable blocks with average rate and the SoC they end at.
@@ -69,6 +69,7 @@ Everything can be set in the visual editor. Open **Predbat entities** to see or 
 | Option | Default | Description |
 | --- | --- | --- |
 | `style` | `modern` | Visual style: `modern`, `glass`, `neon`, `minimal`, `native` or `terminal`. See [Styles](#styles). |
+| `theme_mode` | `auto` | `auto` follows your Home Assistant theme, `light` or `dark` forces that look on this card whatever the theme. |
 | `title` | `Predbat` | Card title. |
 | `prefix` | `predbat` | Predbat entity prefix. Change it if you run more than one Predbat instance or changed `prefix` in `apps.yaml`. All default entities follow it. |
 | `language` | `auto` | `auto` (follows Home Assistant), `en`, `pl` or `es`. |
@@ -103,7 +104,8 @@ Defaults for the `predbat` prefix. Only add the ones you want to change.
 | `rates` | `predbat.rates` | Import rate line on chart |
 | `rates_export` | `predbat.rates_export` | Fallback export rate |
 | `cost_today` | `predbat.cost_today` | Cost today |
-| `best_metric` | `predbat.best_metric` | Predicted plan total |
+| `best_metric` | `predbat.best_metric` | Predicted cost with the Predbat plan |
+| `base_metric` | `predbat.metric` | Predicted cost with the baseline plan (for saving today) |
 | `savings` | `predbat.savings_yesterday_predbat` | Savings yesterday |
 | `charge_start` / `charge_end` / `charge_limit` | `predbat.best_charge_*` | Next charge tile |
 | `export_start` / `export_end` / `export_limit` | `predbat.best_export_*` | Next export tile |
@@ -154,7 +156,13 @@ style: glass
 
 Top row: `modern`, `glass`, `neon`. Bottom row: `minimal`, `native`, `terminal`.
 
-`neon` and `terminal` keep their own dark colours whatever your theme. The other four follow your light or dark theme.
+Every style follows your theme by default, except `neon` and `terminal`, which are dark unless you choose otherwise. Set `theme_mode: light` or `theme_mode: dark` (or **Light / dark** in the editor) to force either look on any style. `neon` and `terminal` each have their own light version: a pale grid, and a classic grey-green LCD.
+
+## Saving today
+
+The **Saving today** tile is a prediction. Predbat publishes two cost forecasts from midnight onwards: one for its own plan (`predbat.best_metric`) and one for the baseline, where the battery is left to run with no changes (`predbat.metric`). The card reads both at midnight tonight; the difference is what Predbat expects to save you today. The tile also shows yesterday's actual saving from `predbat.savings_yesterday_predbat`.
+
+Yesterday's figure uses a different baseline (one cheap charge per night), so the two numbers aren't directly comparable. If the forecast isn't available, the tile shows yesterday's saving instead, as before.
 
 ## Plan states
 
