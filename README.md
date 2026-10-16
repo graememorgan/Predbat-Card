@@ -23,6 +23,10 @@ A Home Assistant Lovelace card that shows what [Predbat](https://github.com/spri
 - **Status header** – current Predbat status, mode, last update and version. Tap to open more-info.
 - **Overview tiles** – battery SoC ring, what the battery is doing now with current import/export rates, cost today with a forecast for the rest of the day, predicted saving today (with yesterday's actual saving), next charge and next export windows.
 - **Battery forecast chart** – the best-plan SoC over the next hours, the baseline for comparison, the import rate as a step line, reserve level and shaded charge/export windows. Hover or tap for details.
+- **Grid import & export chart** – predicted export (up) and import (down) for every plan slot, with totals for the period.
+- **Energy rates chart** – import and export rates as step lines with charge/export windows shaded.
+- **Charts your way** – turn each chart on or off, and show them as tabs (one at a time) or stacked.
+- **Text size** – scale all the card's text from 80% to 160%.
 - **Plan timeline** – a colour-coded ribbon of every plan slot (charge, hold, freeze, export, demand).
 - **Upcoming actions** – the next forced charge/export windows merged into readable blocks with average rate and the SoC they end at.
 - **Full plan table** – one tap to expand the slot-by-slot plan.
@@ -76,6 +80,10 @@ Everything can be set in the visual editor. Open **Predbat entities** to see or 
 | `show_header` | `true` | Status header. |
 | `show_overview` | `true` | Overview tiles. |
 | `show_chart` | `true` | Battery forecast chart. |
+| `show_grid_chart` | `true` | Grid import & export chart. |
+| `show_rates_chart` | `true` | Energy rates chart. |
+| `chart_layout` | `tabs` | `tabs` shows one chart at a time with a switcher; `stacked` shows all enabled charts one under another. |
+| `font_scale` | `1` | Text size, from `0.8` to `1.6`. Charts grow a little with it. |
 | `show_timeline` | `true` | Plan timeline ribbon. |
 | `show_actions` | `true` | Upcoming actions list. |
 | `show_table` | `true` | “Show full plan” button and table. |
@@ -109,6 +117,8 @@ Defaults for the `predbat` prefix. Only add the ones you want to change.
 | `savings` | `predbat.savings_yesterday_predbat` | Savings yesterday |
 | `charge_start` / `charge_end` / `charge_limit` | `predbat.best_charge_*` | Next charge tile |
 | `export_start` / `export_end` / `export_limit` | `predbat.best_export_*` | Next export tile |
+| `export_energy` | `predbat.best_export_energy` | Grid chart – predicted export |
+| `import_energy` | `predbat.best_import_energy` | Grid chart – predicted import |
 
 ### Example
 
@@ -118,6 +128,9 @@ title: Battery plan
 hours: 36
 max_actions: 6
 show_base: false
+chart_layout: stacked
+show_rates_chart: false
+font_scale: 1.15
 entities:
   savings: predbat.savings_yesterday_pvbat
 ```
