@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.1.0";
+const CARD_VERSION = "0.2.0";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -65,6 +65,13 @@ const TRANSLATIONS = {
     missing: "Entity not found: {e}",
     manual: "Manual",
     // editor
+    ed_style: "Style",
+    style_modern: "Modern",
+    style_glass: "Glass",
+    style_neon: "Neon",
+    style_minimal: "Minimal",
+    style_native: "Home Assistant native",
+    style_terminal: "Terminal (retro LCD)",
     ed_title: "Title",
     ed_prefix: "Predbat prefix",
     ed_language: "Language",
@@ -158,6 +165,13 @@ const TRANSLATIONS = {
     no_forecast: "Brak danych prognozy w {e}",
     missing: "Nie znaleziono encji: {e}",
     manual: "Ręcznie",
+    ed_style: "Styl",
+    style_modern: "Nowoczesny",
+    style_glass: "Szkło",
+    style_neon: "Neon",
+    style_minimal: "Minimalistyczny",
+    style_native: "Natywny Home Assistant",
+    style_terminal: "Terminal (retro LCD)",
     ed_title: "Tytuł",
     ed_prefix: "Prefiks Predbat",
     ed_language: "Język",
@@ -251,6 +265,13 @@ const TRANSLATIONS = {
     no_forecast: "Sin datos de previsión en {e}",
     missing: "Entidad no encontrada: {e}",
     manual: "Manual",
+    ed_style: "Estilo",
+    style_modern: "Moderno",
+    style_glass: "Cristal",
+    style_neon: "Neón",
+    style_minimal: "Minimalista",
+    style_native: "Nativo de Home Assistant",
+    style_terminal: "Terminal (LCD retro)",
     ed_title: "Título",
     ed_prefix: "Prefijo de Predbat",
     ed_language: "Idioma",
@@ -344,7 +365,10 @@ function defaultEntities(prefix) {
   };
 }
 
+const STYLE_NAMES = ["modern", "glass", "neon", "minimal", "native", "terminal"];
+
 const DEFAULT_CONFIG = {
+  style: "modern",
   title: "",
   prefix: "predbat",
   language: "auto",
@@ -465,6 +489,191 @@ const STATE_ICON = {
 /* ------------------------------------------------------------------ */
 /*  Styles                                                             */
 /* ------------------------------------------------------------------ */
+const THEME_STYLES = `
+/* ===================== STYLE: GLASS ===================== */
+ha-card.s-glass {
+  --pb-accent: #9775fa;
+  --pb-glass: color-mix(in srgb, var(--card-background-color, #fff) 55%, transparent);
+  --pb-tile: var(--pb-glass);
+  --pb-line: color-mix(in srgb, var(--primary-text-color, #000) 12%, transparent);
+  --pb-radius: 18px;
+  background:
+    radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, #7950f2 32%, transparent), transparent 60%),
+    radial-gradient(90% 70% at 100% 10%, color-mix(in srgb, #12b886 24%, transparent), transparent 60%),
+    radial-gradient(90% 90% at 60% 100%, color-mix(in srgb, #f76707 18%, transparent), transparent 60%),
+    var(--card-background-color, #fff);
+  border-radius: 22px;
+}
+.s-glass .tile, .s-glass .action, .s-glass .ribbon, .s-glass .table-wrap, .s-glass .warn {
+  backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid color-mix(in srgb, #fff 28%, transparent);
+  box-shadow: 0 4px 18px rgba(0,0,0,.08), inset 0 1px 0 color-mix(in srgb, #fff 30%, transparent);
+}
+.s-glass .tile .accent-bar { top: auto; bottom: 0; left: 12px; right: 12px; width: auto; height: 3px; }
+.s-glass .logo { border-radius: 50%; background: linear-gradient(135deg, #b197fc, #7950f2 50%, #12b886); }
+.s-glass .ribbon { height: 18px; border-radius: 999px; padding: 2px; gap: 2px; }
+.s-glass .ribbon > div { border-radius: 999px; box-shadow: none !important; }
+.s-glass .pill { backdrop-filter: blur(10px); }
+.s-glass th { background: var(--pb-glass); backdrop-filter: blur(14px); }
+
+/* ===================== STYLE: NEON ===================== */
+ha-card.s-neon {
+  --card-background-color: #07070f;
+  --primary-text-color: #ecebff;
+  --secondary-text-color: #8a88b8;
+  --pb-accent: #00e5ff;
+  --pb-rate: #ffe600;
+  --pb-charge: #39ff88;
+  --pb-hold_charge: #4d7cff;
+  --pb-freeze_charge: #7cfff0;
+  --pb-export: #ff2bd6;
+  --pb-freeze_export: #c77dff;
+  --pb-hold_export: #ff8de8;
+  --pb-error: #ff3860;
+  --pb-demand: #1d1c34;
+  --pb-tile: #0e0d1d;
+  --pb-line: #26244a;
+  --pb-muted: #8a88b8;
+  --pb-radius: 6px;
+  background:
+    linear-gradient(transparent 95%, rgba(0,229,255,.06) 95%) 0 0 / 100% 22px,
+    linear-gradient(90deg, transparent 95%, rgba(0,229,255,.06) 95%) 0 0 / 22px 100%,
+    #07070f;
+  color: var(--primary-text-color);
+  border: 1px solid #26244a;
+  box-shadow: 0 0 0 1px rgba(0,229,255,.12), 0 0 30px rgba(121,80,242,.18);
+  border-radius: 10px;
+}
+.s-neon .tile, .s-neon .action { border: 1px solid #26244a; }
+.s-neon .tile-value, .s-neon .head-title, .s-neon .action .meta b {
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: -.02em;
+}
+.s-neon .tile-value { text-shadow: 0 0 12px color-mix(in srgb, var(--pb-accent) 55%, transparent); }
+.s-neon .tile .accent-bar { box-shadow: 0 0 10px var(--c); }
+.s-neon .logo { border-radius: 6px; background: #07070f; border: 1px solid var(--pb-accent); color: var(--pb-accent); box-shadow: 0 0 12px rgba(0,229,255,.5), inset 0 0 8px rgba(0,229,255,.3); }
+.s-neon .pill { border-radius: 4px; text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; box-shadow: 0 0 12px color-mix(in srgb, var(--c) 40%, transparent); }
+.s-neon .section-title { color: var(--pb-accent); letter-spacing: .14em; }
+.s-neon .section-title::before { content: "// "; opacity: .6; }
+.s-neon .l-best { filter: drop-shadow(0 0 4px var(--pb-accent)) drop-shadow(0 0 10px var(--pb-accent)); }
+.s-neon .l-rate { filter: drop-shadow(0 0 3px var(--pb-rate)); opacity: .9; }
+.s-neon .l-area { opacity: .55; }
+.s-neon .ribbon { border-radius: 3px; height: 14px; border: 1px solid #26244a; }
+.s-neon .ribbon > div:not([style*="demand"]) { box-shadow: 0 0 10px var(--c) !important; }
+.s-neon .action .ico { border-radius: 4px; box-shadow: 0 0 10px color-mix(in srgb, var(--c) 45%, transparent); }
+.s-neon .toggle { border-radius: 4px; border-color: var(--pb-accent); color: var(--pb-accent); text-transform: uppercase; letter-spacing: .08em; font-size: .7rem; }
+.s-neon .ring circle:nth-child(2) { filter: drop-shadow(0 0 4px currentColor); }
+
+/* ===================== STYLE: MINIMAL ===================== */
+ha-card.s-minimal {
+  --pb-accent: var(--primary-text-color, #222);
+  --pb-rate: var(--secondary-text-color, #888);
+  --pb-tile: transparent;
+  --pb-radius: 0;
+}
+.s-minimal .wrap { gap: 18px; padding: 18px 20px 20px; }
+.s-minimal .logo { display: none; }
+.s-minimal .head-title { font-size: 1.25rem; font-weight: 300; letter-spacing: -.01em; }
+.s-minimal .pill { background: none; border: none; padding: 0; font-weight: 500; }
+.s-minimal .overview { gap: 0; border-top: 1px solid var(--pb-line); border-bottom: 1px solid var(--pb-line); }
+.s-minimal .tile { padding: 12px 14px; border-right: 1px solid var(--pb-line); border-bottom: 1px solid var(--pb-line); margin: 0 -1px -1px 0; }
+.s-minimal .tile .accent-bar { display: none; }
+.s-minimal .tile-label { text-transform: none; letter-spacing: 0; font-size: .74rem; }
+.s-minimal .tile-label ha-icon { display: none; }
+.s-minimal .tile-value { font-weight: 300; font-size: 1.45rem; }
+.s-minimal .tile.battery .ring { width: 40px; height: 40px; }
+.s-minimal .section-title { text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--primary-text-color); font-size: .9rem; }
+.s-minimal .l-area { display: none; }
+.s-minimal .l-best { stroke-width: 1.6; }
+.s-minimal .chart rect[opacity=".16"] { opacity: .08; }
+.s-minimal .ribbon { height: 6px; border-radius: 0; background: var(--pb-line); }
+.s-minimal .ribbon > div { box-shadow: none !important; }
+.s-minimal .action { background: none; border-bottom: 1px solid var(--pb-line); border-radius: 0; padding: 8px 0; }
+.s-minimal .actions { gap: 0; }
+.s-minimal .action .ico { background: none; width: 20px; }
+.s-minimal .toggle { border: none; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
+.s-minimal .legend i { border-radius: 50%; }
+
+/* ===================== STYLE: NATIVE (Home Assistant) ===================== */
+ha-card.s-native {
+  --pb-accent: var(--primary-color, #03a9f4);
+  --pb-charge: var(--success-color, #43a047);
+  --pb-export: var(--warning-color, #ffa600);
+  --pb-freeze_export: var(--amber-color, #ffc107);
+  --pb-error: var(--error-color, #db4437);
+  --pb-rate: var(--accent-color, #ff9800);
+  --pb-tile: transparent;
+  --pb-line: var(--divider-color, rgba(0,0,0,.12));
+  --pb-radius: var(--ha-card-border-radius, 12px);
+}
+.s-native .wrap { padding: 16px; gap: 16px; }
+.s-native .logo { background: color-mix(in srgb, var(--primary-color, #03a9f4) 20%, transparent); color: var(--primary-color, #03a9f4); box-shadow: none; border-radius: 50%; width: 40px; height: 40px; }
+.s-native .head-title { font-size: var(--ha-card-header-font-size, 1.25rem); font-weight: 400; }
+.s-native .tile { border: 1px solid var(--pb-line); }
+.s-native .tile-label { text-transform: none; letter-spacing: 0; font-size: .8rem; }
+.s-native .tile-value { font-weight: 500; }
+.s-native .section-title { text-transform: none; letter-spacing: 0; font-size: 1rem; font-weight: 500; color: var(--primary-text-color); }
+.s-native .pill { border-radius: 8px; font-weight: 500; }
+.s-native .action { background: none; border: 1px solid var(--pb-line); }
+.s-native .action .ico { border-radius: 50%; }
+.s-native .ribbon { border-radius: 4px; height: 16px; }
+.s-native .toggle { border-radius: 4px; color: var(--primary-color, #03a9f4); border-color: transparent; text-transform: uppercase; font-weight: 500; letter-spacing: .05em; padding-left: 0; }
+.s-native .table-wrap { border-radius: 8px; }
+
+/* ===================== STYLE: TERMINAL (retro LCD) ===================== */
+ha-card.s-terminal {
+  --card-background-color: #0a140a;
+  --primary-text-color: #a8ff9a;
+  --secondary-text-color: #4f8f47;
+  --pb-accent: #a8ff9a;
+  --pb-rate: #ffb000;
+  --pb-charge: #5cff5c;
+  --pb-hold_charge: #2fbf71;
+  --pb-freeze_charge: #9dffb0;
+  --pb-export: #ffb000;
+  --pb-freeze_export: #ffd166;
+  --pb-hold_export: #e09f3e;
+  --pb-error: #ff5f56;
+  --pb-demand: #183018;
+  --pb-tile: transparent;
+  --pb-line: #1f3d1f;
+  --pb-muted: #4f8f47;
+  --pb-radius: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 100% at 50% 0%, #112211, #070d07);
+  color: var(--primary-text-color);
+  border: 2px solid #1f3d1f;
+  border-radius: 6px;
+  font-family: "VT323", "IBM Plex Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+  text-shadow: 0 0 6px rgba(168,255,154,.35);
+}
+.s-terminal * { font-family: inherit; }
+.s-terminal .logo { background: none; border: 1px solid var(--pb-accent); border-radius: 0; box-shadow: none; color: var(--pb-accent); }
+.s-terminal .head-title { text-transform: uppercase; letter-spacing: .12em; }
+.s-terminal .head-title::after { content: "_"; animation: pbblink 1.1s steps(1) infinite; }
+@keyframes pbblink { 50% { opacity: 0; } }
+.s-terminal .pill { border-radius: 0; background: none; text-transform: uppercase; }
+.s-terminal .pill::before { content: "["; } .s-terminal .pill::after { content: "]"; }
+.s-terminal .tile, .s-terminal .action { border: 1px dashed var(--pb-line); }
+.s-terminal .tile .accent-bar { width: 0; border-left: 3px dotted var(--c); background: none; }
+.s-terminal .tile-label, .s-terminal .section-title { letter-spacing: .12em; }
+.s-terminal .section-title::before { content: "> "; }
+.s-terminal .tile-value { letter-spacing: .02em; }
+.s-terminal .ring text { fill: var(--pb-accent); }
+.s-terminal .ring circle:nth-child(2) { stroke-linecap: butt; stroke-dasharray: 3 2; }
+.s-terminal .l-area { opacity: .25; }
+.s-terminal .l-best { stroke-linejoin: miter; }
+.s-terminal .ribbon { border-radius: 0; height: 14px; border: 1px solid var(--pb-line); background: repeating-linear-gradient(90deg, transparent 0 3px, #102010 3px 4px); }
+.s-terminal .ribbon > div { background: repeating-linear-gradient(90deg, var(--c) 0 3px, transparent 3px 4px); box-shadow: none !important; }
+.s-terminal .action .ico { border-radius: 0; background: none; border: 1px solid var(--c); }
+.s-terminal .toggle { border-radius: 0; text-transform: uppercase; }
+.s-terminal .toggle::before { content: "> "; }
+.s-terminal .tip { border-radius: 0; background: #0a140a; border-color: var(--pb-accent); }
+.s-terminal .table-wrap { border-radius: 0; }
+.s-terminal .legend i { border-radius: 0; }
+`;
+
 const STYLES = `
 :host {
   --pb-charge: #12b886;
@@ -605,6 +814,7 @@ tr:last-child td { border-bottom: none; }
 .tag { display: inline-flex; align-items: center; gap: 5px; }
 .tag i { width: 8px; height: 8px; border-radius: 2px; background: var(--c); display: inline-block; }
 .foot { font-size: .7rem; color: var(--pb-muted); text-align: right; margin-top: -6px; }
+${THEME_STYLES}
 `;
 
 /* ------------------------------------------------------------------ */
@@ -665,6 +875,11 @@ class PredbatCard extends HTMLElement {
     this._ro.disconnect();
     const el = this.shadowRoot.querySelector(".chart");
     if (el) this._ro.observe(el);
+  }
+
+  _style() {
+    const s = String(this._config.style || "modern").toLowerCase();
+    return STYLE_NAMES.includes(s) ? s : "modern";
   }
 
   _eid(key) {
@@ -818,7 +1033,7 @@ class PredbatCard extends HTMLElement {
     if (c.show_actions !== false) parts.push(this._renderActions());
     if (c.show_table !== false && rows.length) parts.push(this._renderTable());
 
-    this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card><div class="cq"><div class="wrap">${parts.join("")}</div></div></ha-card>`;
+    this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card class="s-${esc(this._style())}"><div class="cq"><div class="wrap">${parts.join("")}</div></div></ha-card>`;
     this._wire();
     this._observe();
     const ch = this.shadowRoot.querySelector(".chart");
@@ -1066,7 +1281,7 @@ class PredbatCard extends HTMLElement {
         d += i === 0 ? `M${x.toFixed(1)},${y.toFixed(1)}` : `H${x.toFixed(1)}V${y.toFixed(1)}`;
       });
       d += `H${(padL + iw).toFixed(1)}`;
-      parts.push(`<path d="${d}" fill="none" stroke="var(--pb-rate)" stroke-width="1.4" opacity=".75"/>`);
+      parts.push(`<path d="${d}" fill="none" stroke="var(--pb-rate)" stroke-width="1.4" opacity=".75" class="l-rate"/>`);
       for (const r of [rMax / 1.1, (rMax / 1.1 + rMin) / 2, rMin]) {
         parts.push(`<text class="axis" x="${padL + iw + 5}" y="${(YR(r) + 3).toFixed(1)}" style="fill:var(--pb-rate)">${esc(Math.round(r) + cur.minor)}</text>`);
       }
@@ -1074,7 +1289,7 @@ class PredbatCard extends HTMLElement {
     // base
     if (base.length > 1) {
       const d = base.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(toPct(p[1])).toFixed(1)}`).join("");
-      parts.push(`<path d="${d}" fill="none" stroke="var(--pb-muted)" stroke-width="1.4" stroke-dasharray="5 4" opacity=".8"/>`);
+      parts.push(`<path d="${d}" fill="none" stroke="var(--pb-muted)" stroke-width="1.4" stroke-dasharray="5 4" opacity=".8" class="l-base"/>`);
     }
     // best area + line
     const line = best.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(toPct(p[1])).toFixed(1)}`).join("");
@@ -1082,8 +1297,8 @@ class PredbatCard extends HTMLElement {
     parts.push(`<defs><linearGradient id="pbg" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="var(--pb-accent)" stop-opacity=".35"/>
         <stop offset="1" stop-color="var(--pb-accent)" stop-opacity="0"/></linearGradient></defs>`);
-    parts.push(`<path d="${area}" fill="url(#pbg)"/>`);
-    parts.push(`<path d="${line}" fill="none" stroke="var(--pb-accent)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`);
+    parts.push(`<path d="${area}" fill="url(#pbg)" class="l-area"/>`);
+    parts.push(`<path d="${line}" fill="none" stroke="var(--pb-accent)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" class="l-best"/>`);
     // min marker
     let minP = best[0];
     for (const p of best) if (p[1] < minP[1]) minP = p;
@@ -1339,6 +1554,15 @@ class PredbatCardEditor extends HTMLElement {
     const bool = (name) => ({ name, selector: { boolean: {} } });
     return [
       {
+        name: "style",
+        selector: {
+          select: {
+            mode: "dropdown",
+            options: STYLE_NAMES.map((v) => ({ value: v, label: t("style_" + v) })),
+          },
+        },
+      },
+      {
         type: "grid", name: "", schema: [
           { name: "title", selector: { text: {} } },
           { name: "prefix", selector: { text: {} } },
@@ -1380,7 +1604,7 @@ class PredbatCardEditor extends HTMLElement {
 
   _label(t) {
     const map = {
-      title: "ed_title", prefix: "ed_prefix", language: "ed_language",
+      style: "ed_style", title: "ed_title", prefix: "ed_prefix", language: "ed_language",
       show_header: "ed_show_header", show_overview: "ed_show_overview", show_chart: "ed_show_chart",
       show_timeline: "ed_show_timeline", show_actions: "ed_show_actions", show_table: "ed_show_table",
       show_base: "ed_show_base", show_rates: "ed_show_rates", hours: "ed_hours", max_actions: "ed_max_actions",
@@ -1408,12 +1632,12 @@ class PredbatCardEditor extends HTMLElement {
           .check li { padding: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--code-font-family, monospace); font-size: .76rem; }
           .ok { color: var(--success-color, #2e7d32); } .bad { color: var(--error-color, #c62828); }
           button { background: none; border: 1px solid var(--divider-color); color: var(--primary-text-color); border-radius: 999px; padding: 4px 10px; cursor: pointer; font: inherit; font-size: .75rem; }
-          .ver { margin-top: 8px; font-size: .72rem; color: var(--secondary-text-color); text-align: right; }
+          .ver { margin-top: 8px; font-size: .72rem; color: var(--secondary-text-color); text-align: right; } .ver a { color: inherit; }
           @media (max-width: 500px) { .check ul { columns: 1; } }
         </style>
         <div class="form"></div>
         <div class="check"></div>
-        <div class="ver">Predbat Card v${CARD_VERSION}</div>`;
+        <div class="ver">Predbat Card v${CARD_VERSION} · data by <a href="https://github.com/springfall2008/batpred" target="_blank" rel="noreferrer">Predbat</a> by Trefor Southwell</div>`;
       this._root = this.shadowRoot;
       this._root.querySelector(".check").addEventListener("click", (e) => {
         if (e.target.closest("[data-reset]")) {
