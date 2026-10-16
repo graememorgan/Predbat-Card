@@ -103,7 +103,7 @@ Defaults for the `predbat` prefix. Only add the ones you want to change.
 | --- | --- | --- |
 | `status` | `predbat.status` | Header status, last update, version, error banner |
 | `plan` | `predbat.plan_html` | Timeline, upcoming actions, table, current rates |
-| `mode` | `select.predbat_mode` | Mode shown in header (tap to change) |
+| `mode` | `select.predbat_mode` | Mode shown in header |
 | `soc_now` | `predbat.soc_kw_h0` | Current battery kWh |
 | `soc_best` | `predbat.soc_kw_best` | Best-plan SoC forecast |
 | `soc_base` | `predbat.soc_kw` | Baseline SoC forecast |
@@ -195,6 +195,68 @@ Yesterday's figure uses a different baseline (one cheap charge per night), so th
 - **Battery % shows “–”** – set `battery_capacity` to your usable capacity in kWh.
 - **Wrong entity names** – open the visual editor; the entity check lists every entity it could not find. Set `prefix` or override the entity.
 - **Card not found after installing** – clear the browser cache or reload the app.
+- **“Configuration error” or “Custom element doesn't exist” in the Companion app** – the app is still using an old copy of the card. In the app go to **Settings → Companion app** and use **Reset frontend cache** (on iOS it's under **Debugging**), then close and reopen the app.
+- **The card shows a red “Predbat Card v… :” message** – something unexpected happened while drawing the card. Open **Details for a bug report** under the message and paste it into a [GitHub issue](https://github.com/mimikm/Predbat-Card/issues).
+- **“N Predbat entities not found”** – tap the notice to see which ones. Check the names in the editor's entity check, or set `prefix` if you changed it in Predbat.
+
+## Roadmap
+
+Predbat Card is **view-only**: it shows what Predbat is doing and planning, and never changes Predbat's settings or plan. That won't change.
+
+This is the plan for Predbat Card up to v1.0. It will change as people try the card and ask for things, so treat versions and order as a guide, not a promise.
+
+Want something added or moved up? [Open an issue](https://github.com/mimikm/Predbat-Card/issues) or 👍 an existing one.
+
+### ✅ Done
+
+| Version | Highlights |
+| --- | --- |
+| 0.1.0 | First release: status header, overview tiles, battery forecast chart, plan timeline, upcoming actions, plan table, visual editor with prefilled entities, EN/PL/ES |
+| 0.2.0 | Six styles: Modern, Glass, Neon, Minimal, Native, Terminal |
+| 0.2.1 | Force light or dark mode, light versions of Neon and Terminal, predicted saving today, forecast cost today |
+| 0.2.2 | Grid import & export chart, energy rates chart, charts as tabs or stacked, text size slider |
+| 0.3.0 | Mobile and reliability: errors shown inside the card instead of breaking it, tolerant YAML, missing-entity notice, phone and tablet layout, tap-to-inspect charts on touch screens, only changed parts redraw, fully view-only header, fallbacks for older iOS and Android |
+
+### 🔜 0.4 – More of Predbat's data
+
+- [ ] Solar forecast chart (today, tomorrow, 10% and 90% range)
+- [ ] House load forecast on the grid chart
+- [ ] Car charging schedule: Predbat's planned car charging slots, times and cost
+- [ ] Car battery SoC: current level and predicted level at the end of the plan
+- [ ] iBoost / solar diverter slots
+- [ ] Carbon intensity (optional)
+- [ ] Per-inverter breakdown for multi-inverter setups
+
+### 0.5 – Savings and history
+
+- [ ] Savings history chart (daily and running total)
+- [ ] Cost today vs yesterday
+- [ ] Week and month summaries
+
+### 0.6 – Customisation
+
+- [ ] Choose which overview tiles to show, and in what order
+- [ ] Reorder sections
+- [ ] Custom accent colour
+- [ ] Compact mode: a small card with battery, now, next action and saving
+- [ ] More translations (German, French, Dutch – volunteers welcome)
+
+### 🎯 1.0 – Stable release
+
+- [ ] Configuration options locked in (no breaking changes after 1.0)
+- [ ] Automated tests for plan parsing and the editor
+- [ ] Full documentation with screenshots for every style
+- [ ] Link in the Predbat documentation
+- [ ] Submitted to the HACS default store
+
+### 💡 Ideas we're considering
+
+Not planned yet. Comment on an issue if you'd use one of these.
+
+- Weather alongside the plan
+- Notifications or a banner when Predbat's plan changes a lot
+- A separate small "badge" card for the dashboard header
+- Tariff comparison view
 
 ## Contributing
 
