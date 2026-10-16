@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.2.1";
+const CARD_VERSION = "0.2.2";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -81,6 +81,20 @@ const TRANSLATIONS = {
     yesterday_v: "yesterday {v}",
     forecast_today: "Forecast today {v}",
     e_base_metric: "Baseline plan cost",
+    grid_chart: "Grid import & export",
+    rates_chart: "Energy rates",
+    tab_battery: "Battery",
+    tab_grid: "Grid",
+    tab_rates: "Rates",
+    export_rate: "Export rate",
+    ed_show_grid_chart: "Grid import/export chart",
+    ed_show_rates_chart: "Energy rates chart",
+    ed_chart_layout: "Charts layout",
+    layout_tabs: "Tabs (one chart at a time)",
+    layout_stacked: "Stacked (all charts)",
+    ed_font_scale: "Text size",
+    e_export_energy: "Predicted export energy",
+    e_import_energy: "Predicted import energy",
     ed_title: "Title",
     ed_prefix: "Predbat prefix",
     ed_language: "Language",
@@ -190,6 +204,20 @@ const TRANSLATIONS = {
     yesterday_v: "wczoraj {v}",
     forecast_today: "Prognoza dziś {v}",
     e_base_metric: "Koszt planu bazowego",
+    grid_chart: "Pobór i oddawanie do sieci",
+    rates_chart: "Ceny energii",
+    tab_battery: "Bateria",
+    tab_grid: "Sieć",
+    tab_rates: "Ceny",
+    export_rate: "Cena oddawania",
+    ed_show_grid_chart: "Wykres poboru/oddawania",
+    ed_show_rates_chart: "Wykres cen energii",
+    ed_chart_layout: "Układ wykresów",
+    layout_tabs: "Karty (jeden wykres naraz)",
+    layout_stacked: "Jeden pod drugim (wszystkie)",
+    ed_font_scale: "Rozmiar tekstu",
+    e_export_energy: "Prognoza oddanej energii",
+    e_import_energy: "Prognoza pobranej energii",
     ed_title: "Tytuł",
     ed_prefix: "Prefiks Predbat",
     ed_language: "Język",
@@ -299,6 +327,20 @@ const TRANSLATIONS = {
     yesterday_v: "ayer {v}",
     forecast_today: "Previsión hoy {v}",
     e_base_metric: "Coste del plan base",
+    grid_chart: "Importación y exportación de red",
+    rates_chart: "Precios de energía",
+    tab_battery: "Batería",
+    tab_grid: "Red",
+    tab_rates: "Precios",
+    export_rate: "Precio de exportación",
+    ed_show_grid_chart: "Gráfico de importación/exportación",
+    ed_show_rates_chart: "Gráfico de precios",
+    ed_chart_layout: "Disposición de gráficos",
+    layout_tabs: "Pestañas (uno a la vez)",
+    layout_stacked: "Apilados (todos)",
+    ed_font_scale: "Tamaño del texto",
+    e_export_energy: "Energía exportada prevista",
+    e_import_energy: "Energía importada prevista",
     ed_title: "Título",
     ed_prefix: "Prefijo de Predbat",
     ed_language: "Idioma",
@@ -365,6 +407,7 @@ const ENTITY_KEYS = [
   "status", "plan", "mode", "soc_now", "soc_best", "soc_base", "inverter_config",
   "hours_left", "rates", "rates_export", "cost_today", "best_metric", "base_metric", "savings",
   "charge_start", "charge_end", "charge_limit", "export_start", "export_end", "export_limit",
+  "export_energy", "import_energy",
 ];
 
 function defaultEntities(prefix) {
@@ -390,6 +433,8 @@ function defaultEntities(prefix) {
     export_start: `${p}.best_export_start`,
     export_end: `${p}.best_export_end`,
     export_limit: `${p}.best_export_limit`,
+    export_energy: `${p}.best_export_energy`,
+    import_energy: `${p}.best_import_energy`,
   };
 }
 
@@ -404,6 +449,10 @@ const DEFAULT_CONFIG = {
   show_header: true,
   show_overview: true,
   show_chart: true,
+  show_grid_chart: true,
+  show_rates_chart: true,
+  chart_layout: "tabs",
+  font_scale: 1,
   show_timeline: true,
   show_actions: true,
   show_table: true,
@@ -578,6 +627,7 @@ ha-card.s-neon {
   --pb-rate: #ffe600;
   --pb-charge: #39ff88;
   --pb-hold_charge: #4d7cff;
+  --pb-import: #4d7cff;
   --pb-freeze_charge: #7cfff0;
   --pb-export: #ff2bd6;
   --pb-freeze_export: #c77dff;
@@ -605,7 +655,7 @@ ha-card.s-neon {
 .s-neon .tile-value { text-shadow: 0 0 12px color-mix(in srgb, var(--pb-accent) 55%, transparent); }
 .s-neon .tile .accent-bar { box-shadow: 0 0 10px var(--c); }
 .s-neon .logo { border-radius: 6px; background: var(--card-background-color); border: 1px solid var(--pb-accent); color: var(--pb-accent); box-shadow: 0 0 12px rgba(0,229,255,.5), inset 0 0 8px rgba(0,229,255,.3); }
-.s-neon .pill { border-radius: 4px; text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; box-shadow: 0 0 12px color-mix(in srgb, var(--c) 40%, transparent); }
+.s-neon .pill { border-radius: 4px; text-transform: uppercase; letter-spacing: .06em; font-size: calc(.78 * var(--u)); box-shadow: 0 0 12px color-mix(in srgb, var(--c) 40%, transparent); }
 .s-neon .section-title { color: var(--pb-accent); letter-spacing: .14em; }
 .s-neon .section-title::before { content: "// "; opacity: .6; }
 .s-neon .l-best { filter: drop-shadow(0 0 4px var(--pb-accent)) drop-shadow(0 0 10px var(--pb-accent)); }
@@ -614,7 +664,7 @@ ha-card.s-neon {
 .s-neon .ribbon { border-radius: 3px; height: 14px; border: 1px solid var(--pb-line); }
 .s-neon .ribbon > div:not([style*="demand"]) { box-shadow: 0 0 10px var(--c) !important; }
 .s-neon .action .ico { border-radius: 4px; box-shadow: 0 0 10px color-mix(in srgb, var(--c) 45%, transparent); }
-.s-neon .toggle { border-radius: 4px; border-color: var(--pb-accent); color: var(--pb-accent); text-transform: uppercase; letter-spacing: .08em; font-size: .7rem; }
+.s-neon .toggle { border-radius: 4px; border-color: var(--pb-accent); color: var(--pb-accent); text-transform: uppercase; letter-spacing: .08em; font-size: calc(.78 * var(--u)); }
 .s-neon .ring circle:nth-child(2) { filter: drop-shadow(0 0 4px currentColor); }
 
 /* ===================== STYLE: MINIMAL ===================== */
@@ -626,16 +676,16 @@ ha-card.s-minimal {
 }
 .s-minimal .wrap { gap: 18px; padding: 18px 20px 20px; }
 .s-minimal .logo { display: none; }
-.s-minimal .head-title { font-size: 1.25rem; font-weight: 300; letter-spacing: -.01em; }
+.s-minimal .head-title { font-size: calc(1.25 * var(--u)); font-weight: 300; letter-spacing: -.01em; }
 .s-minimal .pill { background: none; border: none; padding: 0; font-weight: 500; }
 .s-minimal .overview { gap: 0; border-top: 1px solid var(--pb-line); border-bottom: 1px solid var(--pb-line); }
 .s-minimal .tile { padding: 12px 14px; border-right: 1px solid var(--pb-line); border-bottom: 1px solid var(--pb-line); margin: 0 -1px -1px 0; }
 .s-minimal .tile .accent-bar { display: none; }
-.s-minimal .tile-label { text-transform: none; letter-spacing: 0; font-size: .74rem; }
+.s-minimal .tile-label { text-transform: none; letter-spacing: 0; font-size: calc(.82 * var(--u)); }
 .s-minimal .tile-label ha-icon { display: none; }
-.s-minimal .tile-value { font-weight: 300; font-size: 1.45rem; }
+.s-minimal .tile-value { font-weight: 300; font-size: calc(1.55 * var(--u)); }
 .s-minimal .tile.battery .ring { width: 40px; height: 40px; }
-.s-minimal .section-title { text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--primary-text-color); font-size: .9rem; }
+.s-minimal .section-title { text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--primary-text-color); font-size: calc(.9 * var(--u)); }
 .s-minimal .l-area { display: none; }
 .s-minimal .l-best { stroke-width: 1.6; }
 .s-minimal .chart rect[opacity=".16"] { opacity: .08; }
@@ -661,11 +711,11 @@ ha-card.s-native {
 }
 .s-native .wrap { padding: 16px; gap: 16px; }
 .s-native .logo { background: color-mix(in srgb, var(--primary-color, #03a9f4) 20%, transparent); color: var(--primary-color, #03a9f4); box-shadow: none; border-radius: 50%; width: 40px; height: 40px; }
-.s-native .head-title { font-size: var(--ha-card-header-font-size, 1.25rem); font-weight: 400; }
+.s-native .head-title { font-size: var(--ha-card-header-font-size, calc(1.25 * var(--u))); font-weight: 400; }
 .s-native .tile { border: 1px solid var(--pb-line); }
-.s-native .tile-label { text-transform: none; letter-spacing: 0; font-size: .8rem; }
+.s-native .tile-label { text-transform: none; letter-spacing: 0; font-size: calc(.86 * var(--u)); }
 .s-native .tile-value { font-weight: 500; }
-.s-native .section-title { text-transform: none; letter-spacing: 0; font-size: 1rem; font-weight: 500; color: var(--primary-text-color); }
+.s-native .section-title { text-transform: none; letter-spacing: 0; font-size: calc(1 * var(--u)); font-weight: 500; color: var(--primary-text-color); }
 .s-native .pill { border-radius: 8px; font-weight: 500; }
 .s-native .action { background: none; border: 1px solid var(--pb-line); }
 .s-native .action .ico { border-radius: 50%; }
@@ -682,6 +732,7 @@ ha-card.s-terminal {
   --pb-rate: #ffb000;
   --pb-charge: #5cff5c;
   --pb-hold_charge: #2fbf71;
+  --pb-import: #2fbf71;
   --pb-freeze_charge: #9dffb0;
   --pb-export: #ffb000;
   --pb-freeze_export: #ffd166;
@@ -781,7 +832,9 @@ ha-card.m-light.s-terminal {
 const STYLES = `
 :host { display: block; }
 ha-card {
+  --u: calc(16px * var(--pb-scale, 1));
   --pb-charge: #12b886;
+  --pb-import: #4c6ef5;
   --pb-hold_charge: #4dabf7;
   --pb-freeze_charge: #63e6be;
   --pb-export: #f76707;
@@ -813,11 +866,11 @@ ha-card {
 }
 .logo ha-icon { --mdc-icon-size: 22px; }
 .head-text { min-width: 0; flex: 1; }
-.head-title { font-size: 1.05rem; font-weight: 600; line-height: 1.2; }
-.head-sub { font-size: .78rem; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.head-title { font-size: calc(1.12 * var(--u)); font-weight: 600; line-height: 1.2; }
+.head-sub { font-size: calc(.84 * var(--u)); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pill {
   display: inline-flex; align-items: center; gap: 6px; max-width: 55%;
-  padding: 5px 11px 5px 9px; border-radius: 999px; font-size: .8rem; font-weight: 600;
+  padding: 5px 11px 5px 9px; border-radius: 999px; font-size: calc(.86 * var(--u)); font-weight: 600;
   background: color-mix(in srgb, var(--c) 16%, transparent); color: var(--c);
   border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
 }
@@ -828,11 +881,11 @@ ha-card {
 @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
 
 .banner {
-  display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 10px; font-size: .85rem;
+  display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 10px; font-size: calc(.85 * var(--u));
   background: color-mix(in srgb, var(--pb-error) 14%, transparent); color: var(--pb-error);
 }
 .banner ha-icon { --mdc-icon-size: 18px; }
-.warn { font-size: .8rem; padding: 8px 12px; border-radius: 10px; background: var(--pb-tile); }
+.warn { font-size: calc(.8 * var(--u)); padding: 8px 12px; border-radius: 10px; background: var(--pb-tile); }
 
 /* overview */
 .overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
@@ -844,35 +897,55 @@ ha-card {
   display: flex; flex-direction: column; gap: 2px; min-width: 0; position: relative;
 }
 .tile.battery { flex-direction: row; align-items: center; gap: 10px; }
-.tile-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--pb-muted); display: flex; align-items: center; gap: 5px; }
+.tile-label { font-size: calc(.78 * var(--u)); text-transform: uppercase; letter-spacing: .05em; color: var(--pb-muted); display: flex; align-items: center; gap: 5px; }
 .tile-label ha-icon { --mdc-icon-size: 14px; }
-.tile-value { font-size: 1.25rem; font-weight: 650; line-height: 1.25; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tile-value small { font-size: .72rem; font-weight: 500; color: var(--pb-muted); margin-left: 2px; }
-.tile-sub { font-size: .76rem; color: var(--pb-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+.tile-value { font-size: calc(1.38 * var(--u)); font-weight: 650; line-height: 1.25; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile-value small { font-size: calc(.8 * var(--u)); font-weight: 500; color: var(--pb-muted); margin-left: 2px; }
+.tile-sub { font-size: calc(.84 * var(--u)); color: var(--pb-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
 .tile .accent-bar { position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 3px; background: var(--c, transparent); }
-.ring { width: 52px; height: 52px; flex: none; }
-.ring text { font-size: 13px; font-weight: 700; fill: var(--primary-text-color); font-variant-numeric: tabular-nums; }
+.ring { width: calc(54px * var(--pb-scale, 1)); height: calc(54px * var(--pb-scale, 1)); flex: none; }
+.ring text { font-size: 14px; font-weight: 700; fill: var(--primary-text-color); font-variant-numeric: tabular-nums; }
 .pos { color: var(--pb-charge); }
 .neg { color: var(--pb-error); }
 
 /* section */
 .section { display: flex; flex-direction: column; gap: 8px; }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-.section-title { font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--pb-muted); }
-.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: .74rem; color: var(--pb-muted); }
+.section-title { font-size: calc(.88 * var(--u)); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--pb-muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: calc(.82 * var(--u)); color: var(--pb-muted); }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; background: var(--c); }
 .legend i.line { height: 3px; vertical-align: 2px; border-radius: 2px; }
 .legend i.dash { height: 0; border-top: 2px dashed var(--c); background: none; vertical-align: 3px; }
 
+/* tabs */
+.tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--pb-tile); border: 1px solid var(--pb-line); }
+.tabs button {
+  border: none; background: none; color: var(--pb-muted); font: inherit; font-size: calc(.82 * var(--u)); font-weight: 600;
+  padding: 4px 12px; border-radius: 999px; cursor: pointer;
+}
+.tabs button.on { background: var(--card-background-color, #fff); color: var(--primary-text-color); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+.section-head { flex-wrap: wrap; align-items: center; }
+.s-neon .tabs, .s-terminal .tabs { border-radius: 4px; }
+.s-neon .tabs button, .s-terminal .tabs button { border-radius: 3px; text-transform: uppercase; letter-spacing: .06em; font-size: calc(.74 * var(--u)); }
+.s-neon .tabs button.on { color: var(--pb-accent); box-shadow: 0 0 10px color-mix(in srgb, var(--pb-accent) 40%, transparent); }
+.s-terminal .tabs { border-style: dashed; border-radius: 0; background: none; }
+.s-terminal .tabs button { border-radius: 0; }
+.s-terminal .tabs button.on { background: var(--pb-accent); color: var(--card-background-color); text-shadow: none; box-shadow: none; }
+.s-minimal .tabs { background: none; border: none; padding: 0; gap: 12px; }
+.s-minimal .tabs button { padding: 2px 0; border-radius: 0; }
+.s-minimal .tabs button.on { background: none; box-shadow: none; border-bottom: 2px solid var(--primary-text-color); }
+.s-native .tabs button.on { color: var(--primary-color, #03a9f4); }
+.legend b { color: var(--primary-text-color); font-weight: 600; }
+
 /* chart */
 .chart { position: relative; width: 100%; touch-action: pan-y; }
 .chart svg { display: block; width: 100%; overflow: visible; }
-.chart .axis { font-size: 10px; fill: var(--pb-muted); font-variant-numeric: tabular-nums; }
+.chart .axis { font-size: calc(11px * var(--pb-scale, 1)); fill: var(--pb-muted); font-variant-numeric: tabular-nums; }
 .chart .grid { stroke: var(--pb-line); stroke-width: 1; }
 .tip {
   position: absolute; top: 4px; pointer-events: none; z-index: 2; display: none;
   background: var(--card-background-color, #fff); color: var(--primary-text-color);
-  border: 1px solid var(--pb-line); border-radius: 10px; padding: 7px 10px; font-size: .76rem;
+  border: 1px solid var(--pb-line); border-radius: 10px; padding: 8px 11px; font-size: calc(.84 * var(--u));
   box-shadow: 0 4px 16px rgba(0,0,0,.15); white-space: nowrap; font-variant-numeric: tabular-nums;
 }
 .tip b { font-weight: 650; }
@@ -882,7 +955,7 @@ ha-card {
 .ribbon { display: flex; height: 22px; border-radius: 8px; overflow: hidden; background: var(--pb-tile); }
 .ribbon > div { height: 100%; background: var(--c); min-width: 1px; }
 .ribbon > div + div { box-shadow: inset 1px 0 0 color-mix(in srgb, var(--card-background-color, #fff) 35%, transparent); }
-.ticks { position: relative; height: 14px; font-size: 10px; color: var(--pb-muted); font-variant-numeric: tabular-nums; }
+.ticks { position: relative; height: calc(16px * var(--pb-scale, 1)); font-size: calc(11px * var(--pb-scale, 1)); color: var(--pb-muted); font-variant-numeric: tabular-nums; }
 .ticks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
 .ticks span:first-child { transform: none; }
 
@@ -897,27 +970,27 @@ ha-card {
   background: color-mix(in srgb, var(--c) 18%, transparent); color: var(--c);
 }
 .action .ico ha-icon { --mdc-icon-size: 18px; }
-.action .what { font-weight: 600; font-size: .88rem; }
-.action .when { font-size: .76rem; color: var(--pb-muted); font-variant-numeric: tabular-nums; }
-.action .meta { text-align: right; font-size: .76rem; color: var(--pb-muted); font-variant-numeric: tabular-nums; }
-.action .meta b { color: var(--primary-text-color); font-weight: 600; font-size: .85rem; }
-.empty { font-size: .82rem; color: var(--pb-muted); padding: 6px 2px; }
+.action .what { font-weight: 600; font-size: calc(.96 * var(--u)); }
+.action .when { font-size: calc(.84 * var(--u)); color: var(--pb-muted); font-variant-numeric: tabular-nums; }
+.action .meta { text-align: right; font-size: calc(.84 * var(--u)); color: var(--pb-muted); font-variant-numeric: tabular-nums; }
+.action .meta b { color: var(--primary-text-color); font-weight: 600; font-size: calc(.92 * var(--u)); }
+.empty { font-size: calc(.88 * var(--u)); color: var(--pb-muted); padding: 6px 2px; }
 
 /* table */
 .toggle {
   align-self: flex-start; background: none; border: 1px solid var(--pb-line); color: var(--primary-text-color);
-  border-radius: 999px; padding: 5px 12px; font: inherit; font-size: .78rem; cursor: pointer;
+  border-radius: 999px; padding: 6px 13px; font: inherit; font-size: calc(.84 * var(--u)); cursor: pointer;
 }
 .toggle:hover { background: var(--pb-tile); }
 .table-wrap { overflow-x: auto; max-height: 360px; overflow-y: auto; border-radius: 10px; border: 1px solid var(--pb-line); }
-table { width: 100%; border-collapse: collapse; font-size: .76rem; font-variant-numeric: tabular-nums; }
+table { width: 100%; border-collapse: collapse; font-size: calc(.84 * var(--u)); font-variant-numeric: tabular-nums; }
 th { position: sticky; top: 0; background: var(--card-background-color, #fff); text-align: right; font-weight: 600; color: var(--pb-muted); padding: 6px 8px; border-bottom: 1px solid var(--pb-line); }
 td { text-align: right; padding: 5px 8px; border-bottom: 1px solid var(--pb-line); white-space: nowrap; }
 th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
 tr:last-child td { border-bottom: none; }
 .tag { display: inline-flex; align-items: center; gap: 5px; }
 .tag i { width: 8px; height: 8px; border-radius: 2px; background: var(--c); display: inline-block; }
-.foot { font-size: .7rem; color: var(--pb-muted); text-align: right; margin-top: -6px; }
+.foot { font-size: calc(.7 * var(--u)); color: var(--pb-muted); text-align: right; margin-top: -6px; }
 ${THEME_STYLES}
 `;
 
@@ -962,7 +1035,7 @@ class PredbatCard extends HTMLElement {
       this._ro = new ResizeObserver(() => {
         const el = this.shadowRoot.querySelector(".chart");
         const w = el ? Math.round(el.clientWidth) : 0;
-        if (w && Math.abs(w - this._chartWidth) > 2) { this._chartWidth = w; this._drawChart(); }
+        if (w && Math.abs(w - this._chartWidth) > 2) { this._chartWidth = w; this._drawCharts(); }
       });
     }
     this._observe();
@@ -1137,16 +1210,16 @@ class PredbatCard extends HTMLElement {
       parts.push(`<div class="warn">${esc(t("missing", { e: this._eid("status") }))}</div>`);
     }
     if (c.show_overview !== false) parts.push(this._renderOverview());
-    if (c.show_chart !== false) parts.push(this._renderChartShell());
+    parts.push(this._renderCharts());
     if (c.show_timeline !== false) parts.push(this._renderTimeline());
     if (c.show_actions !== false) parts.push(this._renderActions());
     if (c.show_table !== false && rows.length) parts.push(this._renderTable());
 
-    this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card class="s-${esc(this._style())} m-${esc(this._mode())}"><div class="cq"><div class="wrap">${parts.join("")}</div></div></ha-card>`;
+    this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card class="s-${esc(this._style())} m-${esc(this._mode())}" style="--pb-scale:${this._scale()}"><div class="cq"><div class="wrap">${parts.join("")}</div></div></ha-card>`;
     this._wire();
     this._observe();
     const ch = this.shadowRoot.querySelector(".chart");
-    if (ch) { this._chartWidth = Math.round(ch.clientWidth) || this._chartWidth || 600; this._drawChart(); }
+    if (ch) { this._chartWidth = Math.round(ch.clientWidth) || this._chartWidth || 600; this._drawCharts(); }
   }
 
   _renderHeader(status) {
@@ -1235,7 +1308,7 @@ class PredbatCard extends HTMLElement {
       <div class="tile" style="--c:var(--pb-${nowCat === "demand" ? "neutral" : nowCat})">
         <span class="accent-bar"></span>
         <div class="tile-label"><ha-icon icon="${STATE_ICON[nowCat]}"></ha-icon>${esc(t("now"))}${r0?.override ? ` · ${esc(t("manual"))}` : ""}</div>
-        <div class="tile-value" style="font-size:1.02rem">${esc(nowLabel)}</div>
+        <div class="tile-value" style="font-size:calc(1.1 * var(--u))">${esc(nowLabel)}</div>
         <div class="tile-sub">↓ ${esc(this._rate(impNow, cur))} · ↑ ${esc(this._rate(expNow, cur))}</div>
       </div>`;
 
@@ -1278,13 +1351,13 @@ class PredbatCard extends HTMLElement {
       const icon = kind === "charge" ? "mdi:battery-arrow-up" : "mdi:battery-arrow-down";
       if (!w) {
         return `<div class="tile"><div class="tile-label"><ha-icon icon="${icon}"></ha-icon>${esc(label)}</div>
-          <div class="tile-value muted" style="font-size:1rem">${esc(t("none_planned"))}</div><div class="tile-sub">&nbsp;</div></div>`;
+          <div class="tile-value muted" style="font-size:calc(1.06 * var(--u))">${esc(t("none_planned"))}</div><div class="tile-sub">&nbsp;</div></div>`;
       }
       const active = w.s <= Date.now();
       return `<div class="tile" style="--c:var(--pb-${kind})">
           <span class="accent-bar"></span>
           <div class="tile-label"><ha-icon icon="${icon}"></ha-icon>${esc(label)}</div>
-          <div class="tile-value" style="font-size:1.05rem">${esc(this._hm(w.s))}–${esc(this._hm(w.e))}</div>
+          <div class="tile-value" style="font-size:calc(1.14 * var(--u))">${esc(this._hm(w.s))}–${esc(this._hm(w.e))}</div>
           <div class="tile-sub">${esc(active ? t("now") : this._dayWord(w.s))}${w.target !== null ? " · " + esc(t("target", { v: Math.round(w.target) })) : ""}</div>
         </div>`;
     };
@@ -1311,97 +1384,84 @@ class PredbatCard extends HTMLElement {
     return out;
   }
 
-  _renderChartShell() {
-    const t = this.t;
+  /* ---------- charts ---------- */
+  _scale() {
+    const s = num(this._config.font_scale);
+    return s ? Math.max(0.8, Math.min(1.6, s)) : 1;
+  }
+
+  _enabledCharts() {
     const c = this._config;
-    const legend = [
-      `<span><i class="line" style="--c:var(--pb-accent)"></i>${esc(t("best"))}</span>`,
-      c.show_base !== false ? `<span><i class="dash" style="--c:var(--pb-muted)"></i>${esc(t("base"))}</span>` : "",
-      c.show_rates !== false ? `<span><i class="line" style="--c:var(--pb-rate)"></i>${esc(t("rate"))}</span>` : "",
-      `<span><i style="--c:color-mix(in srgb, var(--pb-charge) 45%, transparent)"></i>${esc(t("st_charge"))}</span>`,
-      `<span><i style="--c:color-mix(in srgb, var(--pb-export) 45%, transparent)"></i>${esc(t("st_export"))}</span>`,
-    ].join("");
-    return `
-      <div class="section">
-        <div class="section-head"><div class="section-title">${esc(t("forecast"))}</div></div>
-        <div class="chart"><div class="tip"></div><div class="svg-host"></div></div>
-        <div class="legend">${legend}</div>
+    const out = [];
+    if (c.show_chart !== false) out.push("battery");
+    if (c.show_grid_chart !== false) out.push("grid");
+    if (c.show_rates_chart !== false) out.push("rates");
+    return out;
+  }
+
+  _chartTitle(k) {
+    return { battery: this.t("forecast"), grid: this.t("grid_chart"), rates: this.t("rates_chart") }[k];
+  }
+
+  _chartBox(k) {
+    return `<div class="chart" data-chart="${k}"><div class="tip"></div><div class="svg-host"></div></div>
+      <div class="legend" data-legend="${k}"></div>`;
+  }
+
+  _renderCharts() {
+    const keys = this._enabledCharts();
+    if (!keys.length) return "";
+    if (this._config.chart_layout === "stacked") {
+      return keys.map((k) => `<div class="section">
+          <div class="section-head"><div class="section-title">${esc(this._chartTitle(k))}</div></div>
+          ${this._chartBox(k)}</div>`).join("");
+    }
+    if (!this._tab) { try { this._tab = localStorage.getItem("predbat-card-tab") || ""; } catch (e) { /* ignore */ } }
+    if (!keys.includes(this._tab)) this._tab = keys[0];
+    const tabs = keys.length > 1
+      ? `<div class="tabs" role="tablist">${keys.map((k) =>
+          `<button role="tab" data-tab="${k}" class="${k === this._tab ? "on" : ""}" aria-selected="${k === this._tab}">${esc(this.t("tab_" + k))}</button>`).join("")}</div>`
+      : "";
+    return `<div class="section">
+        <div class="section-head"><div class="section-title">${esc(this._chartTitle(this._tab))}</div>${tabs}</div>
+        ${this._chartBox(this._tab)}
       </div>`;
   }
 
-  _drawChart() {
-    const host = this.shadowRoot.querySelector(".chart .svg-host");
-    if (!host || !this._ctx) return;
-    const t = this.t;
-    const c = this._config;
-    const { socMax, now, horizon, rows, cur } = this._ctx;
-    const W = Math.max(260, this._chartWidth || 600);
-    const H = 190;
-    const showRates = c.show_rates !== false;
-    const padL = 34, padR = showRates ? 38 : 10, padT = 8, padB = 22;
+  _drawCharts() {
+    if (!this._ctx) return;
+    this.shadowRoot.querySelectorAll(".chart[data-chart]").forEach((el) => {
+      const key = el.getAttribute("data-chart");
+      const W = Math.max(260, Math.round(el.clientWidth) || this._chartWidth || 600);
+      const host = el.querySelector(".svg-host");
+      const legendEl = this.shadowRoot.querySelector(`.legend[data-legend="${key}"]`);
+      const fn = { battery: this._chartBattery, grid: this._chartGrid, rates: this._chartRates }[key];
+      if (!fn) return;
+      const res = fn.call(this, W);
+      if (res.empty) {
+        host.innerHTML = `<div class="empty">${esc(res.empty)}</div>`;
+        if (legendEl) legendEl.innerHTML = "";
+        return;
+      }
+      host.innerHTML = `<svg width="${W}" height="${res.H}" viewBox="0 0 ${W} ${res.H}">${res.svg}</svg>`;
+      if (legendEl) legendEl.innerHTML = res.legend || "";
+      this._wireHover(el, res.hover);
+    });
+  }
+
+  _frame(W, H, opts = {}) {
+    const S = this._scale();
+    const padL = Math.round((opts.padL ?? 34) * S);
+    const padR = Math.round((opts.padR ?? 10) * S);
+    const padT = 8, padB = Math.round(22 * S);
+    const { now, horizon } = this._ctx;
     const iw = W - padL - padR, ih = H - padT - padB;
-
-    const bestSt = this._st("soc_best");
-    let best = seriesFrom(bestSt?.attributes?.results);
-    let base = c.show_base !== false ? seriesFrom(this._st("soc_base")?.attributes?.results) : [];
-    let rates = showRates ? seriesFrom(this._st("rates")?.attributes?.results) : [];
-
-    const inWin = (s) => {
-      const out = s.filter((p) => p[0] >= now - 10 * 60e3 && p[0] <= horizon);
-      return out;
-    };
-    best = inWin(best); base = inWin(base);
-    // rates: keep the step that is active at "now"
-    const ratesWin = [];
-    for (let i = 0; i < rates.length; i++) {
-      const p = rates[i], nxt = rates[i + 1];
-      if (p[0] > horizon) break;
-      if (nxt && nxt[0] <= now) continue;
-      ratesWin.push(p);
-    }
-    rates = ratesWin;
-
-    if (!best.length) {
-      host.innerHTML = `<div class="empty">${esc(t("no_forecast", { e: this._eid("soc_best") }))}</div>`;
-      this._chartData = null;
-      return;
-    }
-
-    const maxK = socMax || Math.max(...best.map((p) => p[1]), ...base.map((p) => p[1]), 1);
-    const toPct = (k) => Math.max(0, Math.min(100, (k / maxK) * 100));
     const X = (tm) => padL + ((Math.max(now, Math.min(horizon, tm)) - now) / (horizon - now)) * iw;
-    const Y = (p) => padT + (1 - p / 100) * ih;
+    return { S, padL, padR, padT, padB, iw, ih, X, now, horizon, W, H };
+  }
 
-    let rMin = 0, rMax = 1;
-    if (rates.length) {
-      rMin = Math.min(0, ...rates.map((p) => p[1]));
-      rMax = Math.max(...rates.map((p) => p[1])) * 1.1 || 1;
-    }
-    const YR = (r) => padT + (1 - (r - rMin) / (rMax - rMin)) * ih;
-
-    const parts = [];
-    // plan bands
-    for (const r of rows) {
-      if (r.cat === "demand") continue;
-      const x1 = X(r.t), x2 = X(r.end);
-      if (x2 - x1 < 0.5) continue;
-      const col = `var(--pb-${r.cat})`;
-      parts.push(`<rect x="${x1.toFixed(1)}" y="${padT}" width="${(x2 - x1).toFixed(1)}" height="${ih}" fill="${col}" opacity=".16"/>`);
-      parts.push(`<rect x="${x1.toFixed(1)}" y="${padT + ih - 3}" width="${(x2 - x1).toFixed(1)}" height="3" fill="${col}" opacity=".9"/>`);
-    }
-    // grid
-    for (const g of [0, 25, 50, 75, 100]) {
-      parts.push(`<line class="grid" x1="${padL}" x2="${padL + iw}" y1="${Y(g).toFixed(1)}" y2="${Y(g).toFixed(1)}" ${g === 0 || g === 100 ? "" : 'stroke-dasharray="2 4"'}/>`);
-      if (g % 50 === 0) parts.push(`<text class="axis" x="${padL - 6}" y="${(Y(g) + 3).toFixed(1)}" text-anchor="end">${g}%</text>`);
-    }
-    // reserve
-    const reserve = num(this._ctx.plan.raw?.reserve);
-    if (reserve && maxK) {
-      const yr = Y(toPct(reserve));
-      parts.push(`<line x1="${padL}" x2="${padL + iw}" y1="${yr.toFixed(1)}" y2="${yr.toFixed(1)}" stroke="var(--pb-error)" stroke-width="1" stroke-dasharray="4 3" opacity=".6"/>`);
-      parts.push(`<text class="axis" x="${padL + 4}" y="${(yr - 3).toFixed(1)}" style="fill:var(--pb-error);opacity:.8">${esc(t("reserve"))}</text>`);
-    }
-    // x ticks
+  _xAxis(f, parts) {
+    const { now, horizon, X, padL, padT, iw, ih, H } = f;
     const hours = (horizon - now) / 3600e3;
     const step = hours <= 12 ? 2 : hours <= 30 ? 4 : 8;
     const first = new Date(now); first.setMinutes(0, 0, 0); first.setHours(first.getHours() + 1);
@@ -1410,30 +1470,111 @@ class PredbatCard extends HTMLElement {
       const isMid = d.getHours() === 0;
       if (!isMid && d.getHours() % step !== 0) continue;
       const x = X(tm);
-      if (x < padL + 14 || x > padL + iw - 14) continue;
+      if (x < padL + 16 * f.S || x > padL + iw - 16 * f.S) continue;
       parts.push(`<line class="grid" x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${padT}" y2="${padT + ih}" ${isMid ? "" : 'stroke-dasharray="2 4"'}/>`);
       const label = isMid ? this._timeFmt({ weekday: "short" }).format(d) : this._h(tm);
       parts.push(`<text class="axis" x="${x.toFixed(1)}" y="${H - 6}" text-anchor="middle" ${isMid ? 'style="font-weight:600"' : ""}>${esc(label)}</text>`);
     }
-    // rates step line
+  }
+
+  _planBands(f, parts, opacity = 0.16) {
+    for (const r of this._ctx.rows) {
+      if (r.cat === "demand") continue;
+      const x1 = f.X(r.t), x2 = f.X(r.end);
+      if (x2 - x1 < 0.5) continue;
+      const col = `var(--pb-${r.cat})`;
+      parts.push(`<rect class="band" x="${x1.toFixed(1)}" y="${f.padT}" width="${(x2 - x1).toFixed(1)}" height="${f.ih}" fill="${col}" opacity="${opacity}"/>`);
+      parts.push(`<rect x="${x1.toFixed(1)}" y="${f.padT + f.ih - 3}" width="${(x2 - x1).toFixed(1)}" height="3" fill="${col}" opacity=".9"/>`);
+    }
+  }
+
+  _hoverParts(f, color = "var(--pb-accent)") {
+    return `<line class="guide" x1="0" x2="0" y1="${f.padT}" y2="${f.padT + f.ih}" stroke="var(--primary-text-color)" stroke-width="1" opacity="0"/>
+      <circle class="gdot" r="4" fill="${color}" stroke="var(--card-background-color,#fff)" stroke-width="2" opacity="0"/>
+      <rect class="hit" x="${f.padL}" y="${f.padT}" width="${f.iw}" height="${f.ih}" fill="transparent"/>`;
+  }
+
+  _windowSeries(series) {
+    const { now, horizon } = this._ctx;
+    const out = [];
+    for (let i = 0; i < series.length; i++) {
+      const p = series[i], nxt = series[i + 1];
+      if (p[0] > horizon) break;
+      if (nxt && nxt[0] <= now) continue;
+      out.push(p);
+    }
+    return out;
+  }
+
+  _stepPath(f, series, Y) {
+    let d = "";
+    series.forEach((p, i) => {
+      const x = f.X(Math.max(p[0], f.now)), y = Y(p[1]);
+      d += i === 0 ? `M${x.toFixed(1)},${y.toFixed(1)}` : `H${x.toFixed(1)}V${y.toFixed(1)}`;
+    });
+    if (d) d += `H${(f.padL + f.iw).toFixed(1)}`;
+    return d;
+  }
+
+  _rowAt(tm) { return this._ctx.rows.find((r) => r.t <= tm && r.end > tm) || null; }
+
+  _tipHead(tm) { return `<div><b>${esc(this._dayWord(tm))} ${esc(this._hm(tm))}</b></div>`; }
+
+  _tipState(row) {
+    if (!row) return "";
+    const t = this.t;
+    return `<div class="row"><span class="tag"><i style="--c:var(--pb-${row.cat === "demand" ? "neutral" : row.cat})"></i>${esc(t("st_" + row.cat))}</span><span>${row.target !== null && row.cat !== "demand" ? Math.round(row.target) + "%" : ""}</span></div>`;
+  }
+
+  /* Battery SoC forecast */
+  _chartBattery(W) {
+    const t = this.t;
+    const c = this._config;
+    const { socMax, now, horizon, cur } = this._ctx;
+    const showRates = c.show_rates !== false;
+    const H = Math.round(190 + (this._scale() - 1) * 50);
+    const f = this._frame(W, H, { padL: 34, padR: showRates ? 40 : 10 });
+    const { X, padL, padT, iw, ih } = f;
+
+    const inWin = (s) => s.filter((p) => p[0] >= now - 10 * 60e3 && p[0] <= horizon);
+    const best = inWin(seriesFrom(this._st("soc_best")?.attributes?.results));
+    const base = c.show_base !== false ? inWin(seriesFrom(this._st("soc_base")?.attributes?.results)) : [];
+    const rates = showRates ? this._windowSeries(seriesFrom(this._st("rates")?.attributes?.results)) : [];
+    if (!best.length) return { empty: t("no_forecast", { e: this._eid("soc_best") }) };
+
+    const maxK = socMax || Math.max(...best.map((p) => p[1]), ...base.map((p) => p[1]), 1);
+    const toPct = (k) => Math.max(0, Math.min(100, (k / maxK) * 100));
+    const Y = (p) => padT + (1 - p / 100) * ih;
+    let rMin = 0, rMax = 1;
     if (rates.length) {
-      let d = "";
-      rates.forEach((p, i) => {
-        const x = X(Math.max(p[0], now)), y = YR(p[1]);
-        d += i === 0 ? `M${x.toFixed(1)},${y.toFixed(1)}` : `H${x.toFixed(1)}V${y.toFixed(1)}`;
-      });
-      d += `H${(padL + iw).toFixed(1)}`;
-      parts.push(`<path d="${d}" fill="none" stroke="var(--pb-rate)" stroke-width="1.4" opacity=".75" class="l-rate"/>`);
+      rMin = Math.min(0, ...rates.map((p) => p[1]));
+      rMax = Math.max(...rates.map((p) => p[1])) * 1.1 || 1;
+    }
+    const YR = (r) => padT + (1 - (r - rMin) / (rMax - rMin)) * ih;
+
+    const parts = [];
+    this._planBands(f, parts);
+    for (const g of [0, 25, 50, 75, 100]) {
+      parts.push(`<line class="grid" x1="${padL}" x2="${padL + iw}" y1="${Y(g).toFixed(1)}" y2="${Y(g).toFixed(1)}" ${g === 0 || g === 100 ? "" : 'stroke-dasharray="2 4"'}/>`);
+      if (g % 50 === 0) parts.push(`<text class="axis" x="${padL - 6}" y="${(Y(g) + 4).toFixed(1)}" text-anchor="end">${g}%</text>`);
+    }
+    const reserve = num(this._ctx.plan.raw?.reserve);
+    if (reserve && maxK) {
+      const yr = Y(toPct(reserve));
+      parts.push(`<line x1="${padL}" x2="${padL + iw}" y1="${yr.toFixed(1)}" y2="${yr.toFixed(1)}" stroke="var(--pb-error)" stroke-width="1" stroke-dasharray="4 3" opacity=".6"/>`);
+      parts.push(`<text class="axis" x="${padL + 4}" y="${(yr - 4).toFixed(1)}" style="fill:var(--pb-error);opacity:.8">${esc(t("reserve"))}</text>`);
+    }
+    this._xAxis(f, parts);
+    if (rates.length) {
+      parts.push(`<path d="${this._stepPath(f, rates, YR)}" fill="none" stroke="var(--pb-rate)" stroke-width="1.4" opacity=".75" class="l-rate"/>`);
       for (const r of [rMax / 1.1, (rMax / 1.1 + rMin) / 2, rMin]) {
-        parts.push(`<text class="axis" x="${padL + iw + 5}" y="${(YR(r) + 3).toFixed(1)}" style="fill:var(--pb-rate)">${esc(Math.round(r) + cur.minor)}</text>`);
+        parts.push(`<text class="axis" x="${padL + iw + 5}" y="${(YR(r) + 4).toFixed(1)}" style="fill:var(--pb-rate)">${esc(Math.round(r) + cur.minor)}</text>`);
       }
     }
-    // base
     if (base.length > 1) {
       const d = base.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(toPct(p[1])).toFixed(1)}`).join("");
       parts.push(`<path d="${d}" fill="none" stroke="var(--pb-muted)" stroke-width="1.4" stroke-dasharray="5 4" opacity=".8" class="l-base"/>`);
     }
-    // best area + line
     const line = best.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(toPct(p[1])).toFixed(1)}`).join("");
     const area = `${line}L${X(best[best.length - 1][0]).toFixed(1)},${Y(0)}L${X(best[0][0]).toFixed(1)},${Y(0)}Z`;
     parts.push(`<defs><linearGradient id="pbg" x1="0" y1="0" x2="0" y2="1">
@@ -1441,62 +1582,194 @@ class PredbatCard extends HTMLElement {
         <stop offset="1" stop-color="var(--pb-accent)" stop-opacity="0"/></linearGradient></defs>`);
     parts.push(`<path d="${area}" fill="url(#pbg)" class="l-area"/>`);
     parts.push(`<path d="${line}" fill="none" stroke="var(--pb-accent)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" class="l-best"/>`);
-    // min marker
     let minP = best[0];
     for (const p of best) if (p[1] < minP[1]) minP = p;
     parts.push(`<circle cx="${X(minP[0]).toFixed(1)}" cy="${Y(toPct(minP[1])).toFixed(1)}" r="3" fill="var(--card-background-color,#fff)" stroke="var(--pb-accent)" stroke-width="1.6"/>`);
-    // now marker
     parts.push(`<circle cx="${X(best[0][0]).toFixed(1)}" cy="${Y(toPct(best[0][1])).toFixed(1)}" r="4" fill="var(--pb-accent)"/>`);
-    // hover guide
-    parts.push(`<line class="guide" x1="0" x2="0" y1="${padT}" y2="${padT + ih}" stroke="var(--primary-text-color)" stroke-width="1" opacity="0"/>`);
-    parts.push(`<circle class="gdot" r="4" fill="var(--pb-accent)" stroke="var(--card-background-color,#fff)" stroke-width="2" opacity="0"/>`);
-    parts.push(`<rect class="hit" x="${padL}" y="${padT}" width="${iw}" height="${ih}" fill="transparent"/>`);
+    parts.push(this._hoverParts(f));
 
-    host.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${parts.join("")}</svg>`;
-    this._chartData = { best, base, rates, rows, X, Y, toPct, padL, iw, now, horizon, maxK, cur };
-    this._wireChart();
+    const legend = [
+      `<span><i class="line" style="--c:var(--pb-accent)"></i>${esc(t("best"))}</span>`,
+      base.length ? `<span><i class="dash" style="--c:var(--pb-muted)"></i>${esc(t("base"))}</span>` : "",
+      rates.length ? `<span><i class="line" style="--c:var(--pb-rate)"></i>${esc(t("rate"))}</span>` : "",
+      `<span><i style="--c:color-mix(in srgb, var(--pb-charge) 45%, transparent)"></i>${esc(t("st_charge"))}</span>`,
+      `<span><i style="--c:color-mix(in srgb, var(--pb-export) 45%, transparent)"></i>${esc(t("st_export"))}</span>`,
+    ].join("");
+
+    const hover = {
+      f,
+      pick: (tm) => {
+        const b = nearest(best, tm);
+        if (!b) return null;
+        const bs = nearest(base, b[0]);
+        const rate = stepAt(rates, b[0]);
+        const lines = [
+          this._tipHead(b[0]),
+          `<div class="row"><span>${esc(t("best"))}</span><b>${Math.round(toPct(b[1]))}% · ${b[1].toFixed(1)} kWh</b></div>`,
+        ];
+        if (bs) lines.push(`<div class="row muted"><span>${esc(t("base"))}</span><span>${Math.round(toPct(bs[1]))}%</span></div>`);
+        if (rate !== null) lines.push(`<div class="row"><span>${esc(t("import"))}</span><span>${esc(this._rate(rate, cur))}</span></div>`);
+        lines.push(this._tipState(this._rowAt(b[0])));
+        return { x: X(b[0]), y: Y(toPct(b[1])), html: lines.join(""), color: "var(--pb-accent)" };
+      },
+    };
+    return { H, svg: parts.join(""), legend, hover };
   }
 
-  _wireChart() {
-    const chart = this.shadowRoot.querySelector(".chart");
-    const svg = chart && chart.querySelector("svg");
-    if (!svg || !this._chartData) return;
+  /* Grid import / export energy per slot */
+  _chartGrid(W) {
+    const t = this.t;
+    const { now, horizon, rows, cur } = this._ctx;
+    const exp = seriesFrom(this._st("export_energy")?.attributes?.results);
+    const imp = seriesFrom(this._st("import_energy")?.attributes?.results);
+    if (!exp.length && !imp.length) return { empty: t("no_forecast", { e: this._eid("export_energy") }) };
+    const H = Math.round(170 + (this._scale() - 1) * 40);
+    const f = this._frame(W, H, { padL: 40, padR: 10 });
+    const { X, padL, padT, iw, ih } = f;
+
+    // slots: plan slots if present, otherwise 30-minute steps
+    let slots = rows.map((r) => [Math.max(r.t, now), Math.min(r.end, horizon), r]).filter((s) => s[1] > s[0]);
+    if (!slots.length) {
+      const step = 30 * 60e3;
+      for (let s = Math.floor(now / step) * step; s < horizon; s += step) slots.push([Math.max(s, now), Math.min(s + step, horizon), null]);
+    }
+    const at = (ser, tm) => {
+      if (!ser.length) return 0;
+      if (tm <= ser[0][0]) return ser[0][1];
+      return stepAt(ser, tm) ?? 0;
+    };
+    const data = slots.map(([s, e, r]) => ({
+      s, e, r,
+      exp: Math.max(0, at(exp, e) - at(exp, s)),
+      imp: Math.max(0, at(imp, e) - at(imp, s)),
+    }));
+    const maxV = Math.max(0.1, ...data.map((d) => Math.max(d.exp, d.imp))) * 1.1;
+    const mid = padT + ih / 2;
+    const k = (ih / 2) / maxV;
+    const parts = [];
+    parts.push(`<line class="grid" x1="${padL}" x2="${padL + iw}" y1="${padT}" y2="${padT}"/>`);
+    parts.push(`<line class="grid" x1="${padL}" x2="${padL + iw}" y1="${padT + ih}" y2="${padT + ih}"/>`);
+    this._xAxis(f, parts);
+    const lab = (v) => (v >= 10 ? v.toFixed(0) : v.toFixed(1));
+    parts.push(`<text class="axis" x="${padL - 6}" y="${padT + 10}" text-anchor="end" style="fill:var(--pb-export)">↑${lab(maxV / 1.1)}</text>`);
+    parts.push(`<text class="axis" x="${padL - 6}" y="${(mid + 4).toFixed(1)}" text-anchor="end">kWh</text>`);
+    parts.push(`<text class="axis" x="${padL - 6}" y="${padT + ih - 2}" text-anchor="end" style="fill:var(--pb-import)">↓${lab(maxV / 1.1)}</text>`);
+    let te = 0, ti = 0;
+    for (const d of data) {
+      te += d.exp; ti += d.imp;
+      const x1 = X(d.s) + 0.5, x2 = X(d.e) - 0.5;
+      const w = Math.max(1, x2 - x1);
+      if (d.exp > 0.005) parts.push(`<rect class="bar-exp" x="${x1.toFixed(1)}" y="${(mid - d.exp * k).toFixed(1)}" width="${w.toFixed(1)}" height="${(d.exp * k).toFixed(1)}" rx="1.5" fill="var(--pb-export)"/>`);
+      if (d.imp > 0.005) parts.push(`<rect class="bar-imp" x="${x1.toFixed(1)}" y="${mid.toFixed(1)}" width="${w.toFixed(1)}" height="${(d.imp * k).toFixed(1)}" rx="1.5" fill="var(--pb-import)"/>`);
+    }
+    parts.push(`<line x1="${padL}" x2="${padL + iw}" y1="${mid.toFixed(1)}" y2="${mid.toFixed(1)}" stroke="var(--pb-muted)" stroke-width="1" opacity=".6"/>`);
+    parts.push(this._hoverParts(f));
+    const legend = [
+      `<span><i style="--c:var(--pb-export)"></i>${esc(t("export"))} <b>${te.toFixed(1)} kWh</b></span>`,
+      `<span><i style="--c:var(--pb-import)"></i>${esc(t("import"))} <b>${ti.toFixed(1)} kWh</b></span>`,
+    ].join("");
+    const hover = {
+      f,
+      pick: (tm) => {
+        const d = data.find((x) => x.s <= tm && x.e > tm) || data[data.length - 1];
+        if (!d) return null;
+        const lines = [
+          `<div><b>${esc(this._dayWord(d.s))} ${esc(this._hm(d.s))}–${esc(this._hm(d.e))}</b></div>`,
+          `<div class="row"><span>${esc(t("export"))}</span><b>${d.exp.toFixed(2)} kWh</b></div>`,
+          `<div class="row"><span>${esc(t("import"))}</span><b>${d.imp.toFixed(2)} kWh</b></div>`,
+        ];
+        if (d.r) {
+          lines.push(`<div class="row muted"><span>${esc(t("rate"))}</span><span>${esc(this._rate(d.r.imp, cur))}</span></div>`);
+          lines.push(`<div class="row muted"><span>${esc(t("export_rate"))}</span><span>${esc(this._rate(d.r.exp, cur))}</span></div>`);
+          lines.push(this._tipState(d.r));
+        }
+        return { x: (X(d.s) + X(d.e)) / 2, y: null, html: lines.join("") };
+      },
+    };
+    return { H, svg: parts.join(""), legend, hover };
+  }
+
+  /* Import / export rates */
+  _chartRates(W) {
+    const t = this.t;
+    const { cur } = this._ctx;
+    const imp = this._windowSeries(seriesFrom(this._st("rates")?.attributes?.results));
+    const exp = this._windowSeries(seriesFrom(this._st("rates_export")?.attributes?.results));
+    if (!imp.length && !exp.length) return { empty: t("no_forecast", { e: this._eid("rates") }) };
+    const H = Math.round(170 + (this._scale() - 1) * 40);
+    const f = this._frame(W, H, { padL: 40, padR: 10 });
+    const { padL, padT, iw, ih } = f;
+    const all = [...imp, ...exp].map((p) => p[1]);
+    const rMin = Math.min(0, ...all);
+    const rMax = Math.max(1, ...all) * 1.12;
+    const Y = (r) => padT + (1 - (r - rMin) / (rMax - rMin)) * ih;
+    const parts = [];
+    this._planBands(f, parts, 0.1);
+    const ticks = 4;
+    for (let i = 0; i <= ticks; i++) {
+      const v = rMin + ((rMax / 1.12 - rMin) * i) / ticks;
+      parts.push(`<line class="grid" x1="${padL}" x2="${padL + iw}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" ${i === 0 ? "" : 'stroke-dasharray="2 4"'}/>`);
+      parts.push(`<text class="axis" x="${padL - 6}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${esc(Math.round(v) + cur.minor)}</text>`);
+    }
+    if (rMin < 0) parts.push(`<line x1="${padL}" x2="${padL + iw}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}" stroke="var(--pb-muted)" stroke-width="1"/>`);
+    this._xAxis(f, parts);
+    if (imp.length) {
+      const d = this._stepPath(f, imp, Y);
+      parts.push(`<path d="${d}V${Y(rMin).toFixed(1)}H${f.X(Math.max(imp[0][0], f.now)).toFixed(1)}Z" fill="var(--pb-rate)" opacity=".1"/>`);
+      parts.push(`<path d="${d}" fill="none" stroke="var(--pb-rate)" stroke-width="2" class="l-rate"/>`);
+    }
+    if (exp.length) parts.push(`<path d="${this._stepPath(f, exp, Y)}" fill="none" stroke="var(--pb-export)" stroke-width="2" class="l-exp"/>`);
+    parts.push(this._hoverParts(f, "var(--pb-rate)"));
+    const legend = [
+      imp.length ? `<span><i class="line" style="--c:var(--pb-rate)"></i>${esc(t("rate"))}</span>` : "",
+      exp.length ? `<span><i class="line" style="--c:var(--pb-export)"></i>${esc(t("export_rate"))}</span>` : "",
+      `<span><i style="--c:color-mix(in srgb, var(--pb-charge) 45%, transparent)"></i>${esc(t("st_charge"))}</span>`,
+      `<span><i style="--c:color-mix(in srgb, var(--pb-export) 45%, transparent)"></i>${esc(t("st_export"))}</span>`,
+    ].join("");
+    const hover = {
+      f,
+      pick: (tm) => {
+        const ri = stepAt(imp, tm), re = stepAt(exp, tm);
+        const lines = [this._tipHead(tm)];
+        if (ri !== null) lines.push(`<div class="row"><span>${esc(t("rate"))}</span><b>${esc(this._rate(ri, cur))}</b></div>`);
+        if (re !== null) lines.push(`<div class="row"><span>${esc(t("export_rate"))}</span><b>${esc(this._rate(re, cur))}</b></div>`);
+        lines.push(this._tipState(this._rowAt(tm)));
+        return { x: f.X(tm), y: ri !== null ? Y(ri) : null, html: lines.join(""), color: "var(--pb-rate)" };
+      },
+    };
+    return { H, svg: parts.join(""), legend, hover };
+  }
+
+  _wireHover(chart, h) {
+    const svg = chart.querySelector("svg");
+    if (!svg || !h) return;
     const tip = chart.querySelector(".tip");
     const guide = svg.querySelector(".guide");
     const gdot = svg.querySelector(".gdot");
-    const t = this.t;
-    const move = (ev) => {
-      const d = this._chartData;
-      const rect = svg.getBoundingClientRect();
-      const x = ev.clientX - rect.left;
-      if (x < d.padL || x > d.padL + d.iw) { hide(); return; }
-      const tm = d.now + ((x - d.padL) / d.iw) * (d.horizon - d.now);
-      const b = nearest(d.best, tm);
-      if (!b) return;
-      const bx = d.X(b[0]), by = d.Y(d.toPct(b[1]));
-      guide.setAttribute("x1", bx); guide.setAttribute("x2", bx); guide.setAttribute("opacity", ".25");
-      gdot.setAttribute("cx", bx); gdot.setAttribute("cy", by); gdot.setAttribute("opacity", "1");
-      const base = nearest(d.base, b[0]);
-      const rate = stepAt(d.rates, b[0]);
-      const row = d.rows.find((r) => r.t <= b[0] && r.end > b[0]);
-      const lines = [
-        `<div><b>${esc(this._dayWord(b[0]))} ${esc(this._hm(b[0]))}</b></div>`,
-        `<div class="row"><span>${esc(t("best"))}</span><b>${Math.round(d.toPct(b[1]))}% · ${b[1].toFixed(1)} kWh</b></div>`,
-      ];
-      if (base) lines.push(`<div class="row muted"><span>${esc(t("base"))}</span><span>${Math.round(d.toPct(base[1]))}%</span></div>`);
-      if (rate !== null) lines.push(`<div class="row"><span>${esc(t("import"))}</span><span>${esc(this._rate(rate, d.cur))}</span></div>`);
-      if (row) lines.push(`<div class="row"><span class="tag"><i style="--c:var(--pb-${row.cat === "demand" ? "neutral" : row.cat})"></i>${esc(t("st_" + row.cat))}</span><span>${row.target !== null && row.cat !== "demand" ? Math.round(row.target) + "%" : ""}</span></div>`);
-      tip.innerHTML = lines.join("");
-      tip.style.display = "block";
-      const tw = tip.offsetWidth;
-      let left = bx + 12;
-      if (left + tw > rect.width) left = bx - tw - 12;
-      tip.style.left = Math.max(0, left) + "px";
-    };
+    const f = h.f;
     const hide = () => {
       tip.style.display = "none";
       guide.setAttribute("opacity", "0");
       gdot.setAttribute("opacity", "0");
+    };
+    const move = (ev) => {
+      const rect = svg.getBoundingClientRect();
+      const x = ev.clientX - rect.left;
+      if (x < f.padL || x > f.padL + f.iw) { hide(); return; }
+      const tm = f.now + ((x - f.padL) / f.iw) * (f.horizon - f.now);
+      const r = h.pick(tm);
+      if (!r) { hide(); return; }
+      guide.setAttribute("x1", r.x); guide.setAttribute("x2", r.x); guide.setAttribute("opacity", ".25");
+      if (r.y !== null && r.y !== undefined) {
+        gdot.setAttribute("cx", r.x); gdot.setAttribute("cy", r.y); gdot.setAttribute("opacity", "1");
+        if (r.color) gdot.setAttribute("fill", r.color);
+      } else gdot.setAttribute("opacity", "0");
+      tip.innerHTML = r.html;
+      tip.style.display = "block";
+      const tw = tip.offsetWidth;
+      let left = r.x + 12;
+      if (left + tw > rect.width) left = r.x - tw - 12;
+      tip.style.left = Math.max(0, left) + "px";
     };
     svg.addEventListener("pointermove", move);
     svg.addEventListener("pointerdown", move);
@@ -1645,6 +1918,13 @@ class PredbatCard extends HTMLElement {
     root.querySelectorAll("[data-more]").forEach((el) => {
       el.addEventListener("click", (e) => { e.stopPropagation(); this._moreInfo(el.getAttribute("data-more")); });
     });
+    root.querySelectorAll("[data-tab]").forEach((el) => {
+      el.addEventListener("click", () => {
+        this._tab = el.getAttribute("data-tab");
+        try { localStorage.setItem("predbat-card-tab", this._tab); } catch (e) { /* ignore */ }
+        this._render();
+      });
+    });
     const tg = root.querySelector('[data-action="toggle-table"]');
     if (tg) tg.addEventListener("click", () => { this._showTable = !this._showTable; this._render(); });
   }
@@ -1735,8 +2015,9 @@ class PredbatCardEditor extends HTMLElement {
       },
       {
         type: "grid", name: "", schema: [
-          bool("show_header"), bool("show_overview"), bool("show_chart"), bool("show_timeline"),
-          bool("show_actions"), bool("show_table"), bool("show_base"), bool("show_rates"),
+          bool("show_header"), bool("show_overview"), bool("show_chart"), bool("show_grid_chart"),
+          bool("show_rates_chart"), bool("show_timeline"), bool("show_actions"), bool("show_table"),
+          bool("show_base"), bool("show_rates"),
         ],
       },
       {
@@ -1745,6 +2026,16 @@ class PredbatCardEditor extends HTMLElement {
           { name: "max_actions", selector: { number: { min: 1, max: 12, step: 1, mode: "box" } } },
         ],
       },
+      {
+        name: "chart_layout",
+        selector: {
+          select: {
+            mode: "dropdown",
+            options: ["tabs", "stacked"].map((v) => ({ value: v, label: t("layout_" + v) })),
+          },
+        },
+      },
+      { name: "font_scale", selector: { number: { min: 0.8, max: 1.6, step: 0.05, mode: "slider" } } },
       { name: "battery_capacity", selector: { number: { min: 0, max: 200, step: 0.1, mode: "box", unit_of_measurement: "kWh" } } },
       {
         type: "expandable", name: "entities", title: t("ed_entities"), icon: "mdi:bat",
@@ -1756,7 +2047,7 @@ class PredbatCardEditor extends HTMLElement {
   _label(t) {
     const map = {
       style: "ed_style", theme_mode: "ed_theme_mode", title: "ed_title", prefix: "ed_prefix", language: "ed_language",
-      show_header: "ed_show_header", show_overview: "ed_show_overview", show_chart: "ed_show_chart",
+      show_header: "ed_show_header", show_overview: "ed_show_overview", show_chart: "ed_show_chart", show_grid_chart: "ed_show_grid_chart", show_rates_chart: "ed_show_rates_chart", chart_layout: "ed_chart_layout", font_scale: "ed_font_scale",
       show_timeline: "ed_show_timeline", show_actions: "ed_show_actions", show_table: "ed_show_table",
       show_base: "ed_show_base", show_rates: "ed_show_rates", hours: "ed_hours", max_actions: "ed_max_actions",
       battery_capacity: "ed_capacity",
@@ -1764,7 +2055,7 @@ class PredbatCardEditor extends HTMLElement {
       soc_base: "e_soc_base", inverter_config: "e_inverter_config", hours_left: "e_hours_left", rates: "e_rates",
       rates_export: "e_rates_export", cost_today: "e_cost_today", best_metric: "e_best_metric", base_metric: "e_base_metric", savings: "e_savings",
       charge_start: "e_charge_start", charge_end: "e_charge_end", charge_limit: "e_charge_limit",
-      export_start: "e_export_start", export_end: "e_export_end", export_limit: "e_export_limit",
+      export_start: "e_export_start", export_end: "e_export_end", export_limit: "e_export_limit", export_energy: "e_export_energy", import_energy: "e_import_energy",
     };
     return (s) => t(map[s.name] || s.name);
   }
