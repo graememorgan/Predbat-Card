@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.2.2";
+const CARD_VERSION = "0.3.0";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -95,6 +95,9 @@ const TRANSLATIONS = {
     ed_font_scale: "Text size",
     e_export_energy: "Predicted export energy",
     e_import_energy: "Predicted import energy",
+    missing_n: "{n} Predbat entities not found",
+    missing_hint: "Open the card editor to check the entity names or change the prefix.",
+    no_raw: "{e} has no plan data (the “raw” attribute). Update Predbat to a newer version to see the plan.",
     ed_title: "Title",
     ed_prefix: "Predbat prefix",
     ed_language: "Language",
@@ -218,6 +221,9 @@ const TRANSLATIONS = {
     ed_font_scale: "Rozmiar tekstu",
     e_export_energy: "Prognoza oddanej energii",
     e_import_energy: "Prognoza pobranej energii",
+    missing_n: "Nie znaleziono {n} encji Predbat",
+    missing_hint: "Otwórz edytor karty, aby sprawdzić nazwy encji lub zmienić prefiks.",
+    no_raw: "{e} nie zawiera danych planu (atrybut „raw”). Zaktualizuj Predbat, aby zobaczyć plan.",
     ed_title: "Tytuł",
     ed_prefix: "Prefiks Predbat",
     ed_language: "Język",
@@ -341,6 +347,9 @@ const TRANSLATIONS = {
     ed_font_scale: "Tamaño del texto",
     e_export_energy: "Energía exportada prevista",
     e_import_energy: "Energía importada prevista",
+    missing_n: "No se encontraron {n} entidades de Predbat",
+    missing_hint: "Abre el editor de la tarjeta para revisar los nombres o cambiar el prefijo.",
+    no_raw: "{e} no tiene datos del plan (atributo «raw»). Actualiza Predbat para ver el plan.",
     ed_title: "Título",
     ed_prefix: "Prefijo de Predbat",
     ed_language: "Idioma",
@@ -527,6 +536,13 @@ function stepAt(series, t) {
   return v;
 }
 
+/** Hours between axis labels so they never collide: at least `minPx` apart. */
+function tickStep(hours, widthPx, minPx) {
+  const pxPerHour = widthPx / Math.max(1, hours);
+  for (const st of [1, 2, 3, 4, 6, 8, 12, 24]) if (st * pxPerHour >= minPx) return st;
+  return 24;
+}
+
 function categorise(state) {
   switch (state) {
     case "Chrg": return "charge";
@@ -563,6 +579,28 @@ const STATE_ICON = {
   error: "mdi:alert-circle",
   neutral: "mdi:information-outline",
 };
+
+/** Accept YAML typed by hand: "false"/"true" strings, numbers as strings,
+ *  a missing or list-shaped `entities:`. Never throws. */
+function normaliseConfig(config) {
+  const src = config && typeof config === "object" ? config : {};
+  const out = { ...DEFAULT_CONFIG };
+  for (const [k, v] of Object.entries(src)) {
+    if (k === "entities") continue;
+    if (v === null || v === undefined) continue;
+    const def = DEFAULT_CONFIG[k];
+    if (typeof def === "boolean" && typeof v === "string") out[k] = !/^(false|off|no|0)$/i.test(v.trim());
+    else if (typeof def === "number" && typeof v === "string") { const n = parseFloat(v); out[k] = isFinite(n) ? n : def; }
+    else out[k] = v;
+  }
+  const ents = src.entities;
+  out.entities = {};
+  if (ents && typeof ents === "object" && !Array.isArray(ents)) {
+    for (const [k, v] of Object.entries(ents)) if (typeof v === "string" && v.trim()) out.entities[k] = v.trim();
+  }
+  if (typeof out.prefix !== "string" || !out.prefix.trim()) out.prefix = "predbat";
+  return out;
+}
 
 /* ------------------------------------------------------------------ */
 /*  Styles                                                             */
@@ -615,8 +653,8 @@ ha-card.s-glass {
 .s-glass .logo { border-radius: 50%; background: linear-gradient(135deg, #b197fc, #7950f2 50%, #12b886); }
 .s-glass .ribbon { height: 18px; border-radius: 999px; padding: 2px; gap: 2px; }
 .s-glass .ribbon > div { border-radius: 999px; box-shadow: none !important; }
-.s-glass .pill { backdrop-filter: blur(10px); }
-.s-glass th { background: var(--pb-glass); backdrop-filter: blur(14px); }
+.s-glass .pill { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.s-glass th { background: var(--pb-glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 
 /* ===================== STYLE: NEON ===================== */
 ha-card.s-neon {
@@ -900,6 +938,9 @@ ha-card {
 .tile-label { font-size: calc(.78 * var(--u)); text-transform: uppercase; letter-spacing: .05em; color: var(--pb-muted); display: flex; align-items: center; gap: 5px; }
 .tile-label ha-icon { --mdc-icon-size: 14px; }
 .tile-value { font-size: calc(1.38 * var(--u)); font-weight: 650; line-height: 1.25; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile-value.tv-md { font-size: calc(1.1 * var(--u)); }
+.tile-value.tv-sm { font-size: calc(1.06 * var(--u)); }
+.tile-value.tv-lg { font-size: calc(1.14 * var(--u)); }
 .tile-value small { font-size: calc(.8 * var(--u)); font-weight: 500; color: var(--pb-muted); margin-left: 2px; }
 .tile-sub { font-size: calc(.84 * var(--u)); color: var(--pb-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
 .tile .accent-bar { position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 3px; background: var(--c, transparent); }
@@ -916,6 +957,45 @@ ha-card {
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; background: var(--c); }
 .legend i.line { height: 3px; vertical-align: 2px; border-radius: 2px; }
 .legend i.dash { height: 0; border-top: 2px dashed var(--c); background: none; vertical-align: 3px; }
+
+/* sections are layout-transparent so empty ones add no gap */
+.pb-sec { display: contents; }
+.pb-sec:empty { display: none; }
+.missing summary { cursor: pointer; }
+.missing code { font-size: .9em; padding: 1px 5px; border-radius: 4px; background: var(--pb-tile); word-break: break-all; }
+
+/* phones */
+@container (max-width: 420px) {
+  .wrap { padding: 12px 12px 14px; gap: 12px; }
+  .overview { gap: 6px; }
+  .tile { padding: 8px 10px; }
+  .tile-value { font-size: calc(1.2 * var(--u)); }
+  .tile-value.tv-md, .tile-value.tv-lg, .tile-value.tv-sm { font-size: calc(1.02 * var(--u)); }
+  .ring { width: calc(44px * var(--pb-scale, 1)); height: calc(44px * var(--pb-scale, 1)); }
+  .head { gap: 8px; }
+  .logo { width: calc(32px * var(--pb-scale, 1)); height: calc(32px * var(--pb-scale, 1)); }
+  .pill { max-width: 46%; padding: 4px 9px 4px 8px; }
+  .action { padding: 7px 8px; gap: 8px; }
+  .action .ico { width: 26px; height: 26px; }
+  .tabs button { padding: 4px 9px; }
+  .legend { gap: 3px 10px; }
+}
+@container (max-width: 360px) {
+  .tile-label { letter-spacing: .02em; }
+  .head-sub { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+}
+
+/* older browsers (iOS < 16.2, old Android WebView) without color-mix() */
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  ha-card {
+    --pb-tile: rgba(127, 127, 127, .09);
+    --pb-line: rgba(127, 127, 127, .22);
+    --pb-demand: rgba(127, 127, 127, .32);
+  }
+  .pill { background: rgba(127, 127, 127, .14); border-color: rgba(127, 127, 127, .3); }
+  .action .ico { background: rgba(127, 127, 127, .14); }
+  .banner { background: rgba(250, 82, 82, .14); }
+}
 
 /* tabs */
 .tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--pb-tile); border: 1px solid var(--pb-line); }
@@ -1014,17 +1094,39 @@ class PredbatCard extends HTMLElement {
   static getStubConfig() { return { type: `custom:${CARD_TAG}` }; }
 
   setConfig(config) {
-    if (!config) throw new Error("Invalid configuration");
-    this._config = { ...DEFAULT_CONFIG, ...config, entities: { ...(config.entities || {}) } };
+    this._config = normaliseConfig(config);
     this._sig = "";
-    if (this._hass) this._render();
+    this._shell = "";
+    if (this._hass) this._safeRender();
   }
 
   set hass(hass) {
     this._hass = hass;
     if (!this._config) return;
-    const sig = this._signature();
-    if (sig !== this._sig) { this._sig = sig; this._render(); }
+    let sig = "";
+    try { sig = this._signature(); } catch (e) { sig = String(Math.random()); }
+    if (sig !== this._sig) { this._sig = sig; this._safeRender(); }
+  }
+
+  _safeRender() {
+    try {
+      this._render();
+    } catch (err) {
+      this._renderError(err);
+    }
+  }
+
+  _renderError(err) {
+    // Never let an exception escape into Home Assistant: show it inside the card instead.
+    console.error("Predbat Card error", err);
+    this._shell = "";
+    const msg = esc((err && err.message) || String(err));
+    const stack = esc(((err && err.stack) || "").split("\n").slice(0, 6).join("\n"));
+    this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card><div class="wrap">
+      <div class="banner"><ha-icon icon="mdi:alert-circle"></ha-icon><span>Predbat Card v${CARD_VERSION}: ${msg}</span></div>
+      <details class="warn"><summary>Details for a bug report</summary><pre style="white-space:pre-wrap;font-size:11px;margin:6px 0 0">${stack}
+${esc(navigator.userAgent)}</pre></details>
+      </div></ha-card>`;
   }
 
   getCardSize() { return 9; }
@@ -1035,10 +1137,22 @@ class PredbatCard extends HTMLElement {
       this._ro = new ResizeObserver(() => {
         const el = this.shadowRoot.querySelector(".chart");
         const w = el ? Math.round(el.clientWidth) : 0;
-        if (w && Math.abs(w - this._chartWidth) > 2) { this._chartWidth = w; this._drawCharts(); }
+        if (w && Math.abs(w - this._chartWidth) > 2) {
+          this._chartWidth = w;
+          // run outside the observer callback to avoid "ResizeObserver loop" warnings
+          requestAnimationFrame(() => { try { this._drawCharts(true); } catch (e) { this._renderError(e); } });
+        }
+        // the timeline tick spacing depends on the card width too
+        const hw = Math.round(this.clientWidth || 0);
+        if (hw && Math.abs(hw - (this._hostW || 0)) > 24) {
+          const first = !this._hostW;
+          this._hostW = hw;
+          if (!first || this._secHtml?.timeline) requestAnimationFrame(() => this._safeRender());
+        }
       });
     }
     this._observe();
+    clearInterval(this._tick);
     this._tick = setInterval(() => { this._sig = ""; if (this._hass) this.hass = this._hass; }, 60000);
   }
 
@@ -1194,32 +1308,77 @@ class PredbatCard extends HTMLElement {
     const plan = this._plan();
     const cur = this._currency(plan.raw);
     const socMax = this._socMax(plan.raw);
-    const now = Date.now();
+    // whole minutes, so unchanged sections produce identical markup and are not redrawn
+    const now = Math.floor(Date.now() / 60000) * 60000;
     const horizon = now + Math.max(1, num(c.hours) || 24) * 3600e3;
     const rows = plan.rows.filter((r) => r.end > now && r.t < horizon);
     this._ctx = { plan, cur, socMax, now, horizon, rows };
 
     const status = this._st("status");
-    const parts = [];
-
-    if (c.show_header !== false) parts.push(this._renderHeader(status));
+    let alerts = "";
     if (status && (status.attributes?.error === true || /error/i.test(status.state))) {
-      parts.push(`<div class="banner"><ha-icon icon="mdi:alert-circle"></ha-icon><span>${esc(t("error"))}${status.state ? ": " + esc(status.state) : ""}</span></div>`);
+      alerts += `<div class="banner"><ha-icon icon="mdi:alert-circle"></ha-icon><span>${esc(t("error"))}${status.state ? ": " + esc(status.state) : ""}</span></div>`;
     }
-    if (!status && !plan.raw) {
-      parts.push(`<div class="warn">${esc(t("missing", { e: this._eid("status") }))}</div>`);
-    }
-    if (c.show_overview !== false) parts.push(this._renderOverview());
-    parts.push(this._renderCharts());
-    if (c.show_timeline !== false) parts.push(this._renderTimeline());
-    if (c.show_actions !== false) parts.push(this._renderActions());
-    if (c.show_table !== false && rows.length) parts.push(this._renderTable());
+    alerts += this._renderMissing(plan);
 
-    this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card class="s-${esc(this._style())} m-${esc(this._mode())}" style="--pb-scale:${this._scale()}"><div class="cq"><div class="wrap">${parts.join("")}</div></div></ha-card>`;
-    this._wire();
-    this._observe();
+    const sections = [
+      ["header", c.show_header !== false ? this._renderHeader(status) : ""],
+      ["alerts", alerts],
+      ["overview", c.show_overview !== false ? this._renderOverview() : ""],
+      ["charts", this._renderCharts()],
+      ["timeline", c.show_timeline !== false ? this._renderTimeline() : ""],
+      ["actions", c.show_actions !== false ? this._renderActions() : ""],
+      ["table", c.show_table !== false && rows.length ? this._renderTable() : ""],
+    ];
+
+    // Rebuild the whole card only when its frame changes (style, mode, text size).
+    const shell = `${this._style()}|${this._mode()}|${this._scale()}`;
+    if (shell !== this._shell || !this.shadowRoot.querySelector(".wrap")) {
+      this._shell = shell;
+      this._secHtml = {};
+      this._chartSig = "";
+      this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card class="s-${esc(this._style())} m-${esc(this._mode())}" style="--pb-scale:${this._scale()}"><div class="cq"><div class="wrap">${
+        sections.map(([k]) => `<div class="pb-sec" data-sec="${k}"></div>`).join("")}</div></div></ha-card>`;
+    }
+    // Then only touch the sections whose content actually changed.
+    let chartsChanged = false;
+    for (const [k, html] of sections) {
+      if (this._secHtml[k] === html) continue;
+      this._secHtml[k] = html;
+      const el = this.shadowRoot.querySelector(`.pb-sec[data-sec="${k}"]`);
+      if (!el) continue;
+      el.innerHTML = html;
+      this._wire(el);
+      if (k === "charts") chartsChanged = true;
+    }
+    if (chartsChanged) this._observe();
     const ch = this.shadowRoot.querySelector(".chart");
-    if (ch) { this._chartWidth = Math.round(ch.clientWidth) || this._chartWidth || 600; this._drawCharts(); }
+    if (ch) { this._chartWidth = Math.round(ch.clientWidth) || this._chartWidth || 600; this._drawCharts(chartsChanged); }
+  }
+
+  /** One short notice listing Predbat entities that the enabled sections need but can't find. */
+  _renderMissing(plan) {
+    const c = this._config;
+    const need = new Set();
+    if (c.show_header !== false) need.add("status");
+    if (c.show_overview !== false) ["soc_now", "cost_today"].forEach((k) => need.add(k));
+    if (c.show_timeline !== false || c.show_actions !== false || c.show_table !== false) need.add("plan");
+    if (c.show_chart !== false) need.add("soc_best");
+    if (c.show_grid_chart !== false) ["export_energy", "import_energy"].forEach((k) => need.add(k));
+    if (c.show_rates_chart !== false) need.add("rates");
+    const missing = [...need].filter((k) => !this._st(k)).map((k) => this._eid(k));
+    const t = this.t;
+    let html = "";
+    if (missing.length) {
+      html += `<details class="warn missing"><summary>${esc(t("missing_n", { n: missing.length }))}</summary>
+        <div class="muted" style="margin-top:4px">${missing.map((m) => `<code>${esc(m)}</code>`).join(" ")}</div>
+        <div class="muted" style="margin-top:4px">${esc(t("missing_hint"))}</div></details>`;
+    }
+    const planSt = this._st("plan");
+    if (planSt && !plan.raw && need.has("plan")) {
+      html += `<div class="warn">${esc(t("no_raw", { e: this._eid("plan") }))}</div>`;
+    }
+    return html;
   }
 
   _renderHeader(status) {
@@ -1232,7 +1391,7 @@ class PredbatCard extends HTMLElement {
     const updated = status ? parseTime(status.attributes?.last_updated) || new Date(status.last_updated) : null;
     const ver = status?.attributes?.version;
     const subBits = [];
-    if (mode && !BAD.test(mode.state)) subBits.push(`<span class="clickable" data-more="${esc(this._eid("mode"))}">${esc(mode.state)}</span>`);
+    if (mode && !BAD.test(mode.state)) subBits.push(`<span>${esc(mode.state)}</span>`);
     if (updated) subBits.push(esc(t("updated", { v: this._ago(updated) })));
     if (ver) subBits.push(esc(ver));
     const live = ["charge", "export", "freeze_charge", "freeze_export"].includes(cat);
@@ -1308,7 +1467,7 @@ class PredbatCard extends HTMLElement {
       <div class="tile" style="--c:var(--pb-${nowCat === "demand" ? "neutral" : nowCat})">
         <span class="accent-bar"></span>
         <div class="tile-label"><ha-icon icon="${STATE_ICON[nowCat]}"></ha-icon>${esc(t("now"))}${r0?.override ? ` · ${esc(t("manual"))}` : ""}</div>
-        <div class="tile-value" style="font-size:calc(1.1 * var(--u))">${esc(nowLabel)}</div>
+        <div class="tile-value tv-md">${esc(nowLabel)}</div>
         <div class="tile-sub">↓ ${esc(this._rate(impNow, cur))} · ↑ ${esc(this._rate(expNow, cur))}</div>
       </div>`;
 
@@ -1351,13 +1510,13 @@ class PredbatCard extends HTMLElement {
       const icon = kind === "charge" ? "mdi:battery-arrow-up" : "mdi:battery-arrow-down";
       if (!w) {
         return `<div class="tile"><div class="tile-label"><ha-icon icon="${icon}"></ha-icon>${esc(label)}</div>
-          <div class="tile-value muted" style="font-size:calc(1.06 * var(--u))">${esc(t("none_planned"))}</div><div class="tile-sub">&nbsp;</div></div>`;
+          <div class="tile-value tv-sm muted">${esc(t("none_planned"))}</div><div class="tile-sub">&nbsp;</div></div>`;
       }
       const active = w.s <= Date.now();
       return `<div class="tile" style="--c:var(--pb-${kind})">
           <span class="accent-bar"></span>
           <div class="tile-label"><ha-icon icon="${icon}"></ha-icon>${esc(label)}</div>
-          <div class="tile-value" style="font-size:calc(1.14 * var(--u))">${esc(this._hm(w.s))}–${esc(this._hm(w.e))}</div>
+          <div class="tile-value tv-lg">${esc(this._hm(w.s))}–${esc(this._hm(w.e))}</div>
           <div class="tile-sub">${esc(active ? t("now") : this._dayWord(w.s))}${w.target !== null ? " · " + esc(t("target", { v: Math.round(w.target) })) : ""}</div>
         </div>`;
     };
@@ -1428,11 +1587,16 @@ class PredbatCard extends HTMLElement {
       </div>`;
   }
 
-  _drawCharts() {
+  _drawCharts(force) {
     if (!this._ctx) return;
+    const keys = ["soc_best", "soc_base", "rates", "rates_export", "export_energy", "import_energy", "plan"];
+    const sig = keys.map((k) => this._st(k)?.last_updated || "-").join("|") +
+      `|${this._chartWidth}|${Math.floor(Date.now() / 60000)}|${this._tab}|${this._scale()}`;
+    if (!force && sig === this._chartSig) return;
+    this._chartSig = sig;
     this.shadowRoot.querySelectorAll(".chart[data-chart]").forEach((el) => {
       const key = el.getAttribute("data-chart");
-      const W = Math.max(260, Math.round(el.clientWidth) || this._chartWidth || 600);
+      const W = Math.max(220, Math.round(el.clientWidth) || this._chartWidth || 600);
       const host = el.querySelector(".svg-host");
       const legendEl = this.shadowRoot.querySelector(`.legend[data-legend="${key}"]`);
       const fn = { battery: this._chartBattery, grid: this._chartGrid, rates: this._chartRates }[key];
@@ -1463,7 +1627,7 @@ class PredbatCard extends HTMLElement {
   _xAxis(f, parts) {
     const { now, horizon, X, padL, padT, iw, ih, H } = f;
     const hours = (horizon - now) / 3600e3;
-    const step = hours <= 12 ? 2 : hours <= 30 ? 4 : 8;
+    const step = tickStep(hours, iw, 46 * f.S);
     const first = new Date(now); first.setMinutes(0, 0, 0); first.setHours(first.getHours() + 1);
     for (let tm = first.getTime(); tm < horizon; tm += 3600e3) {
       const d = new Date(tm);
@@ -1771,9 +1935,18 @@ class PredbatCard extends HTMLElement {
       if (left + tw > rect.width) left = r.x - tw - 12;
       tip.style.left = Math.max(0, left) + "px";
     };
-    svg.addEventListener("pointermove", move);
-    svg.addEventListener("pointerdown", move);
-    svg.addEventListener("pointerleave", hide);
+    // Mouse: follow the pointer, hide on leave.
+    // Touch: a tap or drag shows the tooltip and it stays until tapped again or 5 s pass,
+    // because touch fires pointerleave straight after the finger lifts.
+    let timer = null;
+    const touchShow = (ev) => {
+      move(ev);
+      clearTimeout(timer);
+      timer = setTimeout(hide, 5000);
+    };
+    svg.addEventListener("pointermove", (ev) => (ev.pointerType === "mouse" ? move(ev) : touchShow(ev)));
+    svg.addEventListener("pointerdown", (ev) => (ev.pointerType === "mouse" ? move(ev) : touchShow(ev)));
+    svg.addEventListener("pointerleave", (ev) => { if (ev.pointerType === "mouse") hide(); });
   }
 
   _renderTimeline() {
@@ -1805,14 +1978,16 @@ class PredbatCard extends HTMLElement {
 
     const ticks = [];
     const hours = span / 3600e3;
-    const step = hours <= 12 ? 2 : hours <= 30 ? 4 : 8;
+    const widthPx = Math.max(200, (this.clientWidth || this._chartWidth || 480) - 32);
+    const step = tickStep(hours, widthPx, 52 * this._scale());
+    const minPct = (40 * this._scale() / widthPx) * 100;
     ticks.push(`<span style="left:0">${esc(t("now"))}</span>`);
     const first = new Date(now); first.setMinutes(0, 0, 0); first.setHours(first.getHours() + 1);
     for (let tm = first.getTime(); tm < horizon; tm += 3600e3) {
       const d = new Date(tm);
       if (d.getHours() % step !== 0 && d.getHours() !== 0) continue;
       const pct = ((tm - now) / span) * 100;
-      if (pct < 12 || pct > 94) continue;
+      if (pct < Math.max(8, minPct) || pct > 100 - minPct / 2) continue;
       const label = d.getHours() === 0 ? this._timeFmt({ weekday: "short" }).format(d) : this._h(tm);
       ticks.push(`<span style="left:${pct.toFixed(2)}%">${esc(label)}</span>`);
     }
@@ -1913,8 +2088,8 @@ class PredbatCard extends HTMLElement {
       </div>`;
   }
 
-  _wire() {
-    const root = this.shadowRoot;
+  _wire(scope) {
+    const root = scope || this.shadowRoot;
     root.querySelectorAll("[data-more]").forEach((el) => {
       el.addEventListener("click", (e) => { e.stopPropagation(); this._moreInfo(el.getAttribute("data-more")); });
     });
@@ -1922,11 +2097,11 @@ class PredbatCard extends HTMLElement {
       el.addEventListener("click", () => {
         this._tab = el.getAttribute("data-tab");
         try { localStorage.setItem("predbat-card-tab", this._tab); } catch (e) { /* ignore */ }
-        this._render();
+        this._safeRender();
       });
     });
     const tg = root.querySelector('[data-action="toggle-table"]');
-    if (tg) tg.addEventListener("click", () => { this._showTable = !this._showTable; this._render(); });
+    if (tg) tg.addEventListener("click", () => { this._showTable = !this._showTable; this._safeRender(); });
   }
 }
 
@@ -1942,8 +2117,8 @@ class PredbatCardEditor extends HTMLElement {
   }
 
   setConfig(config) {
-    this._config = { ...config };
-    this._update();
+    this._config = config && typeof config === "object" ? { ...config } : {};
+    try { this._update(); } catch (e) { console.error("Predbat Card editor error", e); }
   }
 
   set hass(hass) {
@@ -1962,6 +2137,10 @@ class PredbatCardEditor extends HTMLElement {
         if (c?.constructor?.getConfigElement) await c.constructor.getConfigElement();
       }
     } catch (e) { /* ignore */ }
+    // On slower devices (phones, wall tablets) ha-form can register a moment later.
+    if (!customElements.get("ha-form")) {
+      await Promise.race([customElements.whenDefined("ha-form"), new Promise((r) => setTimeout(r, 4000))]);
+    }
   }
 
   _t() { return makeT(pickLang(this._hass, this._config)); }
