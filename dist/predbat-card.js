@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.2.0";
+const CARD_VERSION = "0.2.1";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -72,6 +72,15 @@ const TRANSLATIONS = {
     style_minimal: "Minimal",
     style_native: "Home Assistant native",
     style_terminal: "Terminal (retro LCD)",
+    ed_theme_mode: "Light / dark",
+    mode_auto: "Follow Home Assistant theme",
+    mode_light: "Always light",
+    mode_dark: "Always dark",
+    saving_today: "Saving today",
+    predicted: "Predicted",
+    yesterday_v: "yesterday {v}",
+    forecast_today: "Forecast today {v}",
+    e_base_metric: "Baseline plan cost",
     ed_title: "Title",
     ed_prefix: "Predbat prefix",
     ed_language: "Language",
@@ -172,6 +181,15 @@ const TRANSLATIONS = {
     style_minimal: "Minimalistyczny",
     style_native: "Natywny Home Assistant",
     style_terminal: "Terminal (retro LCD)",
+    ed_theme_mode: "Jasny / ciemny",
+    mode_auto: "Zgodnie z motywem Home Assistant",
+    mode_light: "Zawsze jasny",
+    mode_dark: "Zawsze ciemny",
+    saving_today: "Oszczędność dziś",
+    predicted: "Prognoza",
+    yesterday_v: "wczoraj {v}",
+    forecast_today: "Prognoza dziś {v}",
+    e_base_metric: "Koszt planu bazowego",
     ed_title: "Tytuł",
     ed_prefix: "Prefiks Predbat",
     ed_language: "Język",
@@ -272,6 +290,15 @@ const TRANSLATIONS = {
     style_minimal: "Minimalista",
     style_native: "Nativo de Home Assistant",
     style_terminal: "Terminal (LCD retro)",
+    ed_theme_mode: "Claro / oscuro",
+    mode_auto: "Seguir el tema de Home Assistant",
+    mode_light: "Siempre claro",
+    mode_dark: "Siempre oscuro",
+    saving_today: "Ahorro hoy",
+    predicted: "Previsto",
+    yesterday_v: "ayer {v}",
+    forecast_today: "Previsión hoy {v}",
+    e_base_metric: "Coste del plan base",
     ed_title: "Título",
     ed_prefix: "Prefijo de Predbat",
     ed_language: "Idioma",
@@ -336,7 +363,7 @@ function makeT(lang) {
 /* ------------------------------------------------------------------ */
 const ENTITY_KEYS = [
   "status", "plan", "mode", "soc_now", "soc_best", "soc_base", "inverter_config",
-  "hours_left", "rates", "rates_export", "cost_today", "best_metric", "savings",
+  "hours_left", "rates", "rates_export", "cost_today", "best_metric", "base_metric", "savings",
   "charge_start", "charge_end", "charge_limit", "export_start", "export_end", "export_limit",
 ];
 
@@ -355,6 +382,7 @@ function defaultEntities(prefix) {
     rates_export: `${p}.rates_export`,
     cost_today: `${p}.cost_today`,
     best_metric: `${p}.best_metric`,
+    base_metric: `${p}.metric`,
     savings: `${p}.savings_yesterday_predbat`,
     charge_start: `${p}.best_charge_start`,
     charge_end: `${p}.best_charge_end`,
@@ -369,6 +397,7 @@ const STYLE_NAMES = ["modern", "glass", "neon", "minimal", "native", "terminal"]
 
 const DEFAULT_CONFIG = {
   style: "modern",
+  theme_mode: "auto",
   title: "",
   prefix: "predbat",
   language: "auto",
@@ -490,6 +519,30 @@ const STATE_ICON = {
 /*  Styles                                                             */
 /* ------------------------------------------------------------------ */
 const THEME_STYLES = `
+
+/* ===================== LIGHT / DARK OVERRIDE ===================== */
+ha-card.m-light {
+  --card-background-color: #ffffff;
+  --ha-card-background: #ffffff;
+  --primary-text-color: #1c1c1e;
+  --secondary-text-color: #6b6f76;
+  --divider-color: rgba(0, 0, 0, .12);
+  --pb-muted: #6b6f76;
+  background: #ffffff;
+  color: #1c1c1e;
+  color-scheme: light;
+}
+ha-card.m-dark {
+  --card-background-color: #1c1e23;
+  --ha-card-background: #1c1e23;
+  --primary-text-color: #e8eaed;
+  --secondary-text-color: #9aa0a6;
+  --divider-color: rgba(255, 255, 255, .12);
+  --pb-muted: #9aa0a6;
+  background: #1c1e23;
+  color: #e8eaed;
+  color-scheme: dark;
+}
 /* ===================== STYLE: GLASS ===================== */
 ha-card.s-glass {
   --pb-accent: #9775fa;
@@ -544,21 +597,21 @@ ha-card.s-neon {
   box-shadow: 0 0 0 1px rgba(0,229,255,.12), 0 0 30px rgba(121,80,242,.18);
   border-radius: 10px;
 }
-.s-neon .tile, .s-neon .action { border: 1px solid #26244a; }
+.s-neon .tile, .s-neon .action { border: 1px solid var(--pb-line); }
 .s-neon .tile-value, .s-neon .head-title, .s-neon .action .meta b {
   font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: -.02em;
 }
 .s-neon .tile-value { text-shadow: 0 0 12px color-mix(in srgb, var(--pb-accent) 55%, transparent); }
 .s-neon .tile .accent-bar { box-shadow: 0 0 10px var(--c); }
-.s-neon .logo { border-radius: 6px; background: #07070f; border: 1px solid var(--pb-accent); color: var(--pb-accent); box-shadow: 0 0 12px rgba(0,229,255,.5), inset 0 0 8px rgba(0,229,255,.3); }
+.s-neon .logo { border-radius: 6px; background: var(--card-background-color); border: 1px solid var(--pb-accent); color: var(--pb-accent); box-shadow: 0 0 12px rgba(0,229,255,.5), inset 0 0 8px rgba(0,229,255,.3); }
 .s-neon .pill { border-radius: 4px; text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; box-shadow: 0 0 12px color-mix(in srgb, var(--c) 40%, transparent); }
 .s-neon .section-title { color: var(--pb-accent); letter-spacing: .14em; }
 .s-neon .section-title::before { content: "// "; opacity: .6; }
 .s-neon .l-best { filter: drop-shadow(0 0 4px var(--pb-accent)) drop-shadow(0 0 10px var(--pb-accent)); }
 .s-neon .l-rate { filter: drop-shadow(0 0 3px var(--pb-rate)); opacity: .9; }
 .s-neon .l-area { opacity: .55; }
-.s-neon .ribbon { border-radius: 3px; height: 14px; border: 1px solid #26244a; }
+.s-neon .ribbon { border-radius: 3px; height: 14px; border: 1px solid var(--pb-line); }
 .s-neon .ribbon > div:not([style*="demand"]) { box-shadow: 0 0 10px var(--c) !important; }
 .s-neon .action .ico { border-radius: 4px; box-shadow: 0 0 10px color-mix(in srgb, var(--c) 45%, transparent); }
 .s-neon .toggle { border-radius: 4px; border-color: var(--pb-accent); color: var(--pb-accent); text-transform: uppercase; letter-spacing: .08em; font-size: .7rem; }
@@ -664,18 +717,70 @@ ha-card.s-terminal {
 .s-terminal .ring circle:nth-child(2) { stroke-linecap: butt; stroke-dasharray: 3 2; }
 .s-terminal .l-area { opacity: .25; }
 .s-terminal .l-best { stroke-linejoin: miter; }
-.s-terminal .ribbon { border-radius: 0; height: 14px; border: 1px solid var(--pb-line); background: repeating-linear-gradient(90deg, transparent 0 3px, #102010 3px 4px); }
+.s-terminal .ribbon { border-radius: 0; height: 14px; border: 1px solid var(--pb-line); background: repeating-linear-gradient(90deg, transparent 0 3px, var(--pb-demand) 3px 4px); }
 .s-terminal .ribbon > div { background: repeating-linear-gradient(90deg, var(--c) 0 3px, transparent 3px 4px); box-shadow: none !important; }
 .s-terminal .action .ico { border-radius: 0; background: none; border: 1px solid var(--c); }
 .s-terminal .toggle { border-radius: 0; text-transform: uppercase; }
 .s-terminal .toggle::before { content: "> "; }
-.s-terminal .tip { border-radius: 0; background: #0a140a; border-color: var(--pb-accent); }
+.s-terminal .tip { border-radius: 0; background: var(--card-background-color); border-color: var(--pb-accent); }
 .s-terminal .table-wrap { border-radius: 0; }
 .s-terminal .legend i { border-radius: 0; }
+
+/* ---- light variants of the always-dark styles ---- */
+ha-card.m-light.s-neon {
+  --card-background-color: #f6f6ff;
+  --primary-text-color: #15142c;
+  --secondary-text-color: #5d5b85;
+  --pb-muted: #5d5b85;
+  --pb-accent: #0089b0;
+  --pb-rate: #a87f00;
+  --pb-charge: #00a35a;
+  --pb-hold_charge: #2f5bd9;
+  --pb-freeze_charge: #00a99a;
+  --pb-export: #cc0099;
+  --pb-freeze_export: #8a3fd1;
+  --pb-hold_export: #e0559f;
+  --pb-demand: #e4e3f5;
+  --pb-tile: #ffffff;
+  --pb-line: #d9d7f2;
+  background:
+    linear-gradient(transparent 95%, rgba(0,137,176,.07) 95%) 0 0 / 100% 22px,
+    linear-gradient(90deg, transparent 95%, rgba(0,137,176,.07) 95%) 0 0 / 22px 100%,
+    #f6f6ff;
+  color: #15142c;
+  border-color: #d9d7f2;
+  box-shadow: 0 0 0 1px rgba(0,137,176,.12), 0 6px 24px rgba(121,80,242,.12);
+}
+.m-light.s-neon .tile-value { text-shadow: none; }
+.m-light.s-neon .l-best { filter: drop-shadow(0 0 3px color-mix(in srgb, var(--pb-accent) 60%, transparent)); }
+ha-card.m-light.s-terminal {
+  --card-background-color: #c9d3b2;
+  --primary-text-color: #1b2610;
+  --secondary-text-color: #4c5c37;
+  --pb-muted: #4c5c37;
+  --pb-accent: #1b2610;
+  --pb-rate: #7a4300;
+  --pb-charge: #2e5c17;
+  --pb-hold_charge: #3d6b4a;
+  --pb-freeze_charge: #4f7a2a;
+  --pb-export: #8a4b00;
+  --pb-freeze_export: #a3651a;
+  --pb-hold_export: #7a5a2a;
+  --pb-error: #9c1c12;
+  --pb-demand: #b3bd99;
+  --pb-line: #98a47f;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.04) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 100% at 50% 0%, #d3dcbd, #bcc7a3);
+  color: #1b2610;
+  border-color: #98a47f;
+  text-shadow: none;
+}
 `;
 
 const STYLES = `
-:host {
+:host { display: block; }
+ha-card {
   --pb-charge: #12b886;
   --pb-hold_charge: #4dabf7;
   --pb-freeze_charge: #63e6be;
@@ -691,9 +796,8 @@ const STYLES = `
   --pb-line: color-mix(in srgb, var(--primary-text-color, #000) 10%, transparent);
   --pb-muted: var(--secondary-text-color, #727272);
   --pb-radius: 14px;
-  display: block;
+  display: block; overflow: hidden; color: var(--primary-text-color);
 }
-ha-card { display: block; overflow: hidden; color: var(--primary-text-color); }
 .cq { container-type: inline-size; }
 .wrap { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 14px; }
 .muted { color: var(--pb-muted); }
@@ -877,6 +981,11 @@ class PredbatCard extends HTMLElement {
     if (el) this._ro.observe(el);
   }
 
+  _mode() {
+    const m = String(this._config.theme_mode || "auto").toLowerCase();
+    return ["light", "dark"].includes(m) ? m : "auto";
+  }
+
   _style() {
     const s = String(this._config.style || "modern").toLowerCase();
     return STYLE_NAMES.includes(s) ? s : "modern";
@@ -1033,7 +1142,7 @@ class PredbatCard extends HTMLElement {
     if (c.show_actions !== false) parts.push(this._renderActions());
     if (c.show_table !== false && rows.length) parts.push(this._renderTable());
 
-    this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card class="s-${esc(this._style())}"><div class="cq"><div class="wrap">${parts.join("")}</div></div></ha-card>`;
+    this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card class="s-${esc(this._style())} m-${esc(this._mode())}"><div class="cq"><div class="wrap">${parts.join("")}</div></div></ha-card>`;
     this._wire();
     this._observe();
     const ch = this.shadowRoot.querySelector(".chart");
@@ -1133,21 +1242,35 @@ class PredbatCard extends HTMLElement {
     // Cost
     const costToday = num(this._st("cost_today")?.state);
     const bestMetric = num(this._st("best_metric")?.state);
+    const pred = this._todayForecast();
+    const costSub = pred.best !== null
+      ? t("forecast_today", { v: this._money(pred.best, cur) })
+      : bestMetric !== null ? t("plan_total", { v: this._money(bestMetric, cur) }) : "";
     const costTile = `
       <div class="tile clickable" data-more="${esc(this._eid("cost_today"))}">
         <div class="tile-label"><ha-icon icon="mdi:cash"></ha-icon>${esc(t("cost_today"))}</div>
         <div class="tile-value">${esc(this._money(costToday, cur))}</div>
-        <div class="tile-sub">${bestMetric !== null ? esc(t("plan_total", { v: this._money(bestMetric, cur) })) : "&nbsp;"}</div>
+        <div class="tile-sub">${costSub ? esc(costSub) : "&nbsp;"}</div>
       </div>`;
 
-    // Savings
+    // Savings: predicted today (baseline vs Predbat plan), with yesterday's actual
     const sav = num(this._st("savings")?.state);
-    const savTile = `
+    let savTile;
+    if (pred.saving !== null) {
+      savTile = `
+      <div class="tile clickable" data-more="${esc(this._eid("best_metric"))}">
+        <div class="tile-label"><ha-icon icon="mdi:piggy-bank-outline"></ha-icon>${esc(t("saving_today"))}</div>
+        <div class="tile-value ${pred.saving >= 0 ? "pos" : "neg"}">${esc(this._money(pred.saving, cur))}</div>
+        <div class="tile-sub">${esc(t("predicted"))}${sav !== null ? " · " + esc(t("yesterday_v", { v: this._money(sav, cur) })) : ""}</div>
+      </div>`;
+    } else {
+      savTile = `
       <div class="tile clickable" data-more="${esc(this._eid("savings"))}">
         <div class="tile-label"><ha-icon icon="mdi:piggy-bank-outline"></ha-icon>${esc(t("saved_yesterday"))}</div>
         <div class="tile-value ${sav !== null ? (sav >= 0 ? "pos" : "neg") : ""}">${esc(this._money(sav, cur))}</div>
         <div class="tile-sub">${esc(t("vs_baseline"))}</div>
       </div>`;
+    }
 
     const winTile = (kind) => {
       const w = this._windowFromEntities(kind) || this._windowFromRows(kind);
@@ -1167,6 +1290,25 @@ class PredbatCard extends HTMLElement {
     };
 
     return `<div class="overview">${battery}${nowTile}${costTile}${savTile}${winTile("charge")}${winTile("export")}</div>`;
+  }
+
+  /** Predicted cost at the end of today for the Predbat plan and the baseline,
+   *  read from the 5-minute `results` of best_metric and metric (pence). */
+  _todayForecast() {
+    const out = { best: null, base: null, saving: null };
+    const mid = new Date(); mid.setHours(24, 0, 0, 0);
+    const end = mid.getTime();
+    const at = (key) => {
+      const ser = seriesFrom(this._st(key)?.attributes?.results);
+      if (!ser.length || ser[ser.length - 1][0] < end - 10 * 60e3) return null;
+      let v = null;
+      for (const p of ser) { if (p[0] <= end) v = p[1]; else break; }
+      return v;
+    };
+    out.best = at("best_metric");
+    out.base = at("base_metric");
+    if (out.best !== null && out.base !== null) out.saving = out.base - out.best;
+    return out;
   }
 
   _renderChartShell() {
@@ -1563,6 +1705,15 @@ class PredbatCardEditor extends HTMLElement {
         },
       },
       {
+        name: "theme_mode",
+        selector: {
+          select: {
+            mode: "dropdown",
+            options: ["auto", "light", "dark"].map((v) => ({ value: v, label: t("mode_" + v) })),
+          },
+        },
+      },
+      {
         type: "grid", name: "", schema: [
           { name: "title", selector: { text: {} } },
           { name: "prefix", selector: { text: {} } },
@@ -1604,14 +1755,14 @@ class PredbatCardEditor extends HTMLElement {
 
   _label(t) {
     const map = {
-      style: "ed_style", title: "ed_title", prefix: "ed_prefix", language: "ed_language",
+      style: "ed_style", theme_mode: "ed_theme_mode", title: "ed_title", prefix: "ed_prefix", language: "ed_language",
       show_header: "ed_show_header", show_overview: "ed_show_overview", show_chart: "ed_show_chart",
       show_timeline: "ed_show_timeline", show_actions: "ed_show_actions", show_table: "ed_show_table",
       show_base: "ed_show_base", show_rates: "ed_show_rates", hours: "ed_hours", max_actions: "ed_max_actions",
       battery_capacity: "ed_capacity",
       status: "e_status", plan: "e_plan", mode: "e_mode", soc_now: "e_soc_now", soc_best: "e_soc_best",
       soc_base: "e_soc_base", inverter_config: "e_inverter_config", hours_left: "e_hours_left", rates: "e_rates",
-      rates_export: "e_rates_export", cost_today: "e_cost_today", best_metric: "e_best_metric", savings: "e_savings",
+      rates_export: "e_rates_export", cost_today: "e_cost_today", best_metric: "e_best_metric", base_metric: "e_base_metric", savings: "e_savings",
       charge_start: "e_charge_start", charge_end: "e_charge_end", charge_limit: "e_charge_limit",
       export_start: "e_export_start", export_end: "e_export_end", export_limit: "e_export_limit",
     };
