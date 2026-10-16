@@ -7,7 +7,16 @@
 
 A Home Assistant Lovelace card that shows what [Predbat](https://github.com/springfall2008/batpred) is doing and what it plans to do next, at a glance.
 
-![Predbat Card preview](https://github.com/mimikm/Predbat-Card/raw/main/images/preview-dark.png)
+<table>
+  <tr>
+    <th>Dark theme</th>
+    <th>Light theme</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/mimikm/Predbat-Card/raw/main/images/preview-dark.png" alt="Predbat Card in a dark theme" width="100%"></td>
+    <td><img src="https://github.com/mimikm/Predbat-Card/raw/main/images/preview-light.png" alt="Predbat Card in a light theme" width="100%"></td>
+  </tr>
+</table>
 
 ## Features
 
@@ -17,6 +26,7 @@ A Home Assistant Lovelace card that shows what [Predbat](https://github.com/spri
 - **Plan timeline** – a colour-coded ribbon of every plan slot (charge, hold, freeze, export, demand).
 - **Upcoming actions** – the next forced charge/export windows merged into readable blocks with average rate and the SoC they end at.
 - **Full plan table** – one tap to expand the slot-by-slot plan.
+- **Six visual styles** – Modern, Glass, Neon, Minimal, Home Assistant native and Terminal, picked from a dropdown in the editor.
 - **Visual editor** with every Predbat entity prefilled and a live entity check that shows which ones were found.
 - No dependencies – no ApexCharts or other cards needed.
 - Follows your Home Assistant theme (light and dark) and time format.
@@ -40,7 +50,7 @@ Excluding Predbat entities from the recorder does not affect this card; it only 
 
 ### Manual
 
-1. Download `predbat-card.js` from the [latest release](https://github.com/mimikm/Predbat-Card/releases).
+1. Download `predbat-card.js` from the [latest release](https://github.com/mimikm/Predbat-Card/releases/latest), or from the [`dist` folder](https://github.com/mimikm/Predbat-Card/tree/main/dist).
 2. Copy it to `/config/www/predbat-card.js`.
 3. Settings → Dashboards → three dots → **Resources** → add `/local/predbat-card.js` as a **JavaScript module**.
 
@@ -58,6 +68,7 @@ Everything can be set in the visual editor. Open **Predbat entities** to see or 
 
 | Option | Default | Description |
 | --- | --- | --- |
+| `style` | `modern` | Visual style: `modern`, `glass`, `neon`, `minimal`, `native` or `terminal`. See [Styles](#styles). |
 | `title` | `Predbat` | Card title. |
 | `prefix` | `predbat` | Predbat entity prefix. Change it if you run more than one Predbat instance or changed `prefix` in `apps.yaml`. All default entities follow it. |
 | `language` | `auto` | `auto` (follows Home Assistant), `en`, `pl` or `es`. |
@@ -109,6 +120,42 @@ entities:
   savings: predbat.savings_yesterday_pvbat
 ```
 
+## Styles
+
+Pick a style in the visual editor, or set `style:` in YAML.
+
+| Style | Look |
+| --- | --- |
+| `modern` | Default. Soft tiles, purple accent, follows your theme. |
+| `glass` | Frosted translucent tiles over a soft colour gradient, rounded pill timeline. |
+| `neon` | Always dark. Glowing cyan, magenta and lime lines on a grid background, monospace numbers. |
+| `minimal` | No tile backgrounds, hairline dividers, light typography, thin timeline. |
+| `native` | Matches built-in Home Assistant cards and uses your theme's primary, success and warning colours. |
+| `terminal` | Always dark. Green phosphor retro LCD with scanlines, monospace text and dotted bars. |
+
+```yaml
+type: custom:predbat-card
+style: glass
+```
+
+<details open>
+<summary><b>All six styles – dark theme</b></summary>
+
+![All six styles in a dark theme](https://github.com/mimikm/Predbat-Card/raw/main/images/styles-dark.png)
+
+</details>
+
+<details>
+<summary><b>All six styles – light theme</b></summary>
+
+![All six styles in a light theme](https://github.com/mimikm/Predbat-Card/raw/main/images/styles-light.png)
+
+</details>
+
+Top row: `modern`, `glass`, `neon`. Bottom row: `minimal`, `native`, `terminal`.
+
+`neon` and `terminal` keep their own dark colours whatever your theme. The other four follow your light or dark theme.
+
 ## Plan states
 
 | Colour | State | Predbat plan state |
@@ -134,9 +181,26 @@ Issues and pull requests are welcome, including new translations. Translations l
 
 ## Credits
 
-Built for the [Predbat](https://github.com/springfall2008/batpred) community. Predbat is created by @springfall2008. This card is an independent project and is not affiliated with Predbat.
+<table>
+<tr>
+<td>🦇</td>
+<td>
 
-If this card is useful to you, you can [buy me a coffee](https://buymeacoffee.com/mimikm).
+**This card exists because of [Predbat](https://github.com/springfall2008/batpred), created and maintained by Trefor Southwell ([@springfall2008](https://github.com/springfall2008)).**
+
+Predbat does all the clever work: it predicts your house load, solar and tariff rates, then plans when to charge, hold and export your battery to save money. This card only shows what Predbat has already worked out. Thank you, Trefor, and everyone who contributes to Predbat and its documentation.
+
+- 📖 [Predbat documentation](https://springfall2008.github.io/batpred/)
+- 💬 [Predbat on GitHub](https://github.com/springfall2008/batpred)
+- 🍺 Support Predbat: [GitHub Sponsors](https://github.com/sponsors/springfall2008) · [PayPal](https://paypal.me/predbat)
+
+</td>
+</tr>
+</table>
+
+Predbat Card is an independent community project. It is not part of Predbat and is not endorsed by its author. Please report card problems here, not on the Predbat repository.
+
+Card made by [@mimikm](https://github.com/mimikm). If you find it useful you can [buy me a coffee](https://buymeacoffee.com/mimikm) ☕
 
 ## License
 
