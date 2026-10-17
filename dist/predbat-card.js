@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.3.2";
+const CARD_VERSION = "0.4.0";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -12,6 +12,41 @@ const EDITOR_TAG = "predbat-card-editor";
 /* ------------------------------------------------------------------ */
 const TRANSLATIONS = {
   en: {
+    car: "Car",
+    car_n: "Car {n}",
+    car_chart: "Car charging",
+    tab_car: "Car",
+    car_charging: "Car charging",
+    car_charging_now: "Charging now",
+    car_live: "charging",
+    car_none: "No charge planned",
+    car_none_found: "No car found in Predbat.",
+    car_charge_kwh: "charge {v} kWh",
+    car_ready_by: "Ready by {v}",
+    iboost: "Hot water",
+    iboost_on: "Heating now",
+    iboost_on_solar: "Heating now from solar",
+    iboost_full: "Daily limit reached",
+    iboost_none: "Nothing planned",
+    iboost_heat: "Hot water +{v} kWh",
+    next: "Next",
+    col_car: "Car",
+    col_iboost: "iBoost",
+    show_auto: "Auto (when Predbat uses it)",
+    show_on: "Always",
+    show_off: "Never",
+    ed_show_car: "Car",
+    ed_show_iboost: "iBoost (hot water)",
+    ed_show_car_chart: "Car charging chart",
+    ed_car_names: "Car names (comma separated)",
+    ed_optional: "{n} optional",
+    e_car_slot: "Car charging slot",
+    e_car_soc: "Car SoC forecast",
+    e_car_plan_time: "Car ready-by time",
+    e_iboost_today: "iBoost energy today",
+    e_iboost_max: "iBoost daily limit",
+    e_iboost_active: "iBoost active",
+    e_iboost_enable: "iBoost enabled",
     ed_auto_none: "not found, set the sensor from apps.yaml",
     ed_auto_found: "auto-detected",
     dq_no_source: "No load sensors found. Set load_today and load_power to the same sensors as in your Predbat apps.yaml.",
@@ -171,6 +206,41 @@ const TRANSLATIONS = {
     e_export_limit: "Next export target (%)",
   },
   pl: {
+    car: "Samochód",
+    car_n: "Samochód {n}",
+    car_chart: "Ładowanie samochodu",
+    tab_car: "Auto",
+    car_charging: "Ładowanie samochodu",
+    car_charging_now: "Ładuje się teraz",
+    car_live: "ładowanie",
+    car_none: "Brak zaplanowanego ładowania",
+    car_none_found: "Nie znaleziono samochodu w Predbat.",
+    car_charge_kwh: "ładowanie {v} kWh",
+    car_ready_by: "Gotowy na {v}",
+    iboost: "Ciepła woda",
+    iboost_on: "Grzeje teraz",
+    iboost_on_solar: "Grzeje teraz z PV",
+    iboost_full: "Osiągnięto dzienny limit",
+    iboost_none: "Nic nie zaplanowano",
+    iboost_heat: "Ciepła woda +{v} kWh",
+    next: "Następne",
+    col_car: "Auto",
+    col_iboost: "iBoost",
+    show_auto: "Auto (gdy Predbat go używa)",
+    show_on: "Zawsze",
+    show_off: "Nigdy",
+    ed_show_car: "Samochód",
+    ed_show_iboost: "iBoost (ciepła woda)",
+    ed_show_car_chart: "Wykres ładowania samochodu",
+    ed_car_names: "Nazwy samochodów (po przecinku)",
+    ed_optional: "{n} opcjonalnych",
+    e_car_slot: "Slot ładowania samochodu",
+    e_car_soc: "Prognoza SoC samochodu",
+    e_car_plan_time: "Godzina gotowości samochodu",
+    e_iboost_today: "Energia iBoost dziś",
+    e_iboost_max: "Dzienny limit iBoost",
+    e_iboost_active: "iBoost aktywny",
+    e_iboost_enable: "iBoost włączony",
     ed_auto_none: "nie znaleziono, ustaw czujnik z apps.yaml",
     ed_auto_found: "wykryto automatycznie",
     dq_no_source: "Nie znaleziono czujników zużycia. Ustaw load_today i load_power na te same czujniki co w apps.yaml Predbat.",
@@ -335,6 +405,41 @@ const TRANSLATIONS = {
     e_export_limit: "Cel oddawania (%)",
   },
   es: {
+    car: "Coche",
+    car_n: "Coche {n}",
+    car_chart: "Carga del coche",
+    tab_car: "Coche",
+    car_charging: "Carga del coche",
+    car_charging_now: "Cargando ahora",
+    car_live: "cargando",
+    car_none: "Sin carga prevista",
+    car_none_found: "No hay coche en Predbat.",
+    car_charge_kwh: "carga {v} kWh",
+    car_ready_by: "Listo a las {v}",
+    iboost: "Agua caliente",
+    iboost_on: "Calentando ahora",
+    iboost_on_solar: "Calentando con solar",
+    iboost_full: "Límite diario alcanzado",
+    iboost_none: "Nada previsto",
+    iboost_heat: "Agua caliente +{v} kWh",
+    next: "Próximo",
+    col_car: "Coche",
+    col_iboost: "iBoost",
+    show_auto: "Auto (si Predbat lo usa)",
+    show_on: "Siempre",
+    show_off: "Nunca",
+    ed_show_car: "Coche",
+    ed_show_iboost: "iBoost (agua caliente)",
+    ed_show_car_chart: "Gráfico de carga del coche",
+    ed_car_names: "Nombres de coches (separados por comas)",
+    ed_optional: "{n} opcionales",
+    e_car_slot: "Franja de carga del coche",
+    e_car_soc: "Previsión SoC del coche",
+    e_car_plan_time: "Hora de coche listo",
+    e_iboost_today: "Energía iBoost hoy",
+    e_iboost_max: "Límite diario iBoost",
+    e_iboost_active: "iBoost activo",
+    e_iboost_enable: "iBoost activado",
     ed_auto_none: "no encontrado, indica el sensor de apps.yaml",
     ed_auto_found: "detectado automáticamente",
     dq_no_source: "No se encontraron sensores de consumo. Usa en load_today y load_power los mismos sensores que en el apps.yaml de Predbat.",
@@ -530,7 +635,10 @@ const ENTITY_KEYS = [
   "hours_left", "rates", "rates_export", "cost_today", "best_metric", "base_metric", "savings",
   "charge_start", "charge_end", "charge_limit", "export_start", "export_end", "export_limit",
   "export_energy", "import_energy", "load_today", "load_power",
+  "car_slot", "car_soc", "car_plan_time", "iboost_today", "iboost_max", "iboost_active", "iboost_enable",
 ];
+// only needed when you have a car or iBoost; not counted as missing in the editor
+const OPTIONAL_KEYS = ["car_slot", "car_soc", "car_plan_time", "iboost_today", "iboost_max", "iboost_active", "iboost_enable"];
 
 function defaultEntities(prefix) {
   const p = (prefix || "predbat").trim() || "predbat";
@@ -559,6 +667,13 @@ function defaultEntities(prefix) {
     import_energy: `${p}.best_import_energy`,
     load_today: "",  // auto: the GivTCP sensors, or set the ones from apps.yaml
     load_power: "",
+    car_slot: `binary_sensor.${p}_car_charging_slot`,
+    car_soc: `${p}.car_soc_best`,
+    car_plan_time: `select.${p}_car_charging_plan_time`,
+    iboost_today: `input_number.${p}_iboost_today`,
+    iboost_max: `input_number.${p}_iboost_max_energy`,
+    iboost_active: `binary_sensor.${p}_iboost_active`,
+    iboost_enable: `switch.${p}_iboost_enable`,
   };
 }
 
@@ -583,6 +698,10 @@ const DEFAULT_CONFIG = {
   show_base: true,
   show_rates: true,
   show_data_quality: true,
+  show_car: "auto",
+  show_iboost: "auto",
+  show_car_chart: true,
+  car_names: "",
   data_quality_days: 7,
   data_quality_minutes: 30,
   hours: 24,
@@ -1136,6 +1255,9 @@ ha-card {
   --u: calc(16px * var(--pb-scale, 1));
   --pb-charge: #12b886;
   --pb-import: #4c6ef5;
+  --pb-car: #15aabf;
+  --pb-car2: #be4bdb;
+  --pb-iboost: #ff6b6b;
   --pb-hold_charge: #4dabf7;
   --pb-freeze_charge: #63e6be;
   --pb-export: #f76707;
@@ -1334,6 +1456,18 @@ details.dq[open] summary::after { transform: rotate(180deg); }
 /* timeline */
 .ribbon { display: flex; height: 22px; border-radius: 8px; overflow: hidden; background: var(--pb-tile); }
 .ribbon > div { height: 100%; background: var(--c); min-width: 1px; }
+.lane { position: relative; height: 7px; margin-top: 4px; border-radius: 4px; background: var(--pb-tile); overflow: hidden; }
+.lane > div { position: absolute; top: 0; bottom: 0; background: var(--c); border-radius: 4px; min-width: 2px; }
+.meter { height: 4px; border-radius: 3px; background: var(--pb-line); overflow: hidden; margin: 3px 0 2px; }
+.meter > div { height: 100%; background: var(--c); border-radius: 3px; }
+.tile-value small.arrow { margin: 0 4px; color: var(--pb-muted); }
+.tile.live .accent-bar { animation: pulse 2s infinite; }
+.s-neon { --pb-car: #3df5ff; --pb-car2: #c77dff; --pb-iboost: #ff5c8a; }
+.s-terminal { --pb-car: #7cfff0; --pb-car2: #d0bfff; --pb-iboost: #ff8c42; }
+.m-light.s-terminal { --pb-car: #1d5c63; --pb-car2: #5c3d7a; --pb-iboost: #9c3d12; }
+.s-terminal .lane { border-radius: 0; } .s-terminal .lane > div { border-radius: 0; background: repeating-linear-gradient(90deg, var(--c) 0 3px, transparent 3px 4px); }
+.s-minimal .lane { height: 4px; border-radius: 0; } .s-minimal .lane > div { border-radius: 0; }
+.s-minimal .meter { height: 2px; }
 .ribbon > div + div { box-shadow: inset 1px 0 0 color-mix(in srgb, var(--card-background-color, #fff) 35%, transparent); }
 .ticks { position: relative; height: calc(16px * var(--pb-scale, 1)); font-size: calc(11px * var(--pb-scale, 1)); color: var(--pb-muted); font-variant-numeric: tabular-nums; }
 .ticks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
@@ -1492,6 +1626,12 @@ ${esc(navigator.userAgent)}</pre></details>
     parts.push(this._hass.locale?.language || this._hass.language || "");
     parts.push(this._hass.themes?.darkMode ? "d" : "l");
     parts.push("dq" + (this._dqVer || 0));
+    for (let n = 1; n < 4; n++) {
+      for (const k of ["car_slot", "car_soc"]) {
+        const st = this._hass.states[this._carId(k, n)];
+        if (st) parts.push(st.last_updated + "|" + st.state);
+      }
+    }
     return parts.join(";");
   }
 
@@ -1518,6 +1658,8 @@ ${esc(navigator.userAgent)}</pre></details>
         load: num(r.load_forecast),
         cost: num(r.cost_change),
         total: num(r.total_cost),
+        carKwh: num(r.car_charging),
+        iboostKwh: num(r.iboost_change),
       });
     }
     rows.sort((a, b) => a.t - b.t);
@@ -1827,7 +1969,7 @@ ${esc(navigator.userAgent)}</pre></details>
         </div>`;
     };
 
-    return `<div class="overview">${battery}${nowTile}${costTile}${savTile}${winTile("charge")}${winTile("export")}</div>`;
+    return `<div class="overview">${battery}${nowTile}${costTile}${savTile}${winTile("charge")}${winTile("export")}${this._carTiles()}${this._iboostTile()}</div>`;
   }
 
   /** Predicted cost at the end of today for the Predbat plan and the baseline,
@@ -1847,6 +1989,334 @@ ${esc(navigator.userAgent)}</pre></details>
     out.base = at("base_metric");
     if (out.best !== null && out.base !== null) out.saving = out.base - out.best;
     return out;
+  }
+
+  /* ---------- car and iBoost ---------- */
+  _flag(v) {
+    if (v === true || v === false) return v;
+    const s = String(v ?? "auto").toLowerCase();
+    if (/^(on|true|yes|1|show)$/.test(s)) return true;
+    if (/^(off|false|no|0|hide)$/.test(s)) return false;
+    return "auto";
+  }
+
+  /** Entity id for car n: Predbat adds _1, _2 … for the second, third car. */
+  _carId(key, n) {
+    const id = this._eid(key);
+    return n > 0 && id ? `${id}_${n}` : id;
+  }
+
+  _carCount() {
+    const n = num(this._ctx?.plan?.raw?.num_cars);
+    if (n !== null) return Math.max(0, Math.min(4, Math.round(n)));
+    let c = 0;
+    while (c < 4 && this._hass.states[this._carId("car_slot", c)]) c++;
+    return c;
+  }
+
+  _carShown() {
+    const f = this._flag(this._config.show_car);
+    return f === "auto" ? this._carCount() > 0 : f;
+  }
+
+  _iboostEnabled() {
+    const raw = this._ctx?.plan?.raw;
+    if (raw && raw.iboost_enable !== undefined) return !!raw.iboost_enable;
+    return this._st("iboost_enable")?.state === "on";
+  }
+
+  _iboostShown() {
+    const f = this._flag(this._config.show_iboost);
+    return f === "auto" ? this._iboostEnabled() : f;
+  }
+
+  _carName(n) {
+    let names = this._config.car_names;
+    if (typeof names === "string") names = names.split(",");
+    const name = Array.isArray(names) ? String(names[n] ?? "").trim() : "";
+    if (name) return name;
+    return n === 0 && this._carCount() < 2 ? this.t("car") : this.t("car_n", { n: n + 1 });
+  }
+
+  /** Predbat writes car slot times as "MM-DD HH:MM:SS" in local time. */
+  _mdTime(s) {
+    const m = /^(\d{1,2})-(\d{1,2})[ T](\d{1,2}):(\d{2})/.exec(String(s || ""));
+    if (!m) { const d = parseTime(s); return d ? d.getTime() : null; }
+    const now = new Date();
+    const d = new Date(now.getFullYear(), +m[1] - 1, +m[2], +m[3], +m[4], 0, 0);
+    const half = 182 * 86400e3;
+    if (d.getTime() - now.getTime() > half) d.setFullYear(d.getFullYear() - 1);
+    else if (now.getTime() - d.getTime() > half) d.setFullYear(d.getFullYear() + 1);
+    return d.getTime();
+  }
+
+  /** Everything the card shows about each car. */
+  _cars() {
+    if (this._carsCache && this._carsCache.at === this._ctx) return this._carsCache.list;
+    const list = [];
+    const n = this._carCount();
+    const now = Date.now();
+    for (let i = 0; i < n; i++) {
+      const slot = this._hass.states[this._carId("car_slot", i)];
+      const socSt = this._hass.states[this._carId("car_soc", i)];
+      const planned = Array.isArray(slot?.attributes?.planned) ? slot.attributes.planned : [];
+      const windows = planned.map((w) => ({
+        s: this._mdTime(w.start), e: this._mdTime(w.end),
+        kwh: num(w.kwh) || 0, avg: num(w.average), cost: num(w.cost),
+        cancelled: num(w.kwh_cancelled) || 0,
+      })).filter((w) => w.s !== null && w.e !== null && w.e > now).sort((a, b) => a.s - b.s);
+      const soc = seriesFrom(socSt?.attributes?.results);
+      const near = nearest(soc, now);
+      const socNow = near && Math.abs(near[0] - now) < 3 * 3600e3 ? near[1] : null;
+      const planTime = this._hass.states[this._carId("car_plan_time", i)]?.state;
+      list.push({
+        n: i,
+        name: this._carName(i),
+        slotId: this._carId("car_slot", i),
+        active: slot?.state === "on",
+        windows,
+        kwh: num(slot?.attributes?.kwh ?? slot?.attributes?.kWh) ?? windows.reduce((a, w) => a + w.kwh, 0),
+        cost: num(slot?.attributes?.cost),
+        soc,
+        socNow,
+        socEnd: num(socSt?.state),
+        readyBy: planTime && !BAD.test(planTime) ? String(planTime).replace(/^(\d{1,2}:\d{2}):\d{2}$/, "$1") : null,
+      });
+    }
+    this._carsCache = { at: this._ctx, list };
+    return list;
+  }
+
+  /** iBoost: today's energy, the daily limit and the planned heating windows. */
+  _iboost() {
+    const today = num(this._st("iboost_today")?.state);
+    const max = num(this._st("iboost_max")?.state);
+    const act = this._st("iboost_active");
+    const windows = [];
+    let w = null;
+    for (const r of this._ctx.rows) {
+      const k = r.iboostKwh || 0;
+      if (k > 0.001) {
+        if (w && Math.abs(w.e - r.t) < 1000) { w.e = r.end; w.kwh += k; w.rows.push(r); continue; }
+        if (w) windows.push(w);
+        w = { s: r.t, e: r.end, kwh: k, rows: [r] };
+      } else if (w) { windows.push(w); w = null; }
+    }
+    if (w) windows.push(w);
+    return {
+      today, max, windows,
+      active: act?.state === "on",
+      solar: act?.attributes?.solar === true || act?.attributes?.solar === "on",
+      planned: windows.reduce((a, x) => a + x.kwh, 0),
+    };
+  }
+
+  /** Short window text for tiles: "01:30–04:30" today, "Sun 01:30–04:30" otherwise. */
+  _shortWin(s, e) {
+    const d = new Date(s), n = new Date();
+    const today = d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
+    const day = today ? "" : this._timeFmt({ weekday: "short" }).format(d) + " ";
+    return `${day}${this._hm(s)}–${this._hm(e)}`;
+  }
+
+  _carTiles() {
+    if (!this._carShown()) return "";
+    const t = this.t;
+    const cur = this._ctx.cur;
+    return this._cars().map((c) => {
+      const next = c.windows[0];
+      const socTxt = c.socNow !== null
+        ? `${Math.round(c.socNow)}<small>%</small>${c.socEnd !== null && Math.round(c.socEnd) !== Math.round(c.socNow) ? `<small class="arrow">→</small>${Math.round(c.socEnd)}<small>%</small>` : ""}`
+        : c.socEnd !== null ? `${Math.round(c.socEnd)}<small>%</small>` : "–";
+      let sub;
+      if (c.active) sub = t("car_charging_now");
+      else if (next) sub = `${this._shortWin(next.s, next.e)} · ${next.kwh.toFixed(1)} kWh`;
+      else sub = t("car_none");
+      const label = `${c.name}${c.active ? " · " + t("car_live") : ""}`;
+      const cost = c.cost && c.windows.length ? ` · ${this._money(c.cost, cur)}` : "";
+      return `<div class="tile clickable ${c.active ? "live" : ""}" style="--c:var(--pb-car${c.n % 2 ? "2" : ""})" data-more="${esc(c.slotId)}">
+          <span class="accent-bar"></span>
+          <div class="tile-label"><ha-icon icon="mdi:car-electric"></ha-icon>${esc(label)}</div>
+          <div class="tile-value tv-lg">${socTxt}</div>
+          <div class="tile-sub">${esc(sub)}${esc(next && !c.active ? cost : "")}</div>
+        </div>`;
+    }).join("");
+  }
+
+  _iboostTile() {
+    if (!this._iboostShown()) return "";
+    const t = this.t;
+    const ib = this._iboost();
+    const pct = ib.today !== null && ib.max ? Math.max(0, Math.min(100, (ib.today / ib.max) * 100)) : null;
+    const next = ib.windows.find((x) => x.e > Date.now());
+    let sub;
+    if (ib.active) sub = ib.solar ? t("iboost_on_solar") : t("iboost_on");
+    else if (next) sub = `${this._shortWin(next.s, next.e)} · +${next.kwh.toFixed(1)} kWh`;
+    else sub = ib.today !== null && ib.max && ib.today >= ib.max - 0.05 ? t("iboost_full") : t("iboost_none");
+    return `<div class="tile clickable ${ib.active ? "live" : ""}" style="--c:var(--pb-iboost)" data-more="${esc(this._eid("iboost_today"))}">
+        <span class="accent-bar"></span>
+        <div class="tile-label"><ha-icon icon="mdi:water-boiler"></ha-icon>${esc(t("iboost"))}</div>
+        <div class="tile-value tv-lg">${ib.today === null ? "–" : ib.today.toFixed(1)}<small>${ib.max ? ` / ${ib.max.toFixed(1)} kWh` : " kWh"}</small></div>
+        ${pct !== null ? `<div class="meter"><div style="width:${pct.toFixed(1)}%"></div></div>` : ""}
+        <div class="tile-sub">${esc(sub)}</div>
+      </div>`;
+  }
+
+  /** Car and iBoost windows as items for the upcoming actions list. */
+  _extraActions() {
+    const items = [];
+    const { horizon } = this._ctx;
+    if (this._carShown()) {
+      for (const c of this._cars()) {
+        for (const w of c.windows) {
+          if (w.s >= horizon) continue;
+          items.push({ kind: "car", s: w.s, e: w.e, car: c, w });
+        }
+      }
+    }
+    if (this._iboostShown()) {
+      for (const w of this._iboost().windows) {
+        if (w.e <= Date.now() || w.s >= horizon) continue;
+        items.push({ kind: "iboost", s: w.s, e: w.e, w });
+      }
+    }
+    return items;
+  }
+
+  _renderExtraAction(it) {
+    const t = this.t;
+    const cur = this._ctx.cur;
+    const dur = Math.round((it.e - it.s) / 60000);
+    const durTxt = dur >= 60 ? `${Math.floor(dur / 60)}h${dur % 60 ? " " + (dur % 60) + "m" : ""}` : `${dur}m`;
+    const when = `${it.s <= Date.now() ? t("now") : this._dayWord(it.s)} ${this._hm(it.s)}–${this._hm(it.e)} · ${durTxt}`;
+    if (it.kind === "car") {
+      const { car, w } = it;
+      const what = `${car.name} · ${t("car_charge_kwh", { v: w.kwh.toFixed(1) })}`;
+      const meta = `${w.avg !== null ? `<b>${esc(this._rate(w.avg, cur))}</b><br>` : ""}${w.cost !== null ? esc(this._money(w.cost, cur)) : ""}`;
+      return `<div class="action" style="--c:var(--pb-car${car.n % 2 ? "2" : ""})">
+          <div class="ico"><ha-icon icon="mdi:car-electric"></ha-icon></div>
+          <div style="min-width:0"><div class="what">${esc(what)}</div><div class="when">${esc(when)}</div></div>
+          <div class="meta">${meta}</div>
+        </div>`;
+    }
+    const rates = it.w.rows.map((r) => r.imp).filter((v) => v !== null);
+    const avg = rates.length ? rates.reduce((a, b) => a + b, 0) / rates.length : null;
+    return `<div class="action" style="--c:var(--pb-iboost)">
+        <div class="ico"><ha-icon icon="mdi:water-boiler"></ha-icon></div>
+        <div style="min-width:0"><div class="what">${esc(t("iboost_heat", { v: it.w.kwh.toFixed(1) }))}</div><div class="when">${esc(when)}</div></div>
+        <div class="meta">${avg !== null ? `<b>${esc(this._rate(avg, cur))}</b>` : ""}</div>
+      </div>`;
+  }
+
+  /** Thin lanes under the plan ribbon for car charging and iBoost. */
+  _renderLanes() {
+    const t = this.t;
+    const { now, horizon, rows } = this._ctx;
+    const span = horizon - now;
+    const seg = (list, color, label) => {
+      const parts = list.map((w) => {
+        const s = Math.max(w.s, now), e = Math.min(w.e, horizon);
+        if (e <= s) return "";
+        const l = ((s - now) / span) * 100, wd = Math.max(0.4, ((e - s) / span) * 100);
+        return `<div style="left:${l.toFixed(3)}%;width:${wd.toFixed(3)}%" title="${esc(`${label} · ${this._hm(w.s)}–${this._hm(w.e)}${w.kwh ? ` · ${w.kwh.toFixed(1)} kWh` : ""}`)}"></div>`;
+      }).join("");
+      return parts ? `<div class="lane" style="--c:${color}" aria-label="${esc(label)}">${parts}</div>` : "";
+    };
+    let html = "", legend = [];
+    if (this._carShown()) {
+      // per car from Predbat's car plan; fall back to the plan table's car column
+      const cars = this._cars();
+      let any = false;
+      for (const c of cars) {
+        const lane = seg(c.windows, `var(--pb-car${c.n % 2 ? "2" : ""})`, c.name);
+        if (lane) { html += lane; any = true; legend.push(`<span><i style="--c:var(--pb-car${c.n % 2 ? "2" : ""})"></i>${esc(cars.length > 1 ? c.name : t("car_charging"))}</span>`); }
+      }
+      if (!any) {
+        const ws = [];
+        let w = null;
+        for (const r of rows) {
+          if ((r.carKwh || 0) > 0.001) { if (w && Math.abs(w.e - r.t) < 1000) { w.e = r.end; w.kwh += r.carKwh; } else { if (w) ws.push(w); w = { s: r.t, e: r.end, kwh: r.carKwh }; } }
+          else if (w) { ws.push(w); w = null; }
+        }
+        if (w) ws.push(w);
+        const lane = seg(ws, "var(--pb-car)", t("car_charging"));
+        if (lane) { html += lane; legend.push(`<span><i style="--c:var(--pb-car)"></i>${esc(t("car_charging"))}</span>`); }
+      }
+    }
+    if (this._iboostShown()) {
+      const lane = seg(this._iboost().windows, "var(--pb-iboost)", t("iboost"));
+      if (lane) { html += lane; legend.push(`<span><i style="--c:var(--pb-iboost)"></i>${esc(t("iboost"))}</span>`); }
+    }
+    return { html, legend: legend.join("") };
+  }
+
+  /* Car SoC forecast with planned charging windows */
+  _chartCar(W) {
+    const t = this.t;
+    const cars = this._cars();
+    const { now, horizon, cur } = this._ctx;
+    const series = cars.map((c) => ({ c, pts: c.soc.filter((p) => p[0] >= now - 10 * 60e3 && p[0] <= horizon) })).filter((x) => x.pts.length);
+    if (!cars.length) return { empty: t("car_none_found") };
+    if (!series.length) return { empty: t("no_forecast", { e: this._carId("car_soc", 0) }) };
+    const H = Math.round(170 + (this._scale() - 1) * 40);
+    const f = this._frame(W, H, { padL: 36, padR: 10 });
+    const { X, padL, padT, iw, ih } = f;
+    const Y = (p) => padT + (1 - Math.max(0, Math.min(100, p)) / 100) * ih;
+    const parts = [];
+    for (const c of cars) {
+      const col = `var(--pb-car${c.n % 2 ? "2" : ""})`;
+      for (const w of c.windows) {
+        const x1 = X(w.s), x2 = X(w.e);
+        if (x2 - x1 < 0.5) continue;
+        parts.push(`<rect x="${x1.toFixed(1)}" y="${padT}" width="${(x2 - x1).toFixed(1)}" height="${ih}" fill="${col}" opacity=".13"/>`);
+        parts.push(`<rect x="${x1.toFixed(1)}" y="${padT + ih - 3}" width="${(x2 - x1).toFixed(1)}" height="3" fill="${col}" opacity=".9"/>`);
+      }
+    }
+    for (const g of [0, 25, 50, 75, 100]) {
+      parts.push(`<line class="grid" x1="${padL}" x2="${padL + iw}" y1="${Y(g).toFixed(1)}" y2="${Y(g).toFixed(1)}" ${g === 0 || g === 100 ? "" : 'stroke-dasharray="2 4"'}/>`);
+      if (g % 50 === 0) parts.push(`<text class="axis" x="${padL - 6}" y="${(Y(g) + 4).toFixed(1)}" text-anchor="end">${g}%</text>`);
+    }
+    this._xAxis(f, parts);
+    const labelYs = [];
+    for (const { c, pts } of series) {
+      const col = `var(--pb-car${c.n % 2 ? "2" : ""})`;
+      const d = pts.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("");
+      parts.push(`<path d="${d}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" class="l-car"/>`);
+      parts.push(`<circle cx="${X(pts[0][0]).toFixed(1)}" cy="${Y(pts[0][1]).toFixed(1)}" r="4" fill="${col}"/>`);
+      const last = pts[pts.length - 1];
+      // keep end labels of several cars from overlapping
+      const gapPx = 13 * this._scale();
+      const clash = (y) => labelYs.some((u) => Math.abs(u - y) < gapPx);
+      let ly = Y(last[1]) - 7;
+      if (clash(ly)) ly = Y(last[1]) + 15 * this._scale(); // below its own line instead
+      if (clash(ly)) continue;
+      ly = Math.min(ly, padT + ih - 4);
+      labelYs.push(ly);
+      parts.push(`<text class="axis" x="${Math.min(padL + iw - 2, X(last[0])).toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="end" style="fill:${col};font-weight:600">${Math.round(last[1])}%</text>`);
+    }
+    parts.push(this._hoverParts(f, "var(--pb-car)"));
+    const legend = cars.map((c) => {
+      const col = `var(--pb-car${c.n % 2 ? "2" : ""})`;
+      const extra = c.windows.length ? ` · ${c.kwh.toFixed(1)} kWh${c.cost ? " · " + this._money(c.cost, cur) : ""}` : "";
+      return `<span><i class="line" style="--c:${col}"></i>${esc(c.name)}${esc(extra)}</span>`;
+    }).join("") + (cars.some((c) => c.readyBy) ? `<span class="muted">${esc(t("car_ready_by", { v: cars.map((c) => c.readyBy).filter(Boolean).join(", ") }))}</span>` : "");
+    const hover = {
+      f,
+      pick: (tm) => {
+        const first = series[0];
+        const p = nearest(first.pts, tm);
+        if (!p) return null;
+        const lines = [this._tipHead(p[0])];
+        for (const { c, pts } of series) {
+          const q = nearest(pts, p[0]);
+          if (q) lines.push(`<div class="row"><span>${esc(c.name)}</span><b>${Math.round(q[1])}%</b></div>`);
+          const w = c.windows.find((x) => x.s <= p[0] && x.e > p[0]);
+          if (w) lines.push(`<div class="row muted"><span>${esc(t("car_charging"))}</span><span>${w.avg !== null ? esc(this._rate(w.avg, cur)) : ""}</span></div>`);
+        }
+        return { x: X(p[0]), y: Y(p[1]), html: lines.join(""), color: "var(--pb-car)" };
+      },
+    };
+    return { H, svg: parts.join(""), legend, hover };
   }
 
   /* ---------- load data quality ---------- */
@@ -2103,12 +2573,13 @@ ${esc(navigator.userAgent)}</pre></details>
     if (c.show_chart !== false) out.push("battery");
     if (c.show_grid_chart !== false) out.push("grid");
     if (c.show_rates_chart !== false) out.push("rates");
+    if (c.show_car_chart !== false && this._hass && this._carShown()) out.push("car");
     if (this._dqEnabled()) out.push("data");
     return out;
   }
 
   _chartTitle(k) {
-    return { battery: this.t("forecast"), grid: this.t("grid_chart"), rates: this.t("rates_chart"), data: this.t("dq_title") }[k];
+    return { battery: this.t("forecast"), grid: this.t("grid_chart"), rates: this.t("rates_chart"), car: this.t("car_chart"), data: this.t("dq_title") }[k];
   }
 
   _chartBox(k) {
@@ -2138,7 +2609,7 @@ ${esc(navigator.userAgent)}</pre></details>
 
   _drawCharts(force) {
     if (!this._ctx) return;
-    const keys = ["soc_best", "soc_base", "rates", "rates_export", "export_energy", "import_energy", "plan"];
+    const keys = ["soc_best", "soc_base", "rates", "rates_export", "export_energy", "import_energy", "plan", "car_slot", "car_soc"];
     const sig = keys.map((k) => this._st(k)?.last_updated || "-").join("|") +
       `|${this._chartWidth}|${Math.floor(Date.now() / 60000)}|${this._tab}|${this._scale()}|dq${this._dqVer || 0}`;
     if (!force && sig === this._chartSig) return;
@@ -2148,7 +2619,7 @@ ${esc(navigator.userAgent)}</pre></details>
       const W = Math.max(220, Math.round(el.clientWidth) || this._chartWidth || 600);
       const host = el.querySelector(".svg-host");
       const legendEl = this.shadowRoot.querySelector(`.legend[data-legend="${key}"]`);
-      const fn = { battery: this._chartBattery, grid: this._chartGrid, rates: this._chartRates, data: this._chartDQ }[key];
+      const fn = { battery: this._chartBattery, grid: this._chartGrid, rates: this._chartRates, car: this._chartCar, data: this._chartDQ }[key];
       if (!fn) return;
       const res = fn.call(this, W);
       if (res.empty) {
@@ -2541,6 +3012,7 @@ ${esc(navigator.userAgent)}</pre></details>
       ticks.push(`<span style="left:${pct.toFixed(2)}%">${esc(label)}</span>`);
     }
 
+    const lanes = this._renderLanes();
     const present = [...new Set(cells.map((c) => c.cat))];
     const order = ["charge", "hold_charge", "freeze_charge", "export", "freeze_export", "hold_export", "demand"];
     const legend = order.filter((k) => present.includes(k))
@@ -2549,8 +3021,9 @@ ${esc(navigator.userAgent)}</pre></details>
     return `<div class="section">
         <div class="section-head"><div class="section-title">${esc(t("plan"))}</div></div>
         <div class="ribbon">${html}</div>
+        ${lanes.html}
         <div class="ticks">${ticks.join("")}</div>
-        <div class="legend">${legend}</div>
+        <div class="legend">${legend}${lanes.legend}</div>
       </div>`;
   }
 
@@ -2578,13 +3051,14 @@ ${esc(navigator.userAgent)}</pre></details>
     const { rows, cur } = this._ctx;
     if (!rows.length) return "";
     const max = Math.max(1, num(this._config.max_actions) || 4);
-    const groups = this._groups().slice(0, max);
+    const groups = [...this._groups(), ...this._extraActions()].sort((a, b) => a.s - b.s).slice(0, max);
     const hours = Math.round((this._ctx.horizon - this._ctx.now) / 3600e3);
     let body;
     if (!groups.length) {
       body = `<div class="empty">${esc(t("no_actions", { n: hours }))}</div>`;
     } else {
       body = groups.map((g) => {
+        if (g.kind) return this._renderExtraAction(g);
         const isExp = /export/.test(g.cat);
         const rates = g.rows.map((r) => (isExp ? r.exp : r.imp)).filter((v) => v !== null);
         const avg = rates.length ? rates.reduce((a, b) => a + b, 0) / rates.length : null;
@@ -2619,6 +3093,8 @@ ${esc(navigator.userAgent)}</pre></details>
     const btn = `<button class="toggle" data-action="toggle-table">${esc(this._showTable ? t("hide_full") : t("show_full"))}</button>`;
     if (!this._showTable) return `<div class="section">${btn}</div>`;
     const f = (v, d = 2) => (v === null ? "–" : v.toFixed(d));
+    const carCol = this._carShown() && rows.some((r) => r.carKwh !== null);
+    const ibCol = this._iboostShown() && rows.some((r) => r.iboostKwh !== null);
     const body = rows.map((r) => `<tr>
         <td>${esc(this._hm(r.t))}</td>
         <td><span class="tag"><i style="--c:var(--pb-${r.cat === "demand" ? "neutral" : r.cat})"></i>${esc(t("st_" + r.cat))}${r.target !== null && r.cat !== "demand" ? " " + Math.round(r.target) + "%" : ""}</span></td>
@@ -2627,12 +3103,14 @@ ${esc(navigator.userAgent)}</pre></details>
         <td>${f(r.pv)}</td>
         <td>${f(r.load)}</td>
         <td>${r.soc === null ? "–" : Math.round(r.soc) + "%"}</td>
+        ${carCol ? `<td>${r.carKwh ? f(r.carKwh) : "–"}</td>` : ""}
+        ${ibCol ? `<td>${r.iboostKwh ? f(r.iboostKwh) : "–"}</td>` : ""}
         <td>${r.cost === null ? "–" : cur.major + r.cost.toFixed(2)}</td>
       </tr>`).join("");
     return `<div class="section">${btn}
         <div class="table-wrap"><table>
           <thead><tr><th>${esc(t("col_time"))}</th><th>${esc(t("col_state"))}</th><th>${esc(t("col_import"))}</th><th>${esc(t("col_export"))}</th>
-          <th>${esc(t("col_pv"))}</th><th>${esc(t("col_load"))}</th><th>${esc(t("col_soc"))}</th><th>${esc(t("col_cost"))}</th></tr></thead>
+          <th>${esc(t("col_pv"))}</th><th>${esc(t("col_load"))}</th><th>${esc(t("col_soc"))}</th>${carCol ? `<th>${esc(t("col_car"))}</th>` : ""}${ibCol ? `<th>${esc(t("col_iboost"))}</th>` : ""}<th>${esc(t("col_cost"))}</th></tr></thead>
           <tbody>${body}</tbody></table></div>
       </div>`;
   }
@@ -2760,7 +3238,7 @@ class PredbatCardEditor extends HTMLElement {
         type: "grid", name: "", schema: [
           bool("show_header"), bool("show_overview"), bool("show_chart"), bool("show_grid_chart"),
           bool("show_rates_chart"), bool("show_timeline"), bool("show_actions"), bool("show_table"),
-          bool("show_base"), bool("show_rates"), bool("show_data_quality"),
+          bool("show_base"), bool("show_rates"), bool("show_data_quality"), bool("show_car_chart"),
         ],
       },
       {
@@ -2769,6 +3247,13 @@ class PredbatCardEditor extends HTMLElement {
           { name: "max_actions", selector: { number: { min: 1, max: 12, step: 1, mode: "box" } } },
         ],
       },
+      {
+        type: "grid", name: "", schema: ["show_car", "show_iboost"].map((name) => ({
+          name,
+          selector: { select: { mode: "dropdown", options: ["auto", "on", "off"].map((v) => ({ value: v, label: t("show_" + v) })) } },
+        })),
+      },
+      { name: "car_names", selector: { text: {} } },
       {
         name: "chart_layout",
         selector: {
@@ -2798,7 +3283,7 @@ class PredbatCardEditor extends HTMLElement {
   _label(t) {
     const map = {
       style: "ed_style", theme_mode: "ed_theme_mode", title: "ed_title", prefix: "ed_prefix", language: "ed_language",
-      show_header: "ed_show_header", show_overview: "ed_show_overview", show_chart: "ed_show_chart", show_grid_chart: "ed_show_grid_chart", show_rates_chart: "ed_show_rates_chart", chart_layout: "ed_chart_layout", show_data_quality: "ed_show_data_quality", data_quality_days: "ed_dq_days", data_quality_minutes: "ed_dq_minutes", font_scale: "ed_font_scale",
+      show_header: "ed_show_header", show_overview: "ed_show_overview", show_chart: "ed_show_chart", show_grid_chart: "ed_show_grid_chart", show_rates_chart: "ed_show_rates_chart", chart_layout: "ed_chart_layout", show_data_quality: "ed_show_data_quality", show_car: "ed_show_car", show_iboost: "ed_show_iboost", show_car_chart: "ed_show_car_chart", car_names: "ed_car_names", data_quality_days: "ed_dq_days", data_quality_minutes: "ed_dq_minutes", font_scale: "ed_font_scale",
       show_timeline: "ed_show_timeline", show_actions: "ed_show_actions", show_table: "ed_show_table",
       show_base: "ed_show_base", show_rates: "ed_show_rates", hours: "ed_hours", max_actions: "ed_max_actions",
       battery_capacity: "ed_capacity",
@@ -2806,7 +3291,7 @@ class PredbatCardEditor extends HTMLElement {
       soc_base: "e_soc_base", inverter_config: "e_inverter_config", hours_left: "e_hours_left", rates: "e_rates",
       rates_export: "e_rates_export", cost_today: "e_cost_today", best_metric: "e_best_metric", base_metric: "e_base_metric", savings: "e_savings",
       charge_start: "e_charge_start", charge_end: "e_charge_end", charge_limit: "e_charge_limit",
-      export_start: "e_export_start", export_end: "e_export_end", export_limit: "e_export_limit", export_energy: "e_export_energy", load_today: "e_load_today", load_power: "e_load_power", import_energy: "e_import_energy",
+      export_start: "e_export_start", export_end: "e_export_end", export_limit: "e_export_limit", export_energy: "e_export_energy", load_today: "e_load_today", load_power: "e_load_power", car_slot: "e_car_slot", car_soc: "e_car_soc", car_plan_time: "e_car_plan_time", iboost_today: "e_iboost_today", iboost_max: "e_iboost_max", iboost_active: "e_iboost_active", iboost_enable: "e_iboost_enable", import_energy: "e_import_energy",
     };
     return (s) => t(map[s.name] || s.name);
   }
@@ -2823,7 +3308,7 @@ class PredbatCardEditor extends HTMLElement {
           .check h4 { margin: 0 0 6px; font-size: .9rem; display:flex; justify-content:space-between; align-items:center; gap:8px; }
           .check ul { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 16px; }
           .check li { padding: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--code-font-family, monospace); font-size: .76rem; }
-          .ok { color: var(--success-color, #2e7d32); } .bad { color: var(--error-color, #c62828); }
+          .ok { color: var(--success-color, #2e7d32); } .bad { color: var(--error-color, #c62828); } .opt { color: var(--secondary-text-color); }
           button { background: none; border: 1px solid var(--divider-color); color: var(--primary-text-color); border-radius: 999px; padding: 4px 10px; cursor: pointer; font: inherit; font-size: .75rem; }
           .ver { margin-top: 8px; font-size: .72rem; color: var(--secondary-text-color); text-align: right; } .ver a { color: inherit; }
           @media (max-width: 500px) { .check ul { columns: 1; } }
@@ -2878,13 +3363,17 @@ class PredbatCardEditor extends HTMLElement {
         for (const id of list) items.push({ id: auto ? `${id} (${t("ed_auto_found")})` : id, ok: !!this._hass.states[id] });
         continue;
       }
-      items.push({ id: v, ok: !!(v && this._hass.states[v]) });
+      const ok = !!(v && this._hass.states[v]);
+      if (!ok && OPTIONAL_KEYS.includes(k)) { items.push({ id: v, ok: null }); continue; }
+      items.push({ id: v, ok });
     }
     const found = items.filter((i) => i.ok).length;
+    const counted = items.filter((i) => i.ok !== null).length;
+    const opt = items.filter((i) => i.ok === null).length;
     const html = `
-      <h4><span>${t("ed_check")} · ${esc(t("ed_found", { n: found, t: items.length }))}</span>
+      <h4><span>${t("ed_check")} · ${esc(t("ed_found", { n: found, t: counted }))}${opt ? ` · ${esc(t("ed_optional", { n: opt }))}` : ""}</span>
       <button data-reset>${esc(t("ed_reset"))}</button></h4>
-      <ul>${items.map((i) => `<li class="${i.ok ? "ok" : "bad"}" title="${esc(i.id)}">${i.ok ? "✓" : "✗"} ${esc(i.id)}</li>`).join("")}</ul>`;
+      <ul>${items.map((i) => `<li class="${i.ok ? "ok" : i.ok === null ? "opt" : "bad"}" title="${esc(i.id)}">${i.ok ? "✓" : i.ok === null ? "–" : "✗"} ${esc(i.id)}</li>`).join("")}</ul>`;
     const box = this._root.querySelector(".check");
     if (box.innerHTML !== html) box.innerHTML = html;
   }
