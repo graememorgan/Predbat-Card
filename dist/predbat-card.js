@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.3.0";
+const CARD_VERSION = "0.3.1";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -98,6 +98,32 @@ const TRANSLATIONS = {
     missing_n: "{n} Predbat entities not found",
     missing_hint: "Open the card editor to check the entity names or change the prefix.",
     no_raw: "{e} has no plan data (the “raw” attribute). Update Predbat to a newer version to see the plan.",
+    tab_data: "Data",
+    dq_summary_one: "1 zero-load period in the last 24 h",
+    dq_title: "Load data quality",
+    dq_chip: "Load data",
+    dq_summary: "{n} zero-load periods in the last 24 h",
+    dq_filled_n: "{n} filled by Predbat",
+    dq_unfilled_n: "{n} not filled",
+    dq_hint_filled: "Load total stopped rising while power was used. Predbat fills this from load power.",
+    dq_hint_unfilled: "No load data and no power data. Predbat has to guess, so the load forecast may be off.",
+    dq_more: "and {n} more",
+    dq_view: "Show {d}-day view",
+    dq_note: "Found by the card from Home Assistant history, so counts can differ slightly from Predbat’s log.",
+    dq_good: "{v}% good over {d} days",
+    dq_l_ok: "Good",
+    dq_l_filled: "Filled by Predbat",
+    dq_l_unfilled: "Not filled",
+    dq_l_nodata: "No history",
+    dq_loading: "Loading load history…",
+    dq_error: "Couldn’t load history: {v}",
+    dq_no_history: "No history for {e}. It may be excluded from the recorder. Set the load today and load power entities to your inverter’s sensors.",
+    dq_unsupported: "History isn’t available here.",
+    ed_show_data_quality: "Zero-load alarm (load data quality)",
+    ed_dq_days: "Data quality days",
+    ed_dq_minutes: "Flag flat load after",
+    e_load_today: "Load today (kWh)",
+    e_load_power: "Load power (W)",
     ed_title: "Title",
     ed_prefix: "Predbat prefix",
     ed_language: "Language",
@@ -224,6 +250,38 @@ const TRANSLATIONS = {
     missing_n: "Nie znaleziono {n} encji Predbat",
     missing_hint: "Otwórz edytor karty, aby sprawdzić nazwy encji lub zmienić prefiks.",
     no_raw: "{e} nie zawiera danych planu (atrybut „raw”). Zaktualizuj Predbat, aby zobaczyć plan.",
+    tab_data: "Dane",
+    dq_summary_one: "1 okres zerowego zużycia w ciągu 24 h",
+    dq_summary_few: "{n} okresy zerowego zużycia w ciągu 24 h",
+    dq_filled_n_one: "1 uzupełniony przez Predbat",
+    dq_filled_n_few: "{n} uzupełnione przez Predbat",
+    dq_unfilled_n_one: "1 nieuzupełniony",
+    dq_unfilled_n_few: "{n} nieuzupełnione",
+    dq_more_few: "i {n} więcej",
+    dq_title: "Jakość danych zużycia",
+    dq_chip: "Dane zużycia",
+    dq_summary: "{n} okresów zerowego zużycia w ciągu 24 h",
+    dq_filled_n: "{n} uzupełnionych przez Predbat",
+    dq_unfilled_n: "{n} nieuzupełnionych",
+    dq_hint_filled: "Licznik zużycia stał w miejscu, choć dom pobierał moc. Predbat uzupełnia to z mocy zużycia.",
+    dq_hint_unfilled: "Brak danych zużycia i mocy. Predbat musi zgadywać, więc prognoza zużycia może być błędna.",
+    dq_more: "i {n} więcej",
+    dq_view: "Pokaż widok {d} dni",
+    dq_note: "Wykryte przez kartę z historii Home Assistant, liczby mogą się nieco różnić od logu Predbat.",
+    dq_good: "{v}% poprawnych w ciągu {d} dni",
+    dq_l_ok: "Poprawne",
+    dq_l_filled: "Uzupełnione przez Predbat",
+    dq_l_unfilled: "Nieuzupełnione",
+    dq_l_nodata: "Brak historii",
+    dq_loading: "Wczytywanie historii zużycia…",
+    dq_error: "Nie udało się wczytać historii: {v}",
+    dq_no_history: "Brak historii dla {e}. Może być wyłączona z rekordera. Ustaw encje zużycia dziś i mocy zużycia na czujniki falownika.",
+    dq_unsupported: "Historia nie jest tu dostępna.",
+    ed_show_data_quality: "Alarm zerowego zużycia (jakość danych)",
+    ed_dq_days: "Dni jakości danych",
+    ed_dq_minutes: "Oznacz płaskie zużycie po",
+    e_load_today: "Zużycie dziś (kWh)",
+    e_load_power: "Moc zużycia (W)",
     ed_title: "Tytuł",
     ed_prefix: "Prefiks Predbat",
     ed_language: "Język",
@@ -350,6 +408,33 @@ const TRANSLATIONS = {
     missing_n: "No se encontraron {n} entidades de Predbat",
     missing_hint: "Abre el editor de la tarjeta para revisar los nombres o cambiar el prefijo.",
     no_raw: "{e} no tiene datos del plan (atributo «raw»). Actualiza Predbat para ver el plan.",
+    tab_data: "Datos",
+    dq_summary_one: "1 periodo de consumo cero en las últimas 24 h",
+    dq_filled_n_one: "1 rellenado por Predbat",
+    dq_title: "Calidad de datos de consumo",
+    dq_chip: "Datos de consumo",
+    dq_summary: "{n} periodos de consumo cero en las últimas 24 h",
+    dq_filled_n: "{n} rellenados por Predbat",
+    dq_unfilled_n: "{n} sin rellenar",
+    dq_hint_filled: "El total de consumo dejó de subir aunque se usaba energía. Predbat lo rellena con la potencia de consumo.",
+    dq_hint_unfilled: "Sin datos de consumo ni de potencia. Predbat tiene que estimar, así que la previsión de consumo puede fallar.",
+    dq_more: "y {n} más",
+    dq_view: "Ver {d} días",
+    dq_note: "Detectado por la tarjeta desde el historial de Home Assistant; puede diferir un poco del registro de Predbat.",
+    dq_good: "{v}% correcto en {d} días",
+    dq_l_ok: "Correcto",
+    dq_l_filled: "Rellenado por Predbat",
+    dq_l_unfilled: "Sin rellenar",
+    dq_l_nodata: "Sin historial",
+    dq_loading: "Cargando historial de consumo…",
+    dq_error: "No se pudo cargar el historial: {v}",
+    dq_no_history: "No hay historial para {e}. Puede estar excluido del registrador. Usa los sensores de tu inversor para consumo de hoy y potencia de consumo.",
+    dq_unsupported: "El historial no está disponible aquí.",
+    ed_show_data_quality: "Alarma de consumo cero (calidad de datos)",
+    ed_dq_days: "Días de calidad de datos",
+    ed_dq_minutes: "Marcar consumo plano tras",
+    e_load_today: "Consumo de hoy (kWh)",
+    e_load_power: "Potencia de consumo (W)",
     ed_title: "Título",
     ed_prefix: "Prefijo de Predbat",
     ed_language: "Idioma",
@@ -402,11 +487,21 @@ function pickLang(hass, config) {
 
 function makeT(lang) {
   const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
-  return (key, vars) => {
+  const t = (key, vars) => {
+    // plural forms: key_one / key_few (Polish 2–4) / key
+    if (vars && typeof vars.n === "number") {
+      const n = vars.n;
+      let form = "";
+      if (n === 1) form = "_one";
+      else if (lang === "pl" && [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100)) form = "_few";
+      if (form && (dict[key + form] !== undefined || TRANSLATIONS.en[key + form] !== undefined) &&
+          (dict === TRANSLATIONS.en || dict[key + form] !== undefined)) key = key + form;
+    }
     let s = dict[key] ?? TRANSLATIONS.en[key] ?? key;
     if (vars) for (const k of Object.keys(vars)) s = s.split(`{${k}}`).join(vars[k]);
     return s;
   };
+  return t;
 }
 
 /* ------------------------------------------------------------------ */
@@ -416,7 +511,7 @@ const ENTITY_KEYS = [
   "status", "plan", "mode", "soc_now", "soc_best", "soc_base", "inverter_config",
   "hours_left", "rates", "rates_export", "cost_today", "best_metric", "base_metric", "savings",
   "charge_start", "charge_end", "charge_limit", "export_start", "export_end", "export_limit",
-  "export_energy", "import_energy",
+  "export_energy", "import_energy", "load_today", "load_power",
 ];
 
 function defaultEntities(prefix) {
@@ -444,6 +539,8 @@ function defaultEntities(prefix) {
     export_limit: `${p}.best_export_limit`,
     export_energy: `${p}.best_export_energy`,
     import_energy: `${p}.best_import_energy`,
+    load_today: `${p}.load_energy_h0`,
+    load_power: `${p}.load_power`,
   };
 }
 
@@ -467,6 +564,9 @@ const DEFAULT_CONFIG = {
   show_table: true,
   show_base: true,
   show_rates: true,
+  show_data_quality: true,
+  data_quality_days: 7,
+  data_quality_minutes: 30,
   hours: 24,
   max_actions: 4,
 };
@@ -579,6 +679,142 @@ const STATE_ICON = {
   error: "mdi:alert-circle",
   neutral: "mdi:information-outline",
 };
+
+/* ------------------------------------------------------------------ */
+/*  Load data quality (zero-load detection)                           */
+/* ------------------------------------------------------------------ */
+/* Predbat logs "Found N periods of zero load with power data" when the
+ * daily load total (load_today) stays flat for a while although the load
+ * power sensor shows the house was using energy. That warning is only in
+ * Predbat's log, so the card re-runs the same check on Home Assistant
+ * history of the two sensors Predbat mirrors (load_energy_h0, load_power). */
+
+/** Turn one entity's history (full or compressed websocket format) into
+ *  a sorted step series of [ms, number|null]. null = unknown/unavailable. */
+function historySeries(rows) {
+  const out = [];
+  if (!Array.isArray(rows)) return out;
+  for (const r of rows) {
+    if (!r) continue;
+    const raw = r.s !== undefined ? r.s : r.state;
+    let tm = r.lu ?? r.lc ?? r.last_updated ?? r.last_changed;
+    if (tm === undefined || tm === null) continue;
+    tm = typeof tm === "number" ? tm * 1000 : Date.parse(tm);
+    if (!isFinite(tm)) continue;
+    out.push([tm, num(raw)]);
+  }
+  out.sort((a, b) => a[0] - b[0]);
+  return out;
+}
+
+/** Walk a step series in fixed buckets. Calls fn(i, startValue, endValue,
+ *  nullFraction, integral, knownFraction) where integral is value×hours. */
+function walkBuckets(series, t0, t1, step, fn) {
+  const n = Math.ceil((t1 - t0) / step);
+  let idx = 0;
+  let cur = null;
+  while (idx < series.length && series[idx][0] <= t0) { cur = series[idx][1]; idx++; }
+  const before = idx > 0;
+  for (let i = 0; i < n; i++) {
+    const bs = t0 + i * step, be = Math.min(t1, bs + step);
+    const startVal = before || i > 0 ? cur : null;
+    let tPrev = bs, nullMs = 0, knownMs = 0, integ = 0, v = startVal;
+    while (idx < series.length && series[idx][0] < be) {
+      const [tm, val] = series[idx];
+      const dt = tm - tPrev;
+      if (v === null) nullMs += dt; else { knownMs += dt; integ += v * dt; }
+      tPrev = tm; v = val; idx++;
+    }
+    const dt = be - tPrev;
+    if (v === null) nullMs += dt; else { knownMs += dt; integ += v * dt; }
+    cur = v;
+    const span = be - bs || 1;
+    fn(i, startVal, v, nullMs / span, integ / 3600e3, knownMs / span);
+  }
+}
+
+/** Smallest regular step of a cumulative sensor (its resolution), in kWh. */
+function seriesResolution(series) {
+  const diffs = [];
+  for (let i = 1; i < series.length; i++) {
+    const a = series[i - 1][1], b = series[i][1];
+    if (a === null || b === null) continue;
+    const d = b - a;
+    if (d > 0.0005) diffs.push(d);
+  }
+  if (!diffs.length) return 0.01;
+  diffs.sort((x, y) => x - y);
+  return diffs[Math.floor(diffs.length * 0.1)];
+}
+
+/**
+ * Find zero-load periods.
+ * load: step series of load_today (kWh, resets at midnight)
+ * power: step series of load_power (W), may be empty
+ * Returns { periods: [{s, e, kind, kwh}], cells, start, end, slot }
+ *   kind "filled":   load flat but power shows use  -> Predbat fills it from power
+ *   kind "unfilled": load flat/unavailable and no power data -> Predbat guesses
+ */
+function detectZeroLoad(load, power, opts) {
+  const step = 5 * 60e3;
+  const { start, end } = opts;
+  const minMs = Math.max(10, opts.minutes || 30) * 60e3;
+  const hasPower = power.some((p) => p[1] !== null);
+  const res = seriesResolution(load);
+  const thr = Math.max(0.05, res * 1.5);
+  const firstData = load.length ? load[0][0] : end;
+
+  const n = Math.ceil((end - start) / step);
+  const flat = new Array(n).fill(false);
+  const nullF = new Array(n).fill(0);
+  const pE = new Array(n).fill(0);
+  const pK = new Array(n).fill(0);
+  walkBuckets(load, start, end, step, (i, a, b, nf) => {
+    nullF[i] = nf;
+    if (start + i * step < firstData) return; // before the sensor had any history
+    if (nf > 0.5) { flat[i] = true; return; }
+    if (a === null || b === null) { flat[i] = nf > 0; return; }
+    flat[i] = Math.abs(b - a) < 1e-6; // a midnight reset (b < a) counts as movement
+  });
+  if (hasPower) {
+    walkBuckets(power, start, end, step, (i, a, b, nf, integ, known) => {
+      pE[i] = Math.max(0, integ) / 1000; // W·h -> kWh
+      pK[i] = known;
+    });
+  }
+
+  const periods = [];
+  let i = 0;
+  while (i < n) {
+    if (!flat[i]) { i++; continue; }
+    let j = i;
+    while (j + 1 < n && flat[j + 1]) j++;
+    const s = start + i * step, e = Math.min(end, start + (j + 1) * step);
+    if (e - s >= minMs) {
+      let kwh = 0, known = 0, nulls = 0;
+      for (let k = i; k <= j; k++) { kwh += pE[k]; known += pK[k]; nulls += nullF[k]; }
+      const cnt = j - i + 1;
+      known /= cnt; nulls /= cnt;
+      let kind = null;
+      if (kwh > thr) kind = "filled";
+      else if (known < 0.5 && (nulls >= 0.5 || hasPower)) kind = "unfilled";
+      if (kind) periods.push({ s, e, kind, kwh });
+    }
+    i = j + 1;
+  }
+
+  // 30-minute cells for the heatmap: 0 ok, 1 filled, 2 not filled, -1 no history
+  const slot = 30 * 60e3;
+  const cells = [];
+  for (let t = start; t < end; t += slot) {
+    let v = t + slot <= firstData ? -1 : 0;
+    for (const p of periods) {
+      if (p.s < t + slot && p.e > t) v = Math.max(v, p.kind === "unfilled" ? 2 : 1);
+    }
+    cells.push(v);
+  }
+  return { periods, cells, start, end, slot, resolution: res, hasPower };
+}
 
 /** Accept YAML typed by hand: "false"/"true" strings, numbers as strings,
  *  a missing or list-shaped `entities:`. Never throws. */
@@ -997,6 +1233,41 @@ ha-card {
   .banner { background: rgba(250, 82, 82, .14); }
 }
 
+/* load data quality */
+ha-card {
+  --pb-dq-ok: color-mix(in srgb, var(--pb-muted) 22%, transparent);
+  --pb-dq-filled: #f59f00;
+  --pb-dq-unfilled: var(--pb-error);
+}
+@supports not (color: color-mix(in srgb, red 50%, blue)) { ha-card { --pb-dq-ok: rgba(127, 127, 127, .22); } }
+.s-neon { --pb-dq-filled: #ffe600; }
+.s-terminal { --pb-dq-ok: #183018; --pb-dq-filled: #ffb000; }
+.m-light.s-terminal { --pb-dq-ok: #b3bd99; --pb-dq-filled: #8a4b00; }
+.dq-chip {
+  display: inline-flex; align-items: center; gap: 4px; flex: none; cursor: pointer; font: inherit;
+  font-size: calc(.8 * var(--u)); font-weight: 600; padding: 4px 9px 4px 7px; border-radius: 999px;
+  color: var(--pb-dq-filled); background: color-mix(in srgb, var(--pb-dq-filled) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pb-dq-filled) 40%, transparent);
+}
+.dq-chip.bad { color: var(--pb-dq-unfilled); background: color-mix(in srgb, var(--pb-dq-unfilled) 14%, transparent); border-color: color-mix(in srgb, var(--pb-dq-unfilled) 40%, transparent); }
+.dq-chip ha-icon { --mdc-icon-size: 15px; }
+.dq-chip b { font-variant-numeric: tabular-nums; }
+@container (max-width: 520px) { .dq-chip-text { display: none; } .dq-chip { padding: 4px 7px; } }
+.s-neon .dq-chip, .s-terminal .dq-chip, .s-native .dq-chip { border-radius: 4px; }
+.s-terminal .dq-chip { border-radius: 0; }
+details.dq { border-left: 3px solid var(--pb-dq-filled); }
+details.dq.bad { border-left-color: var(--pb-dq-unfilled); }
+details.dq summary { cursor: pointer; display: flex; align-items: center; gap: 6px; list-style: none; }
+details.dq summary::-webkit-details-marker { display: none; }
+details.dq summary ha-icon { --mdc-icon-size: 16px; color: var(--pb-dq-filled); flex: none; }
+details.dq.bad summary ha-icon { color: var(--pb-dq-unfilled); }
+details.dq summary::after { content: "▾"; margin-left: auto; opacity: .6; transition: transform .2s; }
+details.dq[open] summary::after { transform: rotate(180deg); }
+.dq-list { list-style: none; margin: 8px 0 4px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.dq-list li { display: flex; gap: 8px; align-items: flex-start; line-height: 1.35; }
+.dq-list li > i { width: 9px; height: 9px; border-radius: 3px; background: var(--c); margin-top: 4px; flex: none; }
+.dq-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 6px; font-size: .92em; }
+
 /* tabs */
 .tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--pb-tile); border: 1px solid var(--pb-line); }
 .tabs button {
@@ -1191,6 +1462,7 @@ ${esc(navigator.userAgent)}</pre></details>
     }
     parts.push(this._hass.locale?.language || this._hass.language || "");
     parts.push(this._hass.themes?.darkMode ? "d" : "l");
+    parts.push("dq" + (this._dqVer || 0));
     return parts.join(";");
   }
 
@@ -1257,7 +1529,9 @@ ${esc(navigator.userAgent)}</pre></details>
 
   /* ---------- formatting ---------- */
   _timeFmt(opts) {
-    const lang = this._hass.locale?.language || this._hass.language || "en";
+    // weekday names follow the card language when it is set explicitly
+    const cl = this._config.language;
+    const lang = cl && cl !== "auto" ? cl : (this._hass.locale?.language || this._hass.language || "en");
     const tf = this._hass.locale?.time_format;
     const o = { ...opts };
     if (tf === "24") o.hourCycle = "h23";
@@ -1304,6 +1578,7 @@ ${esc(navigator.userAgent)}</pre></details>
     if (!hass) return;
     this.t = makeT(pickLang(hass, c));
     const t = this.t;
+    this._dqMaybeFetch();
 
     const plan = this._plan();
     const cur = this._currency(plan.raw);
@@ -1320,6 +1595,7 @@ ${esc(navigator.userAgent)}</pre></details>
       alerts += `<div class="banner"><ha-icon icon="mdi:alert-circle"></ha-icon><span>${esc(t("error"))}${status.state ? ": " + esc(status.state) : ""}</span></div>`;
     }
     alerts += this._renderMissing(plan);
+    alerts += this._renderDQNotice();
 
     const sections = [
       ["header", c.show_header !== false ? this._renderHeader(status) : ""],
@@ -1402,6 +1678,7 @@ ${esc(navigator.userAgent)}</pre></details>
           <div class="head-title">${esc(title)}</div>
           <div class="head-sub muted">${subBits.join(" · ")}</div>
         </div>
+        ${this._renderDQChip()}
         <div class="pill clickable ${live ? "live" : ""}" style="--c:${color}" data-more="${esc(this._eid("status"))}" title="${esc(txt)}">
           <span class="dot"></span><span>${esc(txt)}</span>
         </div>
@@ -1543,6 +1820,211 @@ ${esc(navigator.userAgent)}</pre></details>
     return out;
   }
 
+  /* ---------- load data quality ---------- */
+  _dqEnabled() { return this._config.show_data_quality !== false; }
+
+  _dqMaybeFetch() {
+    if (!this._dqEnabled() || !this._hass || typeof this._hass.callWS !== "function") return;
+    const c = this._config;
+    const days = Math.max(1, Math.min(7, Math.round(num(c.data_quality_days) || 7)));
+    const minutes = Math.max(10, Math.min(240, num(c.data_quality_minutes) || 30));
+    const lt = this._eid("load_today"), lp = this._eid("load_power");
+    const key = [lt, lp, days, minutes].join("|");
+    const fresh = this._dq && this._dq.key === key && Date.now() - this._dq.at < 30 * 60e3;
+    if (fresh || this._dqBusy) return;
+    this._dqBusy = true;
+    const end = Date.now();
+    const d0 = new Date(end); d0.setHours(0, 0, 0, 0); d0.setDate(d0.getDate() - (days - 1));
+    const start = d0.getTime();
+    const ids = lp && lp !== lt ? [lt, lp] : [lt];
+    Promise.resolve()
+      .then(() => this._hass.callWS({
+        type: "history/history_during_period",
+        start_time: new Date(start).toISOString(),
+        end_time: new Date(end).toISOString(),
+        entity_ids: ids,
+        minimal_response: true,
+        no_attributes: true,
+        significant_changes_only: false,
+        include_start_time_state: true,
+      }))
+      .then((res) => {
+        const L = historySeries(res && res[lt]);
+        const P = lp ? historySeries(res && res[lp]) : [];
+        const base = { key, at: Date.now(), days, loadId: lt, powerId: lp };
+        this._dq = L.length ? { ...base, ...detectZeroLoad(L, P, { start, end, minutes }) } : { ...base, empty: true };
+      })
+      .catch((err) => {
+        // try again in 5 minutes rather than 30
+        this._dq = { key, at: Date.now() - 25 * 60e3, days, error: (err && (err.message || err.code)) || String(err) };
+      })
+      .finally(() => {
+        this._dqBusy = false;
+        this._dqVer = (this._dqVer || 0) + 1;
+        this._sig = "";
+        this._safeRender();
+      });
+  }
+
+  _dqRecent() {
+    const dq = this._dq;
+    if (!dq || !dq.periods) return null;
+    const since = Date.now() - 24 * 3600e3;
+    const list = dq.periods.filter((p) => p.e > since).sort((a, b) => b.s - a.s);
+    return {
+      list,
+      filled: list.filter((p) => p.kind === "filled").length,
+      unfilled: list.filter((p) => p.kind === "unfilled").length,
+    };
+  }
+
+  _dur(ms) {
+    const m = Math.round(ms / 60000);
+    if (m < 60) return `${m} min`;
+    const h = Math.floor(m / 60), r = m % 60;
+    return r ? `${h} h ${r} min` : `${h} h`;
+  }
+
+  _renderDQChip() {
+    if (!this._dqEnabled()) return "";
+    const r = this._dqRecent();
+    if (!r || !r.list.length) return "";
+    const t = this.t;
+    const cls = r.unfilled ? "bad" : "";
+    const title = t("dq_summary", { n: r.list.length });
+    return `<button class="dq-chip ${cls}" data-action="dq" title="${esc(title)}" aria-label="${esc(title)}">
+        <ha-icon icon="mdi:alert-outline"></ha-icon><span class="dq-chip-text">${esc(t("dq_chip"))}</span><b>${r.list.length}</b>
+      </button>`;
+  }
+
+  _renderDQNotice() {
+    if (!this._dqEnabled()) return "";
+    const r = this._dqRecent();
+    if (!r || !r.list.length) return "";
+    const t = this.t;
+    const bits = [];
+    if (r.filled) bits.push(t("dq_filled_n", { n: r.filled }));
+    if (r.unfilled) bits.push(t("dq_unfilled_n", { n: r.unfilled }));
+    const items = r.list.slice(0, 8).map((p) => {
+      const k = p.kind === "unfilled" ? "unfilled" : "filled";
+      const extra = k === "filled" && p.kwh > 0 ? ` · ≈${p.kwh.toFixed(2)} kWh` : "";
+      return `<li><i style="--c:var(--pb-dq-${k})"></i><span>
+          <b>${esc(this._dayWord(p.s))} ${esc(this._hm(p.s))}–${esc(this._hm(p.e))}</b> · ${esc(this._dur(p.e - p.s))}${esc(extra)}<br>
+          <span class="muted">${esc(t("dq_hint_" + k))}</span></span></li>`;
+    }).join("");
+    const more = r.list.length > 8 ? `<div class="muted">${esc(t("dq_more", { n: r.list.length - 8 }))}</div>` : "";
+    const canTab = this._enabledCharts().length > 1 && this._config.chart_layout !== "stacked";
+    const view = canTab ? `<button class="toggle" data-tab="data">${esc(t("dq_view", { d: this._dq.days }))}</button>` : "";
+    return `<details class="warn dq ${r.unfilled ? "bad" : ""}" ${this._dqOpen ? "open" : ""}>
+        <summary><ha-icon icon="mdi:alert-outline"></ha-icon><span><b>${esc(t("dq_summary", { n: r.list.length }))}</b>${bits.length ? " · " + esc(bits.join(" · ")) : ""}</span></summary>
+        <ul class="dq-list">${items}</ul>${more}
+        <div class="dq-foot">${view}<span class="muted">${esc(t("dq_note"))}</span></div>
+      </details>`;
+  }
+
+  /* 7-day heatmap of load data quality */
+  _chartDQ(W) {
+    const t = this.t;
+    const dq = this._dq;
+    if (typeof this._hass.callWS !== "function") return { empty: t("dq_unsupported") };
+    if (!dq) return { empty: t("dq_loading") };
+    if (dq.error) return { empty: t("dq_error", { v: dq.error }) };
+    if (dq.empty) return { empty: t("dq_no_history", { e: dq.loadId }) };
+    const S = this._scale();
+    const padL = Math.round(36 * S), padR = 4, padT = 4;
+    const rowH = Math.round(15 * S), gap = 3;
+    const days = dq.days;
+    const iw = W - padL - padR;
+    const cw = iw / 48;
+    const H = padT + days * (rowH + gap) + Math.round(18 * S);
+    const d0 = new Date(dq.start);
+    const dayIdx = (tm) => {
+      const d = new Date(tm);
+      const a = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+      const b = Date.UTC(d0.getFullYear(), d0.getMonth(), d0.getDate());
+      return Math.round((a - b) / 86400e3);
+    };
+    const rowY = (di) => padT + (days - 1 - di) * (rowH + gap); // newest day on top
+    const fills = { "-1": "none", 0: "var(--pb-dq-ok)", 1: "var(--pb-dq-filled)", 2: "var(--pb-dq-unfilled)" };
+    const parts = [];
+    let good = 0, total = 0;
+    const cellAt = {};
+    dq.cells.forEach((v, k) => {
+      const tm = dq.start + k * dq.slot;
+      if (tm > Date.now()) return;
+      const d = new Date(tm);
+      const di = dayIdx(tm);
+      if (di < 0 || di >= days) return;
+      const col = d.getHours() * 2 + (d.getMinutes() >= 30 ? 1 : 0);
+      const x = padL + col * cw, y = rowY(di);
+      cellAt[di + ":" + col] = { tm, v };
+      if (v >= 0) { total++; if (v === 0) good++; }
+      if (v === -1) {
+        parts.push(`<rect x="${(x + 0.5).toFixed(1)}" y="${y + 0.5}" width="${Math.max(1, cw - 1.5).toFixed(1)}" height="${rowH - 1}" rx="2" fill="none" stroke="var(--pb-line)"/>`);
+      } else {
+        parts.push(`<rect class="dq-cell" x="${(x + 0.5).toFixed(1)}" y="${y}" width="${Math.max(1, cw - 1).toFixed(1)}" height="${rowH}" rx="2" fill="${fills[v]}"/>`);
+      }
+    });
+    for (let di = 0; di < days; di++) {
+      const tm = dq.start + di * 86400e3 + 12 * 3600e3;
+      const label = di === dayIdx(Date.now()) ? t("today") : this._timeFmt({ weekday: "short" }).format(new Date(tm));
+      parts.push(`<text class="axis" x="${padL - 6}" y="${(rowY(di) + rowH / 2 + 4).toFixed(1)}" text-anchor="end">${esc(label)}</text>`);
+    }
+    const yAx = padT + days * (rowH + gap) + Math.round(12 * S);
+    for (const hr of [0, 6, 12, 18, 24]) {
+      const x = padL + hr * 2 * cw;
+      const anchor = hr === 0 ? "start" : hr === 24 ? "end" : "middle";
+      parts.push(`<text class="axis" x="${x.toFixed(1)}" y="${yAx}" text-anchor="${anchor}">${String(hr).padStart(2, "0")}:00</text>`);
+    }
+    parts.push(`<rect class="dq-hl" x="0" y="0" width="0" height="0" rx="3" fill="none" stroke="var(--primary-text-color)" stroke-width="1.5" opacity="0"/>`);
+    const pct = total ? Math.round((good / total) * 1000) / 10 : 100;
+    const legend = [
+      `<span><b>${esc(t("dq_good", { v: pct, d: days }))}</b></span>`,
+      `<span><i style="--c:var(--pb-dq-ok)"></i>${esc(t("dq_l_ok"))}</span>`,
+      `<span><i style="--c:var(--pb-dq-filled)"></i>${esc(t("dq_l_filled"))}</span>`,
+      `<span><i style="--c:var(--pb-dq-unfilled)"></i>${esc(t("dq_l_unfilled"))}</span>`,
+    ].join("");
+    const wire = (chart) => {
+      const svg = chart.querySelector("svg");
+      const tip = chart.querySelector(".tip");
+      const hl = svg && svg.querySelector(".dq-hl");
+      if (!svg) return;
+      let timer = null;
+      const hide = () => { tip.style.display = "none"; if (hl) hl.setAttribute("opacity", "0"); };
+      const show = (ev) => {
+        const rect = svg.getBoundingClientRect();
+        const x = ev.clientX - rect.left, y = ev.clientY - rect.top;
+        const col = Math.floor((x - padL) / cw);
+        const di = days - 1 - Math.floor((y - padT) / (rowH + gap));
+        const cell = cellAt[di + ":" + col];
+        if (!cell || col < 0 || col > 47) { hide(); return; }
+        const p = (dq.periods || []).find((q) => q.s < cell.tm + dq.slot && q.e > cell.tm);
+        const status = cell.v === -1 ? t("dq_l_nodata") : cell.v === 2 ? t("dq_l_unfilled") : cell.v === 1 ? t("dq_l_filled") : t("dq_l_ok");
+        const lines = [
+          `<div><b>${esc(this._dayWord(cell.tm))} ${esc(this._hm(cell.tm))}–${esc(this._hm(cell.tm + dq.slot))}</b></div>`,
+          `<div class="row"><span class="tag"><i style="--c:${cell.v >= 0 ? fills[cell.v] : "var(--pb-line)"}"></i>${esc(status)}</span></div>`,
+        ];
+        if (p) lines.push(`<div class="row muted"><span>${esc(this._hm(p.s))}–${esc(this._hm(p.e))} · ${esc(this._dur(p.e - p.s))}</span></div>`);
+        tip.innerHTML = lines.join("");
+        tip.style.display = "block";
+        const cx = padL + col * cw;
+        if (hl) {
+          hl.setAttribute("x", cx); hl.setAttribute("y", rowY(di) - 1);
+          hl.setAttribute("width", Math.max(2, cw)); hl.setAttribute("height", rowH + 2); hl.setAttribute("opacity", ".7");
+        }
+        const tw = tip.offsetWidth;
+        let left = cx + cw + 8;
+        if (left + tw > rect.width) left = cx - tw - 8;
+        tip.style.left = Math.max(0, left) + "px";
+        tip.style.top = Math.max(0, rowY(di) - 8) + "px";
+      };
+      svg.addEventListener("pointermove", (ev) => { if (ev.pointerType === "mouse") show(ev); else { show(ev); clearTimeout(timer); timer = setTimeout(hide, 5000); } });
+      svg.addEventListener("pointerdown", (ev) => { show(ev); if (ev.pointerType !== "mouse") { clearTimeout(timer); timer = setTimeout(hide, 5000); } });
+      svg.addEventListener("pointerleave", (ev) => { if (ev.pointerType === "mouse") hide(); });
+    };
+    return { H, svg: parts.join(""), legend, wire };
+  }
+
   /* ---------- charts ---------- */
   _scale() {
     const s = num(this._config.font_scale);
@@ -1555,11 +2037,12 @@ ${esc(navigator.userAgent)}</pre></details>
     if (c.show_chart !== false) out.push("battery");
     if (c.show_grid_chart !== false) out.push("grid");
     if (c.show_rates_chart !== false) out.push("rates");
+    if (this._dqEnabled()) out.push("data");
     return out;
   }
 
   _chartTitle(k) {
-    return { battery: this.t("forecast"), grid: this.t("grid_chart"), rates: this.t("rates_chart") }[k];
+    return { battery: this.t("forecast"), grid: this.t("grid_chart"), rates: this.t("rates_chart"), data: this.t("dq_title") }[k];
   }
 
   _chartBox(k) {
@@ -1591,7 +2074,7 @@ ${esc(navigator.userAgent)}</pre></details>
     if (!this._ctx) return;
     const keys = ["soc_best", "soc_base", "rates", "rates_export", "export_energy", "import_energy", "plan"];
     const sig = keys.map((k) => this._st(k)?.last_updated || "-").join("|") +
-      `|${this._chartWidth}|${Math.floor(Date.now() / 60000)}|${this._tab}|${this._scale()}`;
+      `|${this._chartWidth}|${Math.floor(Date.now() / 60000)}|${this._tab}|${this._scale()}|dq${this._dqVer || 0}`;
     if (!force && sig === this._chartSig) return;
     this._chartSig = sig;
     this.shadowRoot.querySelectorAll(".chart[data-chart]").forEach((el) => {
@@ -1599,7 +2082,7 @@ ${esc(navigator.userAgent)}</pre></details>
       const W = Math.max(220, Math.round(el.clientWidth) || this._chartWidth || 600);
       const host = el.querySelector(".svg-host");
       const legendEl = this.shadowRoot.querySelector(`.legend[data-legend="${key}"]`);
-      const fn = { battery: this._chartBattery, grid: this._chartGrid, rates: this._chartRates }[key];
+      const fn = { battery: this._chartBattery, grid: this._chartGrid, rates: this._chartRates, data: this._chartDQ }[key];
       if (!fn) return;
       const res = fn.call(this, W);
       if (res.empty) {
@@ -1609,7 +2092,7 @@ ${esc(navigator.userAgent)}</pre></details>
       }
       host.innerHTML = `<svg width="${W}" height="${res.H}" viewBox="0 0 ${W} ${res.H}">${res.svg}</svg>`;
       if (legendEl) legendEl.innerHTML = res.legend || "";
-      this._wireHover(el, res.hover);
+      if (res.wire) res.wire(el); else this._wireHover(el, res.hover);
     });
   }
 
@@ -2100,6 +2583,17 @@ ${esc(navigator.userAgent)}</pre></details>
         this._safeRender();
       });
     });
+    root.querySelectorAll('[data-action="dq"]').forEach((el) => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this._dqOpen = !this._dqOpen;
+        const d = this.shadowRoot.querySelector("details.dq");
+        if (d) { d.open = this._dqOpen; if (this._dqOpen) d.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+      });
+    });
+    root.querySelectorAll("details.dq").forEach((d) => {
+      d.addEventListener("toggle", () => { this._dqOpen = d.open; });
+    });
     const tg = root.querySelector('[data-action="toggle-table"]');
     if (tg) tg.addEventListener("click", () => { this._showTable = !this._showTable; this._safeRender(); });
   }
@@ -2196,7 +2690,7 @@ class PredbatCardEditor extends HTMLElement {
         type: "grid", name: "", schema: [
           bool("show_header"), bool("show_overview"), bool("show_chart"), bool("show_grid_chart"),
           bool("show_rates_chart"), bool("show_timeline"), bool("show_actions"), bool("show_table"),
-          bool("show_base"), bool("show_rates"),
+          bool("show_base"), bool("show_rates"), bool("show_data_quality"),
         ],
       },
       {
@@ -2214,6 +2708,12 @@ class PredbatCardEditor extends HTMLElement {
           },
         },
       },
+      {
+        type: "grid", name: "", schema: [
+          { name: "data_quality_days", selector: { number: { min: 1, max: 7, step: 1, mode: "box", unit_of_measurement: "d" } } },
+          { name: "data_quality_minutes", selector: { number: { min: 10, max: 240, step: 5, mode: "box", unit_of_measurement: "min" } } },
+        ],
+      },
       { name: "font_scale", selector: { number: { min: 0.8, max: 1.6, step: 0.05, mode: "slider" } } },
       { name: "battery_capacity", selector: { number: { min: 0, max: 200, step: 0.1, mode: "box", unit_of_measurement: "kWh" } } },
       {
@@ -2226,7 +2726,7 @@ class PredbatCardEditor extends HTMLElement {
   _label(t) {
     const map = {
       style: "ed_style", theme_mode: "ed_theme_mode", title: "ed_title", prefix: "ed_prefix", language: "ed_language",
-      show_header: "ed_show_header", show_overview: "ed_show_overview", show_chart: "ed_show_chart", show_grid_chart: "ed_show_grid_chart", show_rates_chart: "ed_show_rates_chart", chart_layout: "ed_chart_layout", font_scale: "ed_font_scale",
+      show_header: "ed_show_header", show_overview: "ed_show_overview", show_chart: "ed_show_chart", show_grid_chart: "ed_show_grid_chart", show_rates_chart: "ed_show_rates_chart", chart_layout: "ed_chart_layout", show_data_quality: "ed_show_data_quality", data_quality_days: "ed_dq_days", data_quality_minutes: "ed_dq_minutes", font_scale: "ed_font_scale",
       show_timeline: "ed_show_timeline", show_actions: "ed_show_actions", show_table: "ed_show_table",
       show_base: "ed_show_base", show_rates: "ed_show_rates", hours: "ed_hours", max_actions: "ed_max_actions",
       battery_capacity: "ed_capacity",
@@ -2234,7 +2734,7 @@ class PredbatCardEditor extends HTMLElement {
       soc_base: "e_soc_base", inverter_config: "e_inverter_config", hours_left: "e_hours_left", rates: "e_rates",
       rates_export: "e_rates_export", cost_today: "e_cost_today", best_metric: "e_best_metric", base_metric: "e_base_metric", savings: "e_savings",
       charge_start: "e_charge_start", charge_end: "e_charge_end", charge_limit: "e_charge_limit",
-      export_start: "e_export_start", export_end: "e_export_end", export_limit: "e_export_limit", export_energy: "e_export_energy", import_energy: "e_import_energy",
+      export_start: "e_export_start", export_end: "e_export_end", export_limit: "e_export_limit", export_energy: "e_export_energy", load_today: "e_load_today", load_power: "e_load_power", import_energy: "e_import_energy",
     };
     return (s) => t(map[s.name] || s.name);
   }
