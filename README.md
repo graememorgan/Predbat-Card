@@ -69,7 +69,18 @@ Edit a dashboard → **Add card** → search for **Predbat Card**. With a standa
 type: custom:predbat-card
 ```
 
-Everything can be set in the visual editor. Open **Predbat entities** to see or change the entity used for each value; the entity check underneath lists anything that was not found.
+Everything can be set in the visual editor, grouped into sections you can open and close:
+
+| Section | What's in it |
+| --- | --- |
+| **Look** | Style, light/dark, title, language, text size |
+| **Sections** | Header, overview tiles, plan timeline, upcoming actions, plan table, how many actions to list |
+| **Charts** | Which charts to show, tabs or stacked, hours ahead |
+| **Car and hot water** | Show car / iBoost, car names, battery size, your car's own sensors |
+| **Load data alarm** | Turn it on or off, days to check, how long counts as flat, load sensors |
+| **Advanced: Predbat entities** | Prefix, battery size, and every Predbat entity the card reads, grouped by topic |
+
+The **Entity check** at the bottom shows how many entities were found. It opens by itself when something required is missing.
 
 ## Options
 
@@ -130,7 +141,7 @@ Defaults for the `predbat` prefix. Only add the ones you want to change.
 | `export_start` / `export_end` / `export_limit` | `predbat.best_export_*` | Next export tile |
 | `export_energy` | `predbat.best_export_energy` | Grid chart – predicted export |
 | `import_energy` | `predbat.best_import_energy` | Grid chart – predicted import |
-| `load_today` | auto | Zero-load alarm – the `load_today` sensor(s) from your Predbat `apps.yaml`. Found automatically for GivTCP. Can be a list. |
+| `load_today` | auto | Zero-load alarm – the `load_today` sensor(s) from your Predbat `apps.yaml`. Found automatically for the inverters Predbat has templates for (see below). Can be a list. |
 | `car_slot` | `binary_sensor.predbat_car_charging_slot` | Car plan (planned slots, kWh, cost). Second car adds `_1`, third `_2`. |
 | `car_soc` | `predbat.car_soc_best` | Car charge level forecast (same `_1`, `_2` for more cars) |
 | `car_plan_time` | `select.predbat_car_charging_plan_time` | Ready-by time shown on the Car chart |
@@ -149,7 +160,7 @@ Defaults for the `predbat` prefix. Only add the ones you want to change.
 | `car_limit_sensor` | – | Your car's charge limit / target (% or kWh) |
 | `car_plugged_sensor` | – | Plugged in (on/off, or states like `connected`, `plugged`) |
 | `car_charging_sensor` | – | Charging now (on/off, or a power sensor in W/kW) |
-| `load_power` | auto | Zero-load alarm – the `load_power` sensor(s) from your `apps.yaml`. Found automatically for GivTCP. Can be a list. |
+| `load_power` | auto | Zero-load alarm – the `load_power` sensor(s) from your `apps.yaml`. Found automatically like `load_today`. Can be a list. |
 
 ### Example
 
@@ -317,11 +328,14 @@ Predbat builds its load forecast from the history of your `load_today` sensor. E
 
 This usually happens when the inverter integration briefly drops out and comes back with the same reading, or after a Home Assistant restart. It's most common at night, when the total only goes up slowly. That warning only appears in Predbat's log, so the card runs the same check itself on Home Assistant history of the same sensors.
 
-- **Header chip** – shows how many periods were found. Amber means Predbat filled them all from load power and nothing needs doing; red means some had no load power data either. Tap it to open the details.
+- **Header chip** – shows how many periods were found. Amber means Predbat filled them from load power, or the card can't tell (no load power sensor); red means some had no load power data, so Predbat used averages. Tap it to open the details.
 - **Notice** – the count for the whole period and for the last 24 hours, plus the most recent periods with time, length and the energy Predbat filled in.
-- **Data tab** – one row per day, one square per half hour: grey is fine, amber was filled, red wasn't. Repeating patterns (the same time every night, say) usually point to something restarting.
+- **Data tab** – one row per day, one square per half hour: grey is fine, amber was filled, red wasn't, and muted amber means *power unknown* (no load power sensor to check against). Repeating patterns (the same time every night, say) usually point to something restarting.
 
-**Which sensors are checked.** The card needs the *same* sensors Predbat uses: `load_today` and `load_power` from your `apps.yaml`. For GivTCP it finds them automatically; the notice and the Data tab show which ones it used. For anything else, or if your `apps.yaml` lists different sensors, set them yourself. Both accept a list, just like `apps.yaml`:
+**Which sensors are checked.** The card needs the *same* sensors Predbat uses: `load_today` and `load_power` from your `apps.yaml`. The card can't read `apps.yaml`, so:
+
+1. **If you set them** (editor → *Load data alarm* → *Load sensors*, or YAML), those are used. Both accept a list, just like `apps.yaml`, and a list is added up the same way Predbat does.
+2. **If you don't**, the card looks for the sensor names used in Predbat's own `apps.yaml` templates: GivTCP, GivEnergy (cloud integration), Fox ESS, Solis, SolaX, Sofar, Sunsynk, LuxPower, Sigenergy, Kostal, Fronius, SolarEdge, Tesla Powerwall, Growatt (Solar Assistant), Hanchu, Huawei and Victron. The notice and the Data tab say which sensors were used and which inverter type they matched.
 
 ```yaml
 entities:
@@ -330,6 +344,16 @@ entities:
   load_power:
     - sensor.givtcp_XXXX_load_power
 ```
+
+**When something's missing**
+
+| Situation | What the card shows |
+| --- | --- |
+| No sensors set and none found | Data tab: "No load sensors found", with what to set. No chip. |
+| A sensor you set doesn't exist | "Not found: …" in the notice (or on its own if there's nothing else to report) and in the Data tab |
+| A sensor exists but has no history | "No history: …" |
+| `load_today` works but there's no `load_power` | Periods are marked *power unknown* rather than "not filled", with a note to set `load_power` |
+| `load_today` is in Wh or MWh | Converted to kWh automatically |
 
 To match the number in Predbat's log, set `data_quality_days` to the largest value in your Predbat `days_previous` (7 by default), since that's how far back Predbat looks. The count can still be off by one or two at the edges because the two checks run at different times. If Predbat gets its load data from the GivEnergy cloud (`ge_cloud_data`), it doesn't use these sensors, so the card's result won't match.
 
@@ -397,6 +421,7 @@ Yesterday's figure uses a different baseline (one cheap charge per night), so th
 - **“Configuration error” or “Custom element doesn't exist” in the Companion app** – the app is still using an old copy of the card. In the app go to **Settings → Companion app** and use **Reset frontend cache** (on iOS it's under **Debugging**), then close and reopen the app.
 - **The card shows a red “Predbat Card v… :” message** – something unexpected happened while drawing the card. Open **Details for a bug report** under the message and paste it into a [GitHub issue](https://github.com/mimikm/Predbat-Card/issues).
 - **Predbat logs zero load but the card shows nothing** – open the Data tab and check which sensors it says it checked. They need to be the `load_today` and `load_power` sensors from your `apps.yaml` (see [Zero-load alarm](#zero-load-alarm)).
+- **Every zero-load period says “power unknown”** – the card has no `load_power` sensor. Set it to the same sensor as in your `apps.yaml`.
 - **Data tab says “No load sensors found” or “No history for …”** – set `load_today` and `load_power` to the sensors from your `apps.yaml`, and make sure they're recorded.
 - **“N Predbat entities not found”** – tap the notice to see which ones. Check the names in the editor's entity check, or set `prefix` if you changed it in Predbat.
 
@@ -421,6 +446,7 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 | 0.3.2 | Zero-load alarm uses the same check and the same sensors as Predbat, auto-detects GivTCP sensors, counts the whole period |
 | 0.4.0 | Car charging (charge level, planned slots, cost, Car chart) and iBoost hot water (today vs limit, heating windows), shown automatically when set up in Predbat |
 | 0.4.1 | Car support uses every Predbat car entity plus your car's own sensors, with fallbacks; warns when Predbat's car charge level is wrong |
+| 0.4.2 | Load data alarm finds sensors for many inverters, reports missing sensors, handles no load power and Wh units; visual editor reorganised into sections |
 
 ### 🔜 0.4.x – More of Predbat's data
 
