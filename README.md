@@ -25,6 +25,8 @@ A Home Assistant Lovelace card that shows what [Predbat](https://github.com/spri
 - **Battery forecast chart** – the best-plan SoC over the next hours, the baseline for comparison, the import rate as a step line, reserve level and shaded charge/export windows. Hover or tap for details.
 - **Grid import & export chart** – predicted export (up) and import (down) for every plan slot, with totals for the period.
 - **Energy rates chart** – import and export rates as step lines with charge/export windows shaded.
+- **Car charging** – each car's charge level now and at the end of the plan, Predbat's planned charging slots with energy and cost, a Car chart tab and the slots on the plan timeline. See [Car and iBoost](#car-and-iboost).
+- **iBoost (hot water)** – energy used today against the daily limit, whether it's heating now, and planned heating windows.
 - **Zero-load alarm** – spots the "zero load" problems Predbat warns about in its log (your daily load total stops rising while the house is using power), with a header chip, a list of recent periods and a 7-day data-quality view. See [Zero-load alarm](#zero-load-alarm).
 - **Charts your way** – turn each chart on or off, and show them as tabs (one at a time) or stacked.
 - **Text size** – scale all the card's text from 80% to 160%.
@@ -83,6 +85,10 @@ Everything can be set in the visual editor. Open **Predbat entities** to see or 
 | `show_chart` | `true` | Battery forecast chart. |
 | `show_grid_chart` | `true` | Grid import & export chart. |
 | `show_rates_chart` | `true` | Energy rates chart. |
+| `show_car` | `auto` | Car tiles, car slots in the timeline and upcoming actions. `auto` shows them when Predbat has a car set up; `on` or `off` to force. |
+| `show_iboost` | `auto` | Hot water (iBoost) tile, timeline lane and heating windows. `auto` shows them when Predbat's iBoost is enabled. |
+| `show_car_chart` | `true` | Car chart tab (only when cars are shown). |
+| `car_names` | – | Names for your cars, comma separated, e.g. `Tesla, Leaf`. |
 | `show_data_quality` | `true` | Zero-load alarm: header chip, notice and the Data chart tab. |
 | `data_quality_days` | `7` | Days of history to check, 1–14. Set it to the largest number in your Predbat `days_previous` so the count matches Predbat's log. |
 | `data_quality_minutes` | `30` | How long the load total must stay flat before it's flagged (Predbat's default is 30). |
@@ -124,6 +130,13 @@ Defaults for the `predbat` prefix. Only add the ones you want to change.
 | `export_energy` | `predbat.best_export_energy` | Grid chart – predicted export |
 | `import_energy` | `predbat.best_import_energy` | Grid chart – predicted import |
 | `load_today` | auto | Zero-load alarm – the `load_today` sensor(s) from your Predbat `apps.yaml`. Found automatically for GivTCP. Can be a list. |
+| `car_slot` | `binary_sensor.predbat_car_charging_slot` | Car plan (planned slots, kWh, cost). Second car adds `_1`, third `_2`. |
+| `car_soc` | `predbat.car_soc_best` | Car charge level forecast (same `_1`, `_2` for more cars) |
+| `car_plan_time` | `select.predbat_car_charging_plan_time` | Ready-by time shown on the Car chart |
+| `iboost_today` | `input_number.predbat_iboost_today` | iBoost energy today |
+| `iboost_max` | `input_number.predbat_iboost_max_energy` | iBoost daily limit |
+| `iboost_active` | `binary_sensor.predbat_iboost_active` | iBoost heating now |
+| `iboost_enable` | `switch.predbat_iboost_enable` | Whether iBoost is on in Predbat |
 | `load_power` | auto | Zero-load alarm – the `load_power` sensor(s) from your `apps.yaml`. Found automatically for GivTCP. Can be a list. |
 
 ### Example
@@ -171,6 +184,12 @@ show_base: true          # baseline line on the battery chart
 show_rates: true         # import rate line on the battery chart
 
 # Zero-load alarm
+# Car and iBoost
+show_car: auto           # auto | on | off
+show_iboost: auto        # auto | on | off
+show_car_chart: true
+# car_names: Tesla, Leaf
+
 show_data_quality: true
 data_quality_days: 7     # days of history to check, 1 – 14
 data_quality_minutes: 30 # flag the load total when flat this long
@@ -212,6 +231,13 @@ entities:
   export_limit: predbat.best_export_limit
   export_energy: predbat.best_export_energy
   import_energy: predbat.best_import_energy
+  car_slot: binary_sensor.predbat_car_charging_slot
+  car_soc: predbat.car_soc_best
+  car_plan_time: select.predbat_car_charging_plan_time
+  iboost_today: input_number.predbat_iboost_today
+  iboost_max: input_number.predbat_iboost_max_energy
+  iboost_active: binary_sensor.predbat_iboost_active
+  iboost_enable: switch.predbat_iboost_enable
   # load_today / load_power: leave out to auto-detect GivTCP sensors,
   # or list the same sensors as load_today and load_power in apps.yaml
 ```
@@ -280,6 +306,25 @@ To match the number in Predbat's log, set `data_quality_days` to the largest val
 
 History is read once every 30 minutes. Turn it all off with `show_data_quality: false`.
 
+## Car and iBoost
+
+![Car and iBoost](https://github.com/mimikm/Predbat-Card/raw/main/images/car-iboost.png)
+
+If Predbat plans your car charging or a solar diverter (iBoost), the card shows it automatically. Nothing appears when they're not set up in Predbat. Like everything else on the card, this is view only: it never changes Predbat's car or iBoost settings.
+
+**Car** (one tile per car, up to four):
+- Charge level now and at the end of Predbat's plan, from `predbat.car_soc_best`.
+- The next planned charging slot and how much energy it adds, or "No charge planned". The tile pulses while the car is charging in a Predbat slot.
+- Every planned slot in **Upcoming actions** with its energy, average rate and cost, from the `planned` list on `binary_sensor.predbat_car_charging_slot`.
+- A lane under the plan timeline for each car, a **Car** chart tab with the charge level forecast and slots, and a Car column in the full plan table.
+
+**iBoost (hot water):**
+- Energy used today against the daily limit (`input_number.predbat_iboost_today` and `input_number.predbat_iboost_max_energy`), with a small progress bar.
+- "Heating now" (or "from solar") while `binary_sensor.predbat_iboost_active` is on, otherwise the next planned heating window.
+- Heating windows in **Upcoming actions**, a lane under the plan timeline, and an iBoost column in the full plan table. These come from the iBoost amounts in Predbat's plan.
+
+Name your cars with `car_names: Tesla, Leaf`. Predbat numbers its car entities from the second car onwards (`_1`, `_2`), and the card follows the same pattern.
+
 ## Saving today
 
 The **Saving today** tile is a prediction. Predbat publishes two cost forecasts from midnight onwards: one for its own plan (`predbat.best_metric`) and one for the baseline, where the battery is left to run with no changes (`predbat.metric`). The card reads both at midnight tonight; the difference is what Predbat expects to save you today. The tile also shows yesterday's actual saving from `predbat.savings_yesterday_predbat`.
@@ -329,14 +374,15 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 | 0.3.0 | Mobile and reliability: errors shown inside the card instead of breaking it, tolerant YAML, missing-entity notice, phone and tablet layout, tap-to-inspect charts on touch screens, only changed parts redraw, fully view-only header, fallbacks for older iOS and Android |
 | 0.3.1 | Zero-load alarm: header chip, notice with recent periods and a 7-day data-quality view |
 | 0.3.2 | Zero-load alarm uses the same check and the same sensors as Predbat, auto-detects GivTCP sensors, counts the whole period |
+| 0.4.0 | Car charging (charge level, planned slots, cost, Car chart) and iBoost hot water (today vs limit, heating windows), shown automatically when set up in Predbat |
 
-### 🔜 0.4 – More of Predbat's data
+### 🔜 0.4.x – More of Predbat's data
 
+- [x] Car charging schedule: Predbat's planned car charging slots, times and cost
+- [x] Car battery SoC: current level and predicted level at the end of the plan
+- [x] iBoost / solar diverter slots
 - [ ] Solar forecast chart (today, tomorrow, 10% and 90% range)
 - [ ] House load forecast on the grid chart
-- [ ] Car charging schedule: Predbat's planned car charging slots, times and cost
-- [ ] Car battery SoC: current level and predicted level at the end of the plan
-- [ ] iBoost / solar diverter slots
 - [ ] Carbon intensity (optional)
 - [ ] Per-inverter breakdown for multi-inverter setups
 
