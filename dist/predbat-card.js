@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.4.0";
+const CARD_VERSION = "0.4.1";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -12,6 +12,44 @@ const EDITOR_TAG = "predbat-card-editor";
 /* ------------------------------------------------------------------ */
 const TRANSLATIONS = {
   en: {
+    car_manual_marker: "Predbat manual SoC",
+    car_pb_thinks: "Predbat thinks {v}%",
+    car_pb_empty: "Predbat thinks it’s empty",
+    car_starts: "Starts {v}",
+    car_unplugged: "Not plugged in",
+    car_plugged: "plugged in",
+    car_src_car: "Charge level from the car",
+    car_src_manual: "Charge level from Predbat’s manual SoC",
+    car_src_predbat: "Charge level from Predbat’s forecast",
+    car_target: "target {v}%",
+    car_mismatch: "{n}: Predbat plans from {p}% but the car reports {c}%. Check car_charging_soc in your Predbat apps.yaml.",
+    car_empty_hint: "{n}: Predbat thinks the battery is empty. Set car_charging_soc in your Predbat apps.yaml, or turn on manual SoC in Predbat.",
+    car_now_marker: "car’s own reading",
+    car_iog: "Octopus Intelligent",
+    car_smart_on: "Smart plan",
+    car_smart_off: "Charges in time order",
+    car_max_price: "Max {v}",
+    car_from_batt_on: "Can use home battery",
+    car_from_batt_off: "Not from home battery",
+    car_cost_today: "Today {v}",
+    car_cost_yesterday: "Yesterday {v}",
+    ed_car_sensors: "Your car’s own sensors (optional, one per car)",
+    ed_car_battery_size: "Car battery size, kWh (optional, comma separated per car)",
+    e_car_soc_sensor: "Car charge level (% or kWh)",
+    e_car_limit_sensor: "Car charge limit / target",
+    e_car_plugged_sensor: "Car plugged in",
+    e_car_charging_sensor: "Car charging now (on/off or power)",
+    e_car_start: "Car charge start time",
+    e_car_power: "Car charging power",
+    e_car_cost_today: "Car cost today",
+    e_car_cost_yesterday: "Car cost yesterday",
+    e_car_manual_soc: "Car manual SoC switch",
+    e_car_manual_soc_kwh: "Car manual SoC (kWh)",
+    e_car_rate: "Car charging rate",
+    e_car_plan_smart: "Car smart plan",
+    e_car_max_price: "Car max price",
+    e_car_from_battery: "Car can use home battery",
+    e_octopus_intelligent: "Octopus Intelligent charging",
     car: "Car",
     car_n: "Car {n}",
     car_chart: "Car charging",
@@ -206,6 +244,44 @@ const TRANSLATIONS = {
     e_export_limit: "Next export target (%)",
   },
   pl: {
+    car_manual_marker: "ręczny SoC w Predbat",
+    car_pb_thinks: "Predbat zakłada {v}%",
+    car_pb_empty: "Predbat zakłada, że jest pusty",
+    car_starts: "Start {v}",
+    car_unplugged: "Niepodłączony",
+    car_plugged: "podłączony",
+    car_src_car: "Poziom naładowania z samochodu",
+    car_src_manual: "Poziom naładowania z ręcznego SoC Predbat",
+    car_src_predbat: "Poziom naładowania z prognozy Predbat",
+    car_target: "cel {v}%",
+    car_mismatch: "{n}: Predbat planuje od {p}%, a samochód podaje {c}%. Sprawdź car_charging_soc w apps.yaml Predbat.",
+    car_empty_hint: "{n}: Predbat zakłada, że bateria jest pusta. Ustaw car_charging_soc w apps.yaml Predbat albo włącz ręczny SoC w Predbat.",
+    car_now_marker: "odczyt z samochodu",
+    car_iog: "Octopus Intelligent",
+    car_smart_on: "Inteligentny plan",
+    car_smart_off: "Ładowanie po kolei",
+    car_max_price: "Maks. {v}",
+    car_from_batt_on: "Może użyć baterii domowej",
+    car_from_batt_off: "Bez baterii domowej",
+    car_cost_today: "Dziś {v}",
+    car_cost_yesterday: "Wczoraj {v}",
+    ed_car_sensors: "Własne czujniki samochodu (opcjonalnie, jeden na samochód)",
+    ed_car_battery_size: "Pojemność baterii samochodu, kWh (opcjonalnie, po przecinku)",
+    e_car_soc_sensor: "Poziom naładowania samochodu (% lub kWh)",
+    e_car_limit_sensor: "Limit / cel ładowania samochodu",
+    e_car_plugged_sensor: "Samochód podłączony",
+    e_car_charging_sensor: "Samochód ładuje się (wł./wył. lub moc)",
+    e_car_start: "Start ładowania samochodu",
+    e_car_power: "Moc ładowania samochodu",
+    e_car_cost_today: "Koszt samochodu dziś",
+    e_car_cost_yesterday: "Koszt samochodu wczoraj",
+    e_car_manual_soc: "Przełącznik ręcznego SoC",
+    e_car_manual_soc_kwh: "Ręczny SoC samochodu (kWh)",
+    e_car_rate: "Moc ładowania (ustawienie)",
+    e_car_plan_smart: "Inteligentny plan samochodu",
+    e_car_max_price: "Maks. cena ładowania",
+    e_car_from_battery: "Ładowanie z baterii domowej",
+    e_octopus_intelligent: "Octopus Intelligent",
     car: "Samochód",
     car_n: "Samochód {n}",
     car_chart: "Ładowanie samochodu",
@@ -405,6 +481,44 @@ const TRANSLATIONS = {
     e_export_limit: "Cel oddawania (%)",
   },
   es: {
+    car_manual_marker: "SoC manual de Predbat",
+    car_pb_thinks: "Predbat cree {v}%",
+    car_pb_empty: "Predbat cree que está vacío",
+    car_starts: "Empieza {v}",
+    car_unplugged: "No enchufado",
+    car_plugged: "enchufado",
+    car_src_car: "Nivel de carga del coche",
+    car_src_manual: "Nivel de carga del SoC manual de Predbat",
+    car_src_predbat: "Nivel de carga de la previsión de Predbat",
+    car_target: "objetivo {v}%",
+    car_mismatch: "{n}: Predbat planifica desde {p}% pero el coche indica {c}%. Revisa car_charging_soc en el apps.yaml de Predbat.",
+    car_empty_hint: "{n}: Predbat cree que la batería está vacía. Configura car_charging_soc en el apps.yaml de Predbat o activa el SoC manual en Predbat.",
+    car_now_marker: "lectura del coche",
+    car_iog: "Octopus Intelligent",
+    car_smart_on: "Plan inteligente",
+    car_smart_off: "Carga por orden",
+    car_max_price: "Máx. {v}",
+    car_from_batt_on: "Puede usar la batería de casa",
+    car_from_batt_off: "Sin batería de casa",
+    car_cost_today: "Hoy {v}",
+    car_cost_yesterday: "Ayer {v}",
+    ed_car_sensors: "Sensores propios del coche (opcional, uno por coche)",
+    ed_car_battery_size: "Capacidad de batería del coche, kWh (opcional, separado por comas)",
+    e_car_soc_sensor: "Nivel de carga del coche (% o kWh)",
+    e_car_limit_sensor: "Límite / objetivo de carga",
+    e_car_plugged_sensor: "Coche enchufado",
+    e_car_charging_sensor: "Coche cargando (on/off o potencia)",
+    e_car_start: "Inicio de carga del coche",
+    e_car_power: "Potencia de carga del coche",
+    e_car_cost_today: "Coste del coche hoy",
+    e_car_cost_yesterday: "Coste del coche ayer",
+    e_car_manual_soc: "Interruptor de SoC manual",
+    e_car_manual_soc_kwh: "SoC manual del coche (kWh)",
+    e_car_rate: "Potencia de carga (ajuste)",
+    e_car_plan_smart: "Plan inteligente del coche",
+    e_car_max_price: "Precio máx. de carga",
+    e_car_from_battery: "Carga desde la batería de casa",
+    e_octopus_intelligent: "Octopus Intelligent",
     car: "Coche",
     car_n: "Coche {n}",
     car_chart: "Carga del coche",
@@ -637,8 +751,15 @@ const ENTITY_KEYS = [
   "export_energy", "import_energy", "load_today", "load_power",
   "car_slot", "car_soc", "car_plan_time", "iboost_today", "iboost_max", "iboost_active", "iboost_enable",
 ];
+const CAR_PB_KEYS = ["car_start", "car_power", "car_cost_today", "car_cost_yesterday", "car_manual_soc", "car_manual_soc_kwh",
+  "car_rate", "car_plan_smart", "car_max_price", "car_from_battery", "octopus_intelligent"];
+ENTITY_KEYS.push(...CAR_PB_KEYS);
+// Predbat car entities that exist once per car (_1, _2 … from the second car)
+const CAR_PER_CAR = ["car_slot", "car_soc", "car_start", "car_manual_soc", "car_manual_soc_kwh", "car_rate"];
+// your car's own sensors: one entity per car (a list for several cars)
+const CAR_OWN_KEYS = ["car_soc_sensor", "car_limit_sensor", "car_plugged_sensor", "car_charging_sensor"];
 // only needed when you have a car or iBoost; not counted as missing in the editor
-const OPTIONAL_KEYS = ["car_slot", "car_soc", "car_plan_time", "iboost_today", "iboost_max", "iboost_active", "iboost_enable"];
+const OPTIONAL_KEYS = ["car_slot", "car_soc", "car_plan_time", "iboost_today", "iboost_max", "iboost_active", "iboost_enable", ...CAR_PB_KEYS];
 
 function defaultEntities(prefix) {
   const p = (prefix || "predbat").trim() || "predbat";
@@ -674,6 +795,17 @@ function defaultEntities(prefix) {
     iboost_max: `input_number.${p}_iboost_max_energy`,
     iboost_active: `binary_sensor.${p}_iboost_active`,
     iboost_enable: `switch.${p}_iboost_enable`,
+    car_start: `${p}.car_charging_start`,
+    car_power: `${p}.car_charging_power`,
+    car_cost_today: `${p}.cost_today_car`,
+    car_cost_yesterday: `${p}.cost_yesterday_car`,
+    car_manual_soc: `switch.${p}_car_charging_manual_soc`,
+    car_manual_soc_kwh: `input_number.${p}_car_charging_manual_soc_kwh`,
+    car_rate: `input_number.${p}_car_charging_rate`,
+    car_plan_smart: `switch.${p}_car_charging_plan_smart`,
+    car_max_price: `input_number.${p}_car_charging_plan_max_price`,
+    car_from_battery: `switch.${p}_car_charging_from_battery`,
+    octopus_intelligent: `switch.${p}_octopus_intelligent_charging`,
   };
 }
 
@@ -702,6 +834,7 @@ const DEFAULT_CONFIG = {
   show_iboost: "auto",
   show_car_chart: true,
   car_names: "",
+  car_battery_size: "",
   data_quality_days: 7,
   data_quality_minutes: 30,
   hours: 24,
@@ -1461,6 +1594,13 @@ details.dq[open] summary::after { transform: rotate(180deg); }
 .meter { height: 4px; border-radius: 3px; background: var(--pb-line); overflow: hidden; margin: 3px 0 2px; }
 .meter > div { height: 100%; background: var(--c); border-radius: 3px; }
 .tile-value small.arrow { margin: 0 4px; color: var(--pb-muted); }
+.tile-sub.warnline { color: var(--pb-error); display: flex; align-items: center; gap: 4px; }
+.tile-sub.warnline ha-icon { --mdc-icon-size: 14px; flex: none; }
+.car-warn { flex-basis: 100%; display: flex; gap: 6px; align-items: flex-start; color: var(--pb-error); font-weight: 500; }
+.car-warn ha-icon { --mdc-icon-size: 16px; flex: none; }
+.car-settings { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.car-settings b { font-weight: 500; padding: 1px 8px; border-radius: 999px; background: var(--pb-tile); border: 1px solid var(--pb-line); }
+.legend .ring-i { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--pb-car); background: none; box-sizing: border-box; }
 .tile.live .accent-bar { animation: pulse 2s infinite; }
 .s-neon { --pb-car: #3df5ff; --pb-car2: #c77dff; --pb-iboost: #ff5c8a; }
 .s-terminal { --pb-car: #7cfff0; --pb-car2: #d0bfff; --pb-iboost: #ff8c42; }
@@ -1626,8 +1766,15 @@ ${esc(navigator.userAgent)}</pre></details>
     parts.push(this._hass.locale?.language || this._hass.language || "");
     parts.push(this._hass.themes?.darkMode ? "d" : "l");
     parts.push("dq" + (this._dqVer || 0));
+    for (const k of CAR_OWN_KEYS) {
+      const v = this._config.entities?.[k];
+      for (const id of (Array.isArray(v) ? v : typeof v === "string" ? v.split(",") : [])) {
+        const st2 = this._hass.states[String(id).trim()];
+        if (st2) parts.push(st2.last_updated + "|" + st2.state);
+      }
+    }
     for (let n = 1; n < 4; n++) {
-      for (const k of ["car_slot", "car_soc"]) {
+      for (const k of ["car_slot", "car_soc", "car_start", "car_manual_soc_kwh"]) {
         const st = this._hass.states[this._carId(k, n)];
         if (st) parts.push(st.last_updated + "|" + st.state);
       }
@@ -2000,18 +2147,37 @@ ${esc(navigator.userAgent)}</pre></details>
     return "auto";
   }
 
-  /** Entity id for car n: Predbat adds _1, _2 … for the second, third car. */
+  /** Predbat entity id for car n. Per-car entities get _1, _2 … from the second car on. */
   _carId(key, n) {
     const id = this._eid(key);
-    return n > 0 && id ? `${id}_${n}` : id;
+    return n > 0 && id && CAR_PER_CAR.includes(key) ? `${id}_${n}` : id;
+  }
+
+  /** Your own car sensor for car n (entities.<key> can be one id or a list, one per car). */
+  _carOwn(key, n) {
+    const v = this._config.entities?.[key];
+    const list = Array.isArray(v) ? v : typeof v === "string" ? v.split(",") : [];
+    const id = String(list[n] ?? "").trim();
+    return id && this._hass.states[id] ? id : null;
+  }
+
+  _carOwnCount() {
+    let n = 0;
+    for (const k of CAR_OWN_KEYS) {
+      const v = this._config.entities?.[k];
+      const list = Array.isArray(v) ? v : typeof v === "string" ? v.split(",").filter((x) => x.trim()) : [];
+      n = Math.max(n, list.length);
+    }
+    return n;
   }
 
   _carCount() {
-    const n = num(this._ctx?.plan?.raw?.num_cars);
-    if (n !== null) return Math.max(0, Math.min(4, Math.round(n)));
-    let c = 0;
-    while (c < 4 && this._hass.states[this._carId("car_slot", c)]) c++;
-    return c;
+    let pb = num(this._ctx?.plan?.raw?.num_cars);
+    if (pb === null) {
+      pb = 0;
+      while (pb < 4 && (this._hass.states[this._carId("car_slot", pb)] || this._hass.states[this._carId("car_soc", pb)])) pb++;
+    }
+    return Math.max(0, Math.min(4, Math.max(Math.round(pb), this._carOwnCount())));
   }
 
   _carShown() {
@@ -2050,41 +2216,158 @@ ${esc(navigator.userAgent)}</pre></details>
     return d.getTime();
   }
 
-  /** Everything the card shows about each car. */
+  _carBatterySize(n) {
+    const v = this._config.car_battery_size;
+    const list = Array.isArray(v) ? v : typeof v === "string" ? v.split(",") : [v];
+    return num(list[n] ?? list[0]);
+  }
+
+  /** A charge level sensor in % (or kWh, turned into % with the battery size). */
+  _pctFrom(id, n) {
+    const st = this._hass.states[id];
+    const v = num(st?.state);
+    if (v === null) return null;
+    const unit = String(st.attributes?.unit_of_measurement || "%").toLowerCase();
+    if (unit === "kwh") {
+      const size = this._carBatterySize(n);
+      return size ? (v / size) * 100 : null;
+    }
+    return v;
+  }
+
+  _isOn(id, powerOnW = 50) {
+    const st = this._hass.states[id];
+    if (!st) return null;
+    const s = String(st.state).toLowerCase();
+    if (BAD.test(s)) return null;
+    const v = num(st.state);
+    if (v !== null) {
+      const unit = String(st.attributes?.unit_of_measurement || "").toLowerCase();
+      const w = unit === "kw" ? v * 1000 : unit === "w" ? v : null;
+      if (w !== null) return w > powerOnW;
+      return v > 0;
+    }
+    return /^(on|yes|true|enable|enabled|charging|plugged|plugged_in|connected|home|ready)$/.test(s.replace(/\s+/g, "_"));
+  }
+
+  /** Everything the card knows about each car, using whatever is available. */
   _cars() {
     if (this._carsCache && this._carsCache.at === this._ctx) return this._carsCache.list;
     const list = [];
     const n = this._carCount();
     const now = Date.now();
+    const st = (id) => (id ? this._hass.states[id] : undefined);
+    const planTime = st(this._eid("car_plan_time"))?.state;
     for (let i = 0; i < n; i++) {
-      const slot = this._hass.states[this._carId("car_slot", i)];
-      const socSt = this._hass.states[this._carId("car_soc", i)];
+      const slot = st(this._carId("car_slot", i));
+      const socSt = st(this._carId("car_soc", i));
       const planned = Array.isArray(slot?.attributes?.planned) ? slot.attributes.planned : [];
-      const windows = planned.map((w) => ({
+      let windows = planned.map((w) => ({
         s: this._mdTime(w.start), e: this._mdTime(w.end),
         kwh: num(w.kwh) || 0, avg: num(w.average), cost: num(w.cost),
         cancelled: num(w.kwh_cancelled) || 0,
       })).filter((w) => w.s !== null && w.e !== null && w.e > now).sort((a, b) => a.s - b.s);
+      // fallback 1: Predbat's plan table car column (one car only, it is a total)
+      if (!windows.length && n === 1 && this._ctx?.rows?.some((r) => (r.carKwh || 0) > 0.001)) {
+        let w = null;
+        for (const r of this._ctx.rows) {
+          if ((r.carKwh || 0) > 0.001) {
+            if (w && Math.abs(w.e - r.t) < 1000) { w.e = r.end; w.kwh += r.carKwh; w.rates.push(r.imp); continue; }
+            if (w) windows.push(w);
+            w = { s: r.t, e: r.end, kwh: r.carKwh, avg: null, cost: null, rates: [r.imp] };
+          } else if (w) { windows.push(w); w = null; }
+        }
+        if (w) windows.push(w);
+        for (const x of windows) { const rs = x.rates.filter((v) => v !== null); x.avg = rs.length ? rs.reduce((a, b) => a + b, 0) / rs.length : null; }
+      }
+      // fallback 2: just the next start time
+      let nextStart = null;
+      const startSt = st(this._carId("car_start", i));
+      if (startSt) {
+        const ts = parseTime(startSt.attributes?.timestamp) || (startSt.state ? parseTime(startSt.state) : null);
+        if (ts && ts.getTime() > now - 6 * 3600e3) nextStart = ts.getTime();
+      }
+
+      // Predbat's own idea of the car's charge
       const soc = seriesFrom(socSt?.attributes?.results);
       const near = nearest(soc, now);
-      const socNow = near && Math.abs(near[0] - now) < 3 * 3600e3 ? near[1] : null;
-      const planTime = this._hass.states[this._carId("car_plan_time", i)]?.state;
+      const pbNow = near && Math.abs(near[0] - now) < 3 * 3600e3 ? near[1] : null;
+      const pbEnd = num(socSt?.state);
+      // where Predbat gets it from
+      const manualOn = st(this._carId("car_manual_soc", i))?.state === "on";
+      const manualKwh = num(st(this._carId("car_manual_soc_kwh", i))?.state);
+      const size = this._carBatterySize(i);
+
+      // the car's own sensors, if you've added them
+      const ownSocId = this._carOwn("car_soc_sensor", i);
+      const ownSoc = ownSocId ? this._pctFrom(ownSocId, i) : null;
+      const limitId = this._carOwn("car_limit_sensor", i);
+      const limit = limitId ? this._pctFrom(limitId, i) : null;
+      const pluggedId = this._carOwn("car_plugged_sensor", i);
+      const plugged = pluggedId ? this._isOn(pluggedId) : null;
+      const chargingId = this._carOwn("car_charging_sensor", i);
+      let charging = chargingId ? this._isOn(chargingId) : null;
+      const inSlot = slot?.state === "on";
+      // Predbat's car charging power is a total for all cars
+      const pw = num(st(this._eid("car_power"))?.state);
+      const power = pw !== null && n === 1 ? pw : null;
+      if (charging === null && power !== null) charging = power > 0.05;
+
+      const socNow = ownSoc !== null ? ownSoc : manualOn && manualKwh !== null && size ? (manualKwh / size) * 100 : pbNow;
+      const socSource = ownSoc !== null ? "car" : manualOn ? "manual" : pbNow !== null ? "predbat" : null;
+      // Predbat working from the wrong number?
+      let mismatch = null;
+      if (ownSoc !== null && pbNow !== null && Math.abs(ownSoc - pbNow) >= 10) mismatch = { car: ownSoc, predbat: pbNow };
+      const looksEmpty = ownSoc === null && !manualOn && pbNow !== null && pbNow < 0.5 && (windows.length || pbEnd > 1);
+
       list.push({
         n: i,
         name: this._carName(i),
-        slotId: this._carId("car_slot", i),
-        active: slot?.state === "on",
+        slotId: slot ? this._carId("car_slot", i) : ownSocId || this._carId("car_soc", i),
         windows,
+        nextStart,
+        inSlot,
+        charging: charging === true || inSlot,
+        plugged,
+        power,
         kwh: num(slot?.attributes?.kwh ?? slot?.attributes?.kWh) ?? windows.reduce((a, w) => a + w.kwh, 0),
         cost: num(slot?.attributes?.cost),
         soc,
         socNow,
-        socEnd: num(socSt?.state),
+        socSource,
+        pbNow,
+        socEnd: pbEnd,
+        limit,
+        size,
+        manualOn,
+        mismatch,
+        looksEmpty,
+        rate: num(st(this._carId("car_rate", i))?.state),
         readyBy: planTime && !BAD.test(planTime) ? String(planTime).replace(/^(\d{1,2}:\d{2}):\d{2}$/, "$1") : null,
+        hasPredbat: !!(slot || socSt),
       });
     }
     this._carsCache = { at: this._ctx, list };
     return list;
+  }
+
+  /** Car settings that apply to all cars, for the Car tab. */
+  _carSettings() {
+    const st = (k) => this._st(k);
+    const on = (k) => st(k)?.state === "on";
+    const out = [];
+    const t = this.t;
+    const cur = this._ctx.cur;
+    if (on("octopus_intelligent")) out.push(t("car_iog"));
+    else if (st("car_plan_smart")) out.push(on("car_plan_smart") ? t("car_smart_on") : t("car_smart_off"));
+    const mp = num(st("car_max_price")?.state);
+    if (mp) out.push(t("car_max_price", { v: this._rate(mp, cur) }));
+    if (st("car_from_battery")) out.push(on("car_from_battery") ? t("car_from_batt_on") : t("car_from_batt_off"));
+    const today = num(st("car_cost_today")?.state);
+    if (today !== null) out.push(t("car_cost_today", { v: this._money(today, cur) }));
+    const yest = num(st("car_cost_yesterday")?.state);
+    if (yest !== null) out.push(t("car_cost_yesterday", { v: this._money(yest, cur) }));
+    return out;
   }
 
   /** iBoost: today's energy, the daily limit and the planned heating windows. */
@@ -2125,20 +2408,28 @@ ${esc(navigator.userAgent)}</pre></details>
     const cur = this._ctx.cur;
     return this._cars().map((c) => {
       const next = c.windows[0];
-      const socTxt = c.socNow !== null
-        ? `${Math.round(c.socNow)}<small>%</small>${c.socEnd !== null && Math.round(c.socEnd) !== Math.round(c.socNow) ? `<small class="arrow">→</small>${Math.round(c.socEnd)}<small>%</small>` : ""}`
-        : c.socEnd !== null ? `${Math.round(c.socEnd)}<small>%</small>` : "–";
-      let sub;
-      if (c.active) sub = t("car_charging_now");
-      else if (next) sub = `${this._shortWin(next.s, next.e)} · ${next.kwh.toFixed(1)} kWh`;
+      const pct = (v) => `${Math.round(v)}<small>%</small>`;
+      const target = c.limit !== null ? c.limit : !c.mismatch && !c.looksEmpty ? c.socEnd : null;
+      let value = "–";
+      if (c.socNow !== null) value = pct(c.socNow) + (target !== null && Math.round(target) !== Math.round(c.socNow) ? `<small class="arrow">→</small>${pct(target)}` : "");
+      else if (target !== null) value = `<small class="arrow">→</small>${pct(target)}`;
+      let sub, warn = false;
+      if (c.mismatch) { sub = t("car_pb_thinks", { v: Math.round(c.mismatch.predbat) }); warn = true; }
+      else if (c.looksEmpty) { sub = t("car_pb_empty"); warn = true; }
+      else if (c.charging) sub = t("car_charging_now") + (c.power ? ` · ${c.power.toFixed(1)} kW` : "");
+      else if (next) sub = `${this._shortWin(next.s, next.e)} · ${next.kwh.toFixed(1)} kWh${next.cost ? " · " + this._money(next.cost, cur) : ""}`;
+      else if (c.nextStart) sub = t("car_starts", { v: this._shortWin(c.nextStart, c.nextStart).split("–")[0] });
+      else if (c.plugged === false) sub = t("car_unplugged");
       else sub = t("car_none");
-      const label = `${c.name}${c.active ? " · " + t("car_live") : ""}`;
-      const cost = c.cost && c.windows.length ? ` · ${this._money(c.cost, cur)}` : "";
-      return `<div class="tile clickable ${c.active ? "live" : ""}" style="--c:var(--pb-car${c.n % 2 ? "2" : ""})" data-more="${esc(c.slotId)}">
+      let label = c.name;
+      if (c.charging) label += " · " + t("car_live");
+      else if (c.plugged === true) label += " · " + t("car_plugged");
+      const title = c.socSource ? t("car_src_" + c.socSource) : "";
+      return `<div class="tile clickable ${c.charging ? "live" : ""}" style="--c:var(--pb-car${c.n % 2 ? "2" : ""})" data-more="${esc(c.slotId)}" title="${esc(title)}">
           <span class="accent-bar"></span>
-          <div class="tile-label"><ha-icon icon="mdi:car-electric"></ha-icon>${esc(label)}</div>
-          <div class="tile-value tv-lg">${socTxt}</div>
-          <div class="tile-sub">${esc(sub)}${esc(next && !c.active ? cost : "")}</div>
+          <div class="tile-label"><ha-icon icon="${c.charging ? "mdi:car-electric" : "mdi:car-electric"}"></ha-icon>${esc(label)}</div>
+          <div class="tile-value tv-lg">${value}</div>
+          <div class="tile-sub ${warn ? "warnline" : ""}">${warn ? '<ha-icon icon="mdi:alert-outline"></ha-icon>' : ""}${esc(sub)}</div>
         </div>`;
     }).join("");
   }
@@ -2257,7 +2548,7 @@ ${esc(navigator.userAgent)}</pre></details>
     const { now, horizon, cur } = this._ctx;
     const series = cars.map((c) => ({ c, pts: c.soc.filter((p) => p[0] >= now - 10 * 60e3 && p[0] <= horizon) })).filter((x) => x.pts.length);
     if (!cars.length) return { empty: t("car_none_found") };
-    if (!series.length) return { empty: t("no_forecast", { e: this._carId("car_soc", 0) }) };
+    if (!series.length && !cars.some((c) => c.socNow !== null)) return { empty: t("no_forecast", { e: this._carId("car_soc", 0) }) };
     const H = Math.round(170 + (this._scale() - 1) * 40);
     const f = this._frame(W, H, { padL: 36, padR: 10 });
     const { X, padL, padT, iw, ih } = f;
@@ -2277,6 +2568,18 @@ ${esc(navigator.userAgent)}</pre></details>
       if (g % 50 === 0) parts.push(`<text class="axis" x="${padL - 6}" y="${(Y(g) + 4).toFixed(1)}" text-anchor="end">${g}%</text>`);
     }
     this._xAxis(f, parts);
+    for (const c of cars) {
+      if (c.limit === null) continue;
+      const col = `var(--pb-car${c.n % 2 ? "2" : ""})`;
+      parts.push(`<line x1="${padL}" x2="${padL + iw}" y1="${Y(c.limit).toFixed(1)}" y2="${Y(c.limit).toFixed(1)}" stroke="${col}" stroke-dasharray="5 4" opacity=".7"/>`);
+      parts.push(`<text class="axis" x="${padL + 4}" y="${(Y(c.limit) - 4).toFixed(1)}" style="fill:${col}">${esc(t("car_target", { v: Math.round(c.limit) }))}</text>`);
+    }
+    // the car's own reading now, when it comes from the car rather than Predbat
+    for (const c of cars) {
+      if (c.socSource !== "car" && c.socSource !== "manual") continue;
+      const col = `var(--pb-car${c.n % 2 ? "2" : ""})`;
+      parts.push(`<circle cx="${X(now).toFixed(1)}" cy="${Y(c.socNow).toFixed(1)}" r="5" fill="var(--card-background-color,#fff)" stroke="${col}" stroke-width="2.4"/>`);
+    }
     const labelYs = [];
     for (const { c, pts } of series) {
       const col = `var(--pb-car${c.n % 2 ? "2" : ""})`;
@@ -2295,15 +2598,23 @@ ${esc(navigator.userAgent)}</pre></details>
       parts.push(`<text class="axis" x="${Math.min(padL + iw - 2, X(last[0])).toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="end" style="fill:${col};font-weight:600">${Math.round(last[1])}%</text>`);
     }
     parts.push(this._hoverParts(f, "var(--pb-car)"));
-    const legend = cars.map((c) => {
+    const warns = cars.map((c) => c.mismatch
+      ? `<span class="car-warn"><ha-icon icon="mdi:alert-outline"></ha-icon>${esc(t("car_mismatch", { n: c.name, p: Math.round(c.mismatch.predbat), c: Math.round(c.mismatch.car) }))}</span>`
+      : c.looksEmpty ? `<span class="car-warn"><ha-icon icon="mdi:alert-outline"></ha-icon>${esc(t("car_empty_hint", { n: c.name }))}</span>` : "").join("");
+    const settings = this._carSettings();
+    const legend = warns + cars.map((c) => {
       const col = `var(--pb-car${c.n % 2 ? "2" : ""})`;
       const extra = c.windows.length ? ` · ${c.kwh.toFixed(1)} kWh${c.cost ? " · " + this._money(c.cost, cur) : ""}` : "";
       return `<span><i class="line" style="--c:${col}"></i>${esc(c.name)}${esc(extra)}</span>`;
-    }).join("") + (cars.some((c) => c.readyBy) ? `<span class="muted">${esc(t("car_ready_by", { v: cars.map((c) => c.readyBy).filter(Boolean).join(", ") }))}</span>` : "");
+    }).join("") + (cars.some((c) => c.readyBy) ? `<span class="muted">${esc(t("car_ready_by", { v: [...new Set(cars.map((c) => c.readyBy).filter(Boolean))].join(", ") }))}</span>` : "")
+      + (cars.some((c) => c.socSource === "car") ? `<span class="muted"><i class="ring-i"></i>${esc(t("car_now_marker"))}</span>` : "")
+      + (cars.some((c) => c.socSource === "manual") ? `<span class="muted"><i class="ring-i"></i>${esc(t("car_manual_marker"))}</span>` : "")
+      + (settings.length ? `<span class="car-settings">${settings.map((x) => `<b>${esc(x)}</b>`).join("")}</span>` : "");
     const hover = {
       f,
       pick: (tm) => {
         const first = series[0];
+        if (!first) return null;
         const p = nearest(first.pts, tm);
         if (!p) return null;
         const lines = [this._tipHead(p[0])];
@@ -2610,8 +2921,9 @@ ${esc(navigator.userAgent)}</pre></details>
   _drawCharts(force) {
     if (!this._ctx) return;
     const keys = ["soc_best", "soc_base", "rates", "rates_export", "export_energy", "import_energy", "plan", "car_slot", "car_soc"];
+    const own = CAR_OWN_KEYS.map((k) => this._carOwn(k, 0)).filter(Boolean).map((id) => this._hass.states[id]?.state).join(",");
     const sig = keys.map((k) => this._st(k)?.last_updated || "-").join("|") +
-      `|${this._chartWidth}|${Math.floor(Date.now() / 60000)}|${this._tab}|${this._scale()}|dq${this._dqVer || 0}`;
+      `|${this._chartWidth}|${Math.floor(Date.now() / 60000)}|${this._tab}|${this._scale()}|dq${this._dqVer || 0}|${own}`;
     if (!force && sig === this._chartSig) return;
     this._chartSig = sig;
     this.shadowRoot.querySelectorAll(".chart[data-chart]").forEach((el) => {
@@ -3186,7 +3498,7 @@ class PredbatCardEditor extends HTMLElement {
   _data() {
     const c = { ...DEFAULT_CONFIG, ...this._config };
     c.entities = { ...defaultEntities(c.prefix), ...(this._config.entities || {}) };
-    for (const k of ["load_today", "load_power"]) {
+    for (const k of ["load_today", "load_power", ...CAR_OWN_KEYS]) {
       const v = c.entities[k];
       c.entities[k] = Array.isArray(v) ? v : typeof v === "string" && v ? v.split(",").map((x) => x.trim()).filter(Boolean) : [];
     }
@@ -3271,6 +3583,11 @@ class PredbatCardEditor extends HTMLElement {
       },
       { name: "font_scale", selector: { number: { min: 0.8, max: 1.6, step: 0.05, mode: "slider" } } },
       { name: "battery_capacity", selector: { number: { min: 0, max: 200, step: 0.1, mode: "box", unit_of_measurement: "kWh" } } },
+      { name: "car_battery_size", selector: { text: {} } },
+      {
+        type: "expandable", name: "entities", title: t("ed_car_sensors"), icon: "mdi:car-electric",
+        schema: CAR_OWN_KEYS.map((k) => ({ name: k, selector: { entity: { multiple: true } } })),
+      },
       {
         type: "expandable", name: "entities", title: t("ed_entities"), icon: "mdi:bat",
         schema: ENTITY_KEYS.map((k) => (k === "load_today" || k === "load_power"
@@ -3283,7 +3600,7 @@ class PredbatCardEditor extends HTMLElement {
   _label(t) {
     const map = {
       style: "ed_style", theme_mode: "ed_theme_mode", title: "ed_title", prefix: "ed_prefix", language: "ed_language",
-      show_header: "ed_show_header", show_overview: "ed_show_overview", show_chart: "ed_show_chart", show_grid_chart: "ed_show_grid_chart", show_rates_chart: "ed_show_rates_chart", chart_layout: "ed_chart_layout", show_data_quality: "ed_show_data_quality", show_car: "ed_show_car", show_iboost: "ed_show_iboost", show_car_chart: "ed_show_car_chart", car_names: "ed_car_names", data_quality_days: "ed_dq_days", data_quality_minutes: "ed_dq_minutes", font_scale: "ed_font_scale",
+      show_header: "ed_show_header", show_overview: "ed_show_overview", show_chart: "ed_show_chart", show_grid_chart: "ed_show_grid_chart", show_rates_chart: "ed_show_rates_chart", chart_layout: "ed_chart_layout", show_data_quality: "ed_show_data_quality", show_car: "ed_show_car", show_iboost: "ed_show_iboost", show_car_chart: "ed_show_car_chart", car_names: "ed_car_names", car_battery_size: "ed_car_battery_size", car_soc_sensor: "e_car_soc_sensor", car_limit_sensor: "e_car_limit_sensor", car_plugged_sensor: "e_car_plugged_sensor", car_charging_sensor: "e_car_charging_sensor", car_start: "e_car_start", car_power: "e_car_power", car_cost_today: "e_car_cost_today", car_cost_yesterday: "e_car_cost_yesterday", car_manual_soc: "e_car_manual_soc", car_manual_soc_kwh: "e_car_manual_soc_kwh", car_rate: "e_car_rate", car_plan_smart: "e_car_plan_smart", car_max_price: "e_car_max_price", car_from_battery: "e_car_from_battery", octopus_intelligent: "e_octopus_intelligent", data_quality_days: "ed_dq_days", data_quality_minutes: "ed_dq_minutes", font_scale: "ed_font_scale",
       show_timeline: "ed_show_timeline", show_actions: "ed_show_actions", show_table: "ed_show_table",
       show_base: "ed_show_base", show_rates: "ed_show_rates", hours: "ed_hours", max_actions: "ed_max_actions",
       battery_capacity: "ed_capacity",
