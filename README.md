@@ -89,6 +89,7 @@ Everything can be set in the visual editor. Open **Predbat entities** to see or 
 | `show_iboost` | `auto` | Hot water (iBoost) tile, timeline lane and heating windows. `auto` shows them when Predbat's iBoost is enabled. |
 | `show_car_chart` | `true` | Car chart tab (only when cars are shown). |
 | `car_names` | – | Names for your cars, comma separated, e.g. `Tesla, Leaf`. |
+| `car_battery_size` | – | Car battery size in kWh, comma separated per car. Only needed to turn a kWh charge level (or Predbat's manual SoC) into %. |
 | `show_data_quality` | `true` | Zero-load alarm: header chip, notice and the Data chart tab. |
 | `data_quality_days` | `7` | Days of history to check, 1–14. Set it to the largest number in your Predbat `days_previous` so the count matches Predbat's log. |
 | `data_quality_minutes` | `30` | How long the load total must stay flat before it's flagged (Predbat's default is 30). |
@@ -137,6 +138,17 @@ Defaults for the `predbat` prefix. Only add the ones you want to change.
 | `iboost_max` | `input_number.predbat_iboost_max_energy` | iBoost daily limit |
 | `iboost_active` | `binary_sensor.predbat_iboost_active` | iBoost heating now |
 | `iboost_enable` | `switch.predbat_iboost_enable` | Whether iBoost is on in Predbat |
+| `car_start` | `predbat.car_charging_start` | Next car charge start (used when there's no slot list) |
+| `car_power` | `predbat.car_charging_power` | Car charging power now (single car) |
+| `car_cost_today` / `car_cost_yesterday` | `predbat.cost_today_car` / `predbat.cost_yesterday_car` | Car charging cost |
+| `car_manual_soc` / `car_manual_soc_kwh` | `switch.predbat_car_charging_manual_soc` / `input_number.predbat_car_charging_manual_soc_kwh` | Predbat's manual car SoC |
+| `car_rate` | `input_number.predbat_car_charging_rate` | Car charging rate |
+| `car_plan_smart` / `car_max_price` / `car_from_battery` | `switch.predbat_car_charging_plan_smart` / `input_number.predbat_car_charging_plan_max_price` / `switch.predbat_car_charging_from_battery` | Car plan settings shown on the Car tab |
+| `octopus_intelligent` | `switch.predbat_octopus_intelligent_charging` | Shows when the car follows Octopus Intelligent |
+| `car_soc_sensor` | – | **Your car's own** charge level sensor (% or kWh). One per car, as a list. |
+| `car_limit_sensor` | – | Your car's charge limit / target (% or kWh) |
+| `car_plugged_sensor` | – | Plugged in (on/off, or states like `connected`, `plugged`) |
+| `car_charging_sensor` | – | Charging now (on/off, or a power sensor in W/kW) |
 | `load_power` | auto | Zero-load alarm – the `load_power` sensor(s) from your `apps.yaml`. Found automatically for GivTCP. Can be a list. |
 
 ### Example
@@ -189,6 +201,7 @@ show_car: auto           # auto | on | off
 show_iboost: auto        # auto | on | off
 show_car_chart: true
 # car_names: Tesla, Leaf
+# car_battery_size: 75
 
 show_data_quality: true
 data_quality_days: 7     # days of history to check, 1 – 14
@@ -238,6 +251,22 @@ entities:
   iboost_max: input_number.predbat_iboost_max_energy
   iboost_active: binary_sensor.predbat_iboost_active
   iboost_enable: switch.predbat_iboost_enable
+  car_start: predbat.car_charging_start
+  car_power: predbat.car_charging_power
+  car_cost_today: predbat.cost_today_car
+  car_cost_yesterday: predbat.cost_yesterday_car
+  car_manual_soc: switch.predbat_car_charging_manual_soc
+  car_manual_soc_kwh: input_number.predbat_car_charging_manual_soc_kwh
+  car_rate: input_number.predbat_car_charging_rate
+  car_plan_smart: switch.predbat_car_charging_plan_smart
+  car_max_price: input_number.predbat_car_charging_plan_max_price
+  car_from_battery: switch.predbat_car_charging_from_battery
+  octopus_intelligent: switch.predbat_octopus_intelligent_charging
+  # your car's own sensors (optional, one per car):
+  # car_soc_sensor: [sensor.my_car_battery]
+  # car_limit_sensor: [number.my_car_charge_limit]
+  # car_plugged_sensor: [binary_sensor.my_charger_plugged_in]
+  # car_charging_sensor: [sensor.my_charger_power]
   # load_today / load_power: leave out to auto-detect GivTCP sensors,
   # or list the same sensors as load_today and load_power in apps.yaml
 ```
@@ -312,11 +341,27 @@ History is read once every 30 minutes. Turn it all off with `show_data_quality: 
 
 If Predbat plans your car charging or a solar diverter (iBoost), the card shows it automatically. Nothing appears when they're not set up in Predbat. Like everything else on the card, this is view only: it never changes Predbat's car or iBoost settings.
 
-**Car** (one tile per car, up to four):
-- Charge level now and at the end of Predbat's plan, from `predbat.car_soc_best`.
-- The next planned charging slot and how much energy it adds, or "No charge planned". The tile pulses while the car is charging in a Predbat slot.
-- Every planned slot in **Upcoming actions** with its energy, average rate and cost, from the `planned` list on `binary_sensor.predbat_car_charging_slot`.
-- A lane under the plan timeline for each car, a **Car** chart tab with the charge level forecast and slots, and a Car column in the full plan table.
+**Car** (one tile per car, up to four). The card uses whatever is available, so it works whether Predbat plans your charging, follows Octopus Intelligent, or you only want to see the car:
+- **Charge level now**, from the first of these it finds: your car's own sensor (`car_soc_sensor`), Predbat's manual SoC when that's switched on, then Predbat's forecast (`predbat.car_soc_best`).
+- **Target**: your car's charge limit (`car_limit_sensor`) if you've added it, otherwise where Predbat's plan ends.
+- **Status**: charging now (from your charger sensor, Predbat's car charging power, or a Predbat slot being active), plugged in or not, the next slot with energy and cost, or the next start time.
+- **Warnings**: if Predbat is planning from a different charge level than the car reports (10% or more apart), or Predbat thinks the battery is empty, the tile and Car tab say so. That usually means `car_charging_soc` in your Predbat `apps.yaml` isn't set or isn't working, so Predbat may plan more charging than you need.
+- Every planned slot in **Upcoming actions** with its energy, average rate and cost, from the `planned` list on `binary_sensor.predbat_car_charging_slot`. If that list is empty, the card falls back to the car column in Predbat's plan.
+- A lane under the plan timeline for each car, and a Car column in the full plan table.
+- **Car tab**: Predbat's charge level forecast, the car's own reading, your target, the charging slots, ready-by time, and Predbat's car settings (smart plan or Octopus Intelligent, max price, whether it can use the home battery, cost today and yesterday).
+
+Your car's own sensors are optional and set per car in the editor under **Your car's own sensors**, or in YAML as lists:
+
+```yaml
+entities:
+  car_soc_sensor: [sensor.tesla_battery, sensor.leaf_battery]
+  car_limit_sensor: [number.tesla_charge_limit]
+  car_plugged_sensor: [binary_sensor.tesla_charger]
+  car_charging_sensor: [sensor.zappi_power]
+car_battery_size: 75, 40   # only needed for kWh sensors or Predbat's manual SoC
+```
+
+If Predbat has no car set up but you add your own sensors, the car tile still shows them.
 
 **iBoost (hot water):**
 - Energy used today against the daily limit (`input_number.predbat_iboost_today` and `input_number.predbat_iboost_max_energy`), with a small progress bar.
@@ -375,6 +420,7 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 | 0.3.1 | Zero-load alarm: header chip, notice with recent periods and a 7-day data-quality view |
 | 0.3.2 | Zero-load alarm uses the same check and the same sensors as Predbat, auto-detects GivTCP sensors, counts the whole period |
 | 0.4.0 | Car charging (charge level, planned slots, cost, Car chart) and iBoost hot water (today vs limit, heating windows), shown automatically when set up in Predbat |
+| 0.4.1 | Car support uses every Predbat car entity plus your car's own sensors, with fallbacks; warns when Predbat's car charge level is wrong |
 
 ### 🔜 0.4.x – More of Predbat's data
 
