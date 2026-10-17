@@ -84,7 +84,7 @@ Everything can be set in the visual editor. Open **Predbat entities** to see or 
 | `show_grid_chart` | `true` | Grid import & export chart. |
 | `show_rates_chart` | `true` | Energy rates chart. |
 | `show_data_quality` | `true` | Zero-load alarm: header chip, notice and the Data chart tab. |
-| `data_quality_days` | `7` | Days of history to check, 1–7. |
+| `data_quality_days` | `7` | Days of history to check, 1–14. Set it to the largest number in your Predbat `days_previous` so the count matches Predbat's log. |
 | `data_quality_minutes` | `30` | How long the load total must stay flat before it's flagged (Predbat's default is 30). |
 | `chart_layout` | `tabs` | `tabs` shows one chart at a time with a switcher; `stacked` shows all enabled charts one under another. |
 | `font_scale` | `1` | Text size, from `0.8` to `1.6`. Charts grow a little with it. |
@@ -123,8 +123,8 @@ Defaults for the `predbat` prefix. Only add the ones you want to change.
 | `export_start` / `export_end` / `export_limit` | `predbat.best_export_*` | Next export tile |
 | `export_energy` | `predbat.best_export_energy` | Grid chart – predicted export |
 | `import_energy` | `predbat.best_import_energy` | Grid chart – predicted import |
-| `load_today` | `predbat.load_energy_h0` | Zero-load alarm – daily load total (Predbat's copy of `load_today`) |
-| `load_power` | `predbat.load_power` | Zero-load alarm – load power |
+| `load_today` | auto | Zero-load alarm – the `load_today` sensor(s) from your Predbat `apps.yaml`. Found automatically for GivTCP. Can be a list. |
+| `load_power` | auto | Zero-load alarm – the `load_power` sensor(s) from your `apps.yaml`. Found automatically for GivTCP. Can be a list. |
 
 ### Example
 
@@ -172,7 +172,7 @@ show_rates: true         # import rate line on the battery chart
 
 # Zero-load alarm
 show_data_quality: true
-data_quality_days: 7     # days of history to check, 1 – 7
+data_quality_days: 7     # days of history to check, 1 – 14
 data_quality_minutes: 30 # flag the load total when flat this long
 
 # Time and limits
@@ -212,8 +212,8 @@ entities:
   export_limit: predbat.best_export_limit
   export_energy: predbat.best_export_energy
   import_energy: predbat.best_import_energy
-  load_today: predbat.load_energy_h0
-  load_power: predbat.load_power
+  # load_today / load_power: leave out to auto-detect GivTCP sensors,
+  # or list the same sensors as load_today and load_power in apps.yaml
 ```
 
 ## Styles
@@ -256,21 +256,29 @@ Every style follows your theme by default, except `neon` and `terminal`, which a
 
 ![Zero-load alarm](https://github.com/mimikm/Predbat-Card/raw/main/images/data-quality.png)
 
-Predbat builds its load forecast from your daily load total (`load_today`). If that total stops rising for a while even though the house was using power, usually because the inverter integration dropped out, Predbat logs *"Found N periods of zero load with power data"*. That warning only appears in Predbat's log, so the card runs the same check itself on Home Assistant history.
+Predbat builds its load forecast from the history of your `load_today` sensor. Each time it runs it looks for stretches of 30 minutes or more where that total didn't go up, and logs:
 
-- **Header chip** – shows only when something was found in the last 24 hours: amber if Predbat could repair it, red if it couldn't. Tap it to open the details.
-- **Notice** – lists each period with its time and length. **Filled by Predbat** means power data existed, so Predbat repaired the gap and nothing needs doing. **Not filled** means there was no power data either, so Predbat had to guess and your load forecast may be off.
+> Warn: Found N periods of zero load with power data, filling using power integration
+
+This usually happens when the inverter integration briefly drops out and comes back with the same reading, or after a Home Assistant restart. It's most common at night, when the total only goes up slowly. That warning only appears in Predbat's log, so the card runs the same check itself on Home Assistant history of the same sensors.
+
+- **Header chip** – shows how many periods were found. Amber means Predbat filled them all from load power and nothing needs doing; red means some had no load power data either. Tap it to open the details.
+- **Notice** – the count for the whole period and for the last 24 hours, plus the most recent periods with time, length and the energy Predbat filled in.
 - **Data tab** – one row per day, one square per half hour: grey is fine, amber was filled, red wasn't. Repeating patterns (the same time every night, say) usually point to something restarting.
 
-By default the card reads Predbat's own copies of the two sensors, `predbat.load_energy_h0` and `predbat.load_power`. If you've excluded `predbat.*` from the recorder, point `load_today` and `load_power` at your inverter's sensors instead, which are also more accurate:
+**Which sensors are checked.** The card needs the *same* sensors Predbat uses: `load_today` and `load_power` from your `apps.yaml`. For GivTCP it finds them automatically; the notice and the Data tab show which ones it used. For anything else, or if your `apps.yaml` lists different sensors, set them yourself. Both accept a list, just like `apps.yaml`:
 
 ```yaml
 entities:
-  load_today: sensor.givtcp_XXXX_load_energy_today_kwh
-  load_power: sensor.givtcp_XXXX_load_power
+  load_today:
+    - sensor.givtcp_XXXX_load_energy_today_kwh
+  load_power:
+    - sensor.givtcp_XXXX_load_power
 ```
 
-History is read once every 30 minutes. Short dips are ignored when the load was genuinely low, and the counts can differ slightly from Predbat's log because Predbat checks minute by minute. Turn it all off with `show_data_quality: false`.
+To match the number in Predbat's log, set `data_quality_days` to the largest value in your Predbat `days_previous` (7 by default), since that's how far back Predbat looks. The count can still be off by one or two at the edges because the two checks run at different times. If Predbat gets its load data from the GivEnergy cloud (`ge_cloud_data`), it doesn't use these sensors, so the card's result won't match.
+
+History is read once every 30 minutes. Turn it all off with `show_data_quality: false`.
 
 ## Saving today
 
@@ -298,7 +306,8 @@ Yesterday's figure uses a different baseline (one cheap charge per night), so th
 - **Card not found after installing** – clear the browser cache or reload the app.
 - **“Configuration error” or “Custom element doesn't exist” in the Companion app** – the app is still using an old copy of the card. In the app go to **Settings → Companion app** and use **Reset frontend cache** (on iOS it's under **Debugging**), then close and reopen the app.
 - **The card shows a red “Predbat Card v… :” message** – something unexpected happened while drawing the card. Open **Details for a bug report** under the message and paste it into a [GitHub issue](https://github.com/mimikm/Predbat-Card/issues).
-- **Data tab says “No history for …”** – the load sensors aren't recorded. Set `load_today` and `load_power` to your inverter's sensors (see [Zero-load alarm](#zero-load-alarm)).
+- **Predbat logs zero load but the card shows nothing** – open the Data tab and check which sensors it says it checked. They need to be the `load_today` and `load_power` sensors from your `apps.yaml` (see [Zero-load alarm](#zero-load-alarm)).
+- **Data tab says “No load sensors found” or “No history for …”** – set `load_today` and `load_power` to the sensors from your `apps.yaml`, and make sure they're recorded.
 - **“N Predbat entities not found”** – tap the notice to see which ones. Check the names in the editor's entity check, or set `prefix` if you changed it in Predbat.
 
 ## Roadmap
@@ -319,6 +328,7 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 | 0.2.2 | Grid import & export chart, energy rates chart, charts as tabs or stacked, text size slider |
 | 0.3.0 | Mobile and reliability: errors shown inside the card instead of breaking it, tolerant YAML, missing-entity notice, phone and tablet layout, tap-to-inspect charts on touch screens, only changed parts redraw, fully view-only header, fallbacks for older iOS and Android |
 | 0.3.1 | Zero-load alarm: header chip, notice with recent periods and a 7-day data-quality view |
+| 0.3.2 | Zero-load alarm uses the same check and the same sensors as Predbat, auto-detects GivTCP sensors, counts the whole period |
 
 ### 🔜 0.4 – More of Predbat's data
 
