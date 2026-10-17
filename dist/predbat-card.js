@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.4.1";
+const CARD_VERSION = "0.4.2";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -12,6 +12,25 @@ const EDITOR_TAG = "predbat-card-editor";
 /* ------------------------------------------------------------------ */
 const TRANSLATIONS = {
   en: {
+    dq_unknown_n: "{n} power unknown",
+    dq_l_unknown: "Power unknown",
+    dq_hint_unknown: "Load total stayed flat, but no load power sensor is set, so the card can’t tell if Predbat filled it. Set load_power to the sensor in your Predbat apps.yaml.",
+    dq_missing: "Not found: {e}",
+    dq_nohist: "No history: {e}",
+    dq_no_power: "No load power sensor, so the card can’t tell which gaps Predbat filled. Set load_power to the sensor in your apps.yaml.",
+    dq_auto: "found automatically ({v})",
+    ed_auto_found_type: "auto-detected, {v}",
+    sec_look: "Look",
+    sec_sections: "Sections",
+    sec_charts: "Charts",
+    sec_car: "Car and hot water",
+    sec_dq: "Load data alarm",
+    sec_advanced: "Advanced: Predbat entities",
+    ed_load_sensors: "Load sensors (the same as load_today and load_power in your Predbat apps.yaml; leave empty to find them automatically)",
+    grp_plan: "Status, battery and plan",
+    grp_costs: "Costs, rates and energy",
+    grp_car: "Car (Predbat)",
+    grp_iboost: "Hot water (iBoost)",
     car_manual_marker: "Predbat manual SoC",
     car_pb_thinks: "Predbat thinks {v}%",
     car_pb_empty: "Predbat thinks it’s empty",
@@ -244,6 +263,25 @@ const TRANSLATIONS = {
     e_export_limit: "Next export target (%)",
   },
   pl: {
+    dq_unknown_n: "{n} bez danych mocy",
+    dq_l_unknown: "Brak danych mocy",
+    dq_hint_unknown: "Licznik zużycia stał w miejscu, ale nie ustawiono czujnika mocy zużycia, więc karta nie wie, czy Predbat to uzupełnił. Ustaw load_power na czujnik z apps.yaml Predbat.",
+    dq_missing: "Nie znaleziono: {e}",
+    dq_nohist: "Brak historii: {e}",
+    dq_no_power: "Brak czujnika mocy zużycia, więc karta nie wie, które luki Predbat uzupełnił. Ustaw load_power na czujnik z apps.yaml.",
+    dq_auto: "wykryto automatycznie ({v})",
+    ed_auto_found_type: "wykryto automatycznie, {v}",
+    sec_look: "Wygląd",
+    sec_sections: "Sekcje",
+    sec_charts: "Wykresy",
+    sec_car: "Samochód i ciepła woda",
+    sec_dq: "Alarm danych zużycia",
+    sec_advanced: "Zaawansowane: encje Predbat",
+    ed_load_sensors: "Czujniki zużycia (te same co load_today i load_power w apps.yaml Predbat; puste = wykryj automatycznie)",
+    grp_plan: "Status, bateria i plan",
+    grp_costs: "Koszty, ceny i energia",
+    grp_car: "Samochód (Predbat)",
+    grp_iboost: "Ciepła woda (iBoost)",
     car_manual_marker: "ręczny SoC w Predbat",
     car_pb_thinks: "Predbat zakłada {v}%",
     car_pb_empty: "Predbat zakłada, że jest pusty",
@@ -481,6 +519,25 @@ const TRANSLATIONS = {
     e_export_limit: "Cel oddawania (%)",
   },
   es: {
+    dq_unknown_n: "{n} sin datos de potencia",
+    dq_l_unknown: "Potencia desconocida",
+    dq_hint_unknown: "El total de consumo no subió, pero no hay sensor de potencia de consumo, así que la tarjeta no sabe si Predbat lo rellenó. Indica en load_power el sensor de tu apps.yaml de Predbat.",
+    dq_missing: "No encontrado: {e}",
+    dq_nohist: "Sin historial: {e}",
+    dq_no_power: "No hay sensor de potencia de consumo, así que la tarjeta no sabe qué huecos rellenó Predbat. Indica en load_power el sensor de tu apps.yaml.",
+    dq_auto: "detectado automáticamente ({v})",
+    ed_auto_found_type: "detectado automáticamente, {v}",
+    sec_look: "Aspecto",
+    sec_sections: "Secciones",
+    sec_charts: "Gráficos",
+    sec_car: "Coche y agua caliente",
+    sec_dq: "Alarma de datos de consumo",
+    sec_advanced: "Avanzado: entidades de Predbat",
+    ed_load_sensors: "Sensores de consumo (los mismos que load_today y load_power en tu apps.yaml de Predbat; vacío = detectar automáticamente)",
+    grp_plan: "Estado, batería y plan",
+    grp_costs: "Costes, precios y energía",
+    grp_car: "Coche (Predbat)",
+    grp_iboost: "Agua caliente (iBoost)",
     car_manual_marker: "SoC manual de Predbat",
     car_pb_thinks: "Predbat cree {v}%",
     car_pb_empty: "Predbat cree que está vacío",
@@ -751,6 +808,14 @@ const ENTITY_KEYS = [
   "export_energy", "import_energy", "load_today", "load_power",
   "car_slot", "car_soc", "car_plan_time", "iboost_today", "iboost_max", "iboost_active", "iboost_enable",
 ];
+const ENTITY_GROUPS = {
+  plan: ["status", "plan", "mode", "soc_now", "soc_best", "soc_base", "inverter_config", "hours_left",
+    "charge_start", "charge_end", "charge_limit", "export_start", "export_end", "export_limit"],
+  costs: ["rates", "rates_export", "cost_today", "best_metric", "base_metric", "savings", "export_energy", "import_energy"],
+  car: ["car_slot", "car_soc", "car_plan_time", "car_start", "car_power", "car_cost_today", "car_cost_yesterday",
+    "car_manual_soc", "car_manual_soc_kwh", "car_rate", "car_plan_smart", "car_max_price", "car_from_battery", "octopus_intelligent"],
+  iboost: ["iboost_today", "iboost_max", "iboost_active", "iboost_enable"],
+};
 const CAR_PB_KEYS = ["car_start", "car_power", "car_cost_today", "car_cost_yesterday", "car_manual_soc", "car_manual_soc_kwh",
   "car_rate", "car_plan_smart", "car_max_price", "car_from_battery", "octopus_intelligent"];
 ENTITY_KEYS.push(...CAR_PB_KEYS);
@@ -965,6 +1030,57 @@ const STATE_ICON = {
  *      with load power above 0 somewhere in it Predbat fills it from
  *      power ("filled"), otherwise it has to use averages ("not filled"). */
 
+/** load_today / load_power names from Predbat's apps.yaml templates, used when
+ *  the card isn't told which sensors to check. First match wins. */
+const LOAD_RULES = [
+  { name: "GivTCP", load: /^sensor\.givtcp\d*_[a-z0-9]+_load_energy_today_kwh$/i, power: /^sensor\.givtcp\d*_[a-z0-9]+_load_power$/i },
+  { name: "GivEnergy", load: /^sensor\.ge_inverter_[a-z0-9]+_consumption_today$/i, power: /^sensor\.ge_inverter_[a-z0-9]+_consumption_power$/i },
+  { name: "Fox ESS", load: /^sensor\.foxess_load_energy_today$/i, power: /^sensor\.foxess_load_power$/i },
+  { name: "Solis", load: /^sensor\.solis_house_load_today$/i, power: /^sensor\.solis_house_load$/i },
+  { name: "SolaX", load: /^sensor\.todays_house_load$/i, power: /^sensor\.solax([a-z_]+|)_house_load$/i },
+  { name: "Sofar", load: /^sensor\.sofar_energy_today_consumption$/i, power: /^sensor\.sofar_house_consumption_power$/i },
+  { name: "Sofar", load: /^sensor\.inverter_today_load_consumption$/i, power: /^sensor\.inverter_activepower_load_sys$/i },
+  { name: "Sunsynk", load: /^sensor\.sunsynk_load_power_daily(_\d+)?$/i, power: /^sensor\.sunsynk_load_power$/i },
+  { name: "LuxPower", load: /^sensor\.lux_home_consumption_daily$/i, power: /^sensor\.lux_home_consumption_live$/i },
+  { name: "Sigenergy", load: /^sensor\.sigen_plant_daily_load_consumption$/i, power: /^sensor\.sigen_plant_consumed_power$/i },
+  { name: "Kostal", load: /^sensor\.scb_home_consumption_total$/i, power: /^sensor\.scb_home_power$/i },
+  { name: "Fronius", load: /^sensor\.daily_home_energy_use$/i, power: /^sensor\.solarnet_power_load$/i },
+  { name: "SolarEdge", load: /^sensor\.solar_house_consumption_kwh$/i, power: /^sensor\.solar_house_consumption_w$/i },
+  { name: "Tesla Powerwall", load: /^sensor\.my_home_home_usage$/i, power: /^sensor\.my_home_load_power$/i },
+  { name: "Growatt", load: /^sensor\.growatt_sp[ah]_load_energy$/i, power: null },
+  { name: "Hanchu", load: /^sensor\.hanchuess_[^.]+_daily_load_energy$/i, power: /^sensor\.hanchuess_[^.]+_load_power$/i },
+  { name: "Huawei", load: /^sensor\.predbat_load_today$/i, power: /^sensor\.house_load_power_calc$/i },
+  { name: "Victron", load: /^sensor\.house_load_today$/i, power: /^sensor\.house_load_power$/i },
+];
+
+function idList(v) {
+  return (Array.isArray(v) ? v : typeof v === "string" ? v.split(",") : []).map((x) => String(x).trim()).filter(Boolean);
+}
+
+/** Which load sensors to check: the ones set in the card, else found by name. */
+function loadSources(entities, states) {
+  const ids = Object.keys(states || {});
+  let load = idList(entities?.load_today), power = idList(entities?.load_power);
+  let rule = null;
+  const autoLoad = !load.length, autoPower = !power.length;
+  if (autoLoad) {
+    for (const r of LOAD_RULES) {
+      const m = ids.filter((e) => r.load.test(e)).sort();
+      if (m.length) { load = m; rule = r; break; }
+    }
+  }
+  if (autoPower) {
+    const rules = rule ? [rule, ...LOAD_RULES] : LOAD_RULES;
+    for (const r of rules) {
+      if (!r.power) continue;
+      const m = ids.filter((e) => r.power.test(e)).sort();
+      if (m.length) { power = m; break; }
+    }
+  }
+  const missing = [...(autoLoad ? [] : load), ...(autoPower ? [] : power)].filter((id) => !states?.[id]);
+  return { load, power, autoLoad, autoPower, rule: rule ? rule.name : null, missing };
+}
+
 /** Turn one entity's history (full or compressed websocket format) into
  *  a sorted list of [ms, number|null]. null = unknown/unavailable. */
 function historySeries(rows) {
@@ -1069,20 +1185,25 @@ function detectZeroLoad(loads, powers, opts) {
           if (!isNaN(p) && p > 0) { used = true; kwh += (p * scale) / 60 / 1000; }
         }
       }
-      periods.push({ s: start + (i - 1) * 60000, e: start + (j + 1) * 60000, kind: used ? "filled" : "unfilled", kwh });
+      // without any load power sensor we can't tell what Predbat did with it
+      const kind = used ? "filled" : power ? "unfilled" : "unknown";
+      periods.push({ s: start + (i - 1) * 60000, e: start + (j + 1) * 60000, kind, kwh });
     }
     i = j + 1;
   }
 
-  // 30-minute cells for the heatmap: 0 ok, 1 filled, 2 not filled, -1 no history
+  // 30-minute cells for the heatmap: 0 ok, 1 filled, 3 power unknown, 2 not filled, -1 no history
   const slot = 30 * 60e3;
   let firstData = end;
   for (let k = 0; k < n; k++) if (!isNaN(load[k])) { firstData = start + k * 60000; break; }
   const cells = [];
   for (let t = start; t < end; t += slot) {
     let v = t + slot <= firstData ? -1 : 0;
+    const rank = { "-1": -1, 0: 0, 1: 1, 3: 2, 2: 3 };
     for (const p of periods) {
-      if (p.s < t + slot && p.e > t) v = Math.max(v, p.kind === "unfilled" ? 2 : 1);
+      if (!(p.s < t + slot && p.e > t)) continue;
+      const k = p.kind === "unfilled" ? 2 : p.kind === "unknown" ? 3 : 1;
+      if (rank[k] > rank[v]) v = k;
     }
     cells.push(v);
   }
@@ -1520,7 +1641,11 @@ ha-card {
   --pb-dq-ok: color-mix(in srgb, var(--pb-muted) 22%, transparent);
   --pb-dq-filled: #f59f00;
   --pb-dq-unfilled: var(--pb-error);
+  --pb-dq-unknown: color-mix(in srgb, #f59f00 45%, var(--pb-muted));
 }
+.dq-warn { display: flex; gap: 6px; align-items: flex-start; color: var(--pb-dq-filled); margin-top: 6px; flex-basis: 100%; }
+.dq-warn ha-icon { --mdc-icon-size: 15px; flex: none; margin-top: 1px; }
+.dq-only .dq-warn { margin-top: 0; }
 @supports not (color: color-mix(in srgb, red 50%, blue)) { ha-card { --pb-dq-ok: rgba(127, 127, 127, .22); } }
 .s-neon { --pb-dq-filled: #ffe600; }
 .s-terminal { --pb-dq-ok: #183018; --pb-dq-filled: #ffb000; }
@@ -2633,20 +2758,10 @@ ${esc(navigator.userAgent)}</pre></details>
   /* ---------- load data quality ---------- */
   _dqEnabled() { return this._config.show_data_quality !== false; }
 
-  /** Sensors to check: the ones set in the config (string, list or comma
-   *  separated), otherwise every GivTCP load sensor found. */
+  /** Sensors to check: the ones set in the config, else found by name. */
   _dqSources() {
-    const ents = this._config.entities || {};
-    const list = (v) => (Array.isArray(v) ? v : typeof v === "string" ? v.split(",") : [])
-      .map((x) => String(x).trim()).filter(Boolean);
-    const ids = Object.keys(this._hass.states || {});
-    let load = list(ents.load_today), power = list(ents.load_power), auto = false;
-    if (!load.length) {
-      load = ids.filter((e) => /^sensor\.givtcp\d*_[^.]+_load_energy_today_kwh$/i.test(e)).sort();
-      auto = load.length > 0;
-    }
-    if (!power.length) power = ids.filter((e) => /^sensor\.givtcp\d*_[^.]+_load_power$/i.test(e)).sort();
-    return { load, power, auto };
+    const src = loadSources(this._config.entities || {}, this._hass.states);
+    return { ...src, auto: src.autoLoad && src.load.length > 0 };
   }
 
   _dqMaybeFetch() {
@@ -2658,9 +2773,9 @@ ${esc(navigator.userAgent)}</pre></details>
     const key = [src.load.join(","), src.power.join(","), days, minutes].join("|");
     const fresh = this._dq && this._dq.key === key && Date.now() - this._dq.at < 30 * 60e3;
     if (fresh || this._dqBusy) return;
-    const base = { key, days, load: src.load, power: src.power, auto: src.auto };
-    if (!src.load.length) {
-      this._dq = { ...base, at: Date.now(), nosource: true };
+    const base = { key, days, load: src.load, power: src.power, auto: src.auto, rule: src.rule, missing: src.missing };
+    if (!src.load.filter((id) => this._hass.states[id]).length) {
+      this._dq = { ...base, at: Date.now(), nosource: !src.load.length, empty: src.load.length > 0, noHist: [] };
       this._dqVer = (this._dqVer || 0) + 1;
       return;
     }
@@ -2668,17 +2783,21 @@ ${esc(navigator.userAgent)}</pre></details>
     const end = Date.now();
     const d0 = new Date(end); d0.setHours(0, 0, 0, 0); d0.setDate(d0.getDate() - (days - 1));
     const start = d0.getTime();
-    // Predbat wants load power in W; scale kW sensors using their unit
+    // Predbat wants load power in W and load_today in kWh; scale using each sensor's unit
     const scaleOf = (id) => {
       const u = String(this._hass.states[id]?.attributes?.unit_of_measurement || "W").toLowerCase();
       return u === "kw" ? 1000 : u === "mw" ? 1e6 : 1;
+    };
+    const kwhScale = (id) => {
+      const u = String(this._hass.states[id]?.attributes?.unit_of_measurement || "kWh").toLowerCase();
+      return u === "wh" ? 0.001 : u === "mwh" ? 1000 : 1;
     };
     Promise.resolve()
       .then(() => this._hass.callWS({
         type: "history/history_during_period",
         start_time: new Date(start).toISOString(),
         end_time: new Date(end).toISOString(),
-        entity_ids: [...src.load, ...src.power],
+        entity_ids: [...src.load, ...src.power].filter((id) => this._hass.states[id]),
         minimal_response: true,
         no_attributes: true,
         // same as Predbat's history request: real state changes only
@@ -2686,14 +2805,18 @@ ${esc(navigator.userAgent)}</pre></details>
         include_start_time_state: true,
       }))
       .then((res) => {
-        const loads = src.load.map((id) => historySeries(res && res[id])).filter((x) => x.length);
+        const noHist = [...src.load, ...src.power].filter((id) => this._hass.states[id] && !(res && Array.isArray(res[id]) && res[id].length));
+        const loads = src.load.map((id) => {
+          const k = kwhScale(id);
+          return historySeries(res && res[id]).map(([tm, v]) => [tm, v === null ? null : v * k]);
+        }).filter((x) => x.length);
         const powers = src.power.map((id) => {
           const k = scaleOf(id);
           return historySeries(res && res[id]).map(([tm, v]) => [tm, v === null ? null : v * k]);
         }).filter((x) => x.length);
         this._dq = loads.length
-          ? { ...base, at: Date.now(), ...detectZeroLoad(loads, powers, { start, end, minutes }) }
-          : { ...base, at: Date.now(), empty: true };
+          ? { ...base, at: Date.now(), noHist, ...detectZeroLoad(loads, powers, { start, end, minutes }) }
+          : { ...base, at: Date.now(), noHist, empty: true };
       })
       .catch((err) => {
         // try again in 5 minutes rather than 30
@@ -2717,6 +2840,7 @@ ${esc(navigator.userAgent)}</pre></details>
       day: list.filter((p) => p.e > since).length,
       filled: list.filter((p) => p.kind === "filled").length,
       unfilled: list.filter((p) => p.kind === "unfilled").length,
+      unknown: list.filter((p) => p.kind === "unknown").length,
     };
   }
 
@@ -2732,30 +2856,46 @@ ${esc(navigator.userAgent)}</pre></details>
     const r = this._dqRecent();
     if (!r || !r.list.length) return "";
     const t = this.t;
-    const cls = r.unfilled ? "bad" : "";
+    const cls = r.unfilled ? "bad" : "";  // amber for filled or power unknown
     const title = t("dq_summary", { n: r.list.length, d: this._dq.days });
     return `<button class="dq-chip ${cls}" data-action="dq" title="${esc(title)}" aria-label="${esc(title)}">
         <ha-icon icon="mdi:alert-outline"></ha-icon><span class="dq-chip-text">${esc(t("dq_chip"))}</span><b>${r.list.length}</b>
       </button>`;
   }
 
+  /** Sensor problems: set but not found, no history, or no load power at all. */
+  _dqWarnings() {
+    const dq = this._dq;
+    if (!dq) return "";
+    const t = this.t;
+    const out = [];
+    if (dq.missing && dq.missing.length) out.push(t("dq_missing", { e: dq.missing.join(", ") }));
+    if (dq.noHist && dq.noHist.length) out.push(t("dq_nohist", { e: dq.noHist.join(", ") }));
+    if (dq.periods && !dq.hasPower) out.push(t("dq_no_power"));
+    return out.map((x) => `<div class="dq-warn"><ha-icon icon="mdi:alert-outline"></ha-icon><span>${esc(x)}</span></div>`).join("");
+  }
+
   _renderDQNotice() {
     if (!this._dqEnabled()) return "";
     const r = this._dqRecent();
+    if (this._dq && (!r || !r.list.length) && this._dq.missing && this._dq.missing.length) {
+      return `<div class="warn dq-only">${this._dqWarnings()}</div>`;
+    }
     if (!r || !r.list.length) return "";
     const t = this.t;
     const bits = [];
     bits.push(t("dq_recent", { n: r.day }));
-    if (r.filled) bits.push(r.unfilled ? t("dq_filled_n", { n: r.filled }) : t("dq_all_filled"));
+    if (r.filled) bits.push(r.unfilled || r.unknown ? t("dq_filled_n", { n: r.filled }) : t("dq_all_filled"));
+    if (r.unknown) bits.push(t("dq_unknown_n", { n: r.unknown }));
     if (r.unfilled) bits.push(t("dq_unfilled_n", { n: r.unfilled }));
     const items = r.list.slice(0, 8).map((p) => {
-      const k = p.kind === "unfilled" ? "unfilled" : "filled";
+      const k = p.kind;
       const extra = k === "filled" && p.kwh > 0 ? ` · ≈${p.kwh.toFixed(2)} kWh` : "";
-      const tag = r.filled && r.unfilled ? ` · ${t("dq_l_" + k)}` : "";
+      const tag = [r.filled, r.unfilled, r.unknown].filter(Boolean).length > 1 ? ` · ${t("dq_l_" + k)}` : "";
       return `<li><i style="--c:var(--pb-dq-${k})"></i><span>
           <b>${esc(this._dayWord(p.s))} ${esc(this._hm(p.s))}–${esc(this._hm(p.e))}</b> · ${esc(this._dur(p.e - p.s))}${esc(extra)}${esc(tag)}</span></li>`;
     }).join("");
-    const hints = ["filled", "unfilled"].filter((k) => r[k])
+    const hints = ["filled", "unknown", "unfilled"].filter((k) => r[k])
       .map((k) => `<p class="dq-hint"><i style="--c:var(--pb-dq-${k})"></i>${esc(t("dq_hint_" + k))}</p>`).join("");
     const more = r.list.length > 8 ? `<div class="muted">${esc(t("dq_more", { n: r.list.length - 8 }))}</div>` : "";
     const canTab = this._enabledCharts().length > 1 && this._config.chart_layout !== "stacked";
@@ -2763,7 +2903,8 @@ ${esc(navigator.userAgent)}</pre></details>
     return `<details class="warn dq ${r.unfilled ? "bad" : ""}" ${this._dqOpen ? "open" : ""}>
         <summary><ha-icon icon="mdi:alert-outline"></ha-icon><span><b>${esc(t("dq_summary", { n: r.list.length, d: this._dq.days }))}</b>${bits.length ? " · " + esc(bits.join(" · ")) : ""}</span></summary>
         <ul class="dq-list">${items}</ul>${more}${hints}
-        <div class="dq-foot">${view}<span class="muted">${esc(t("dq_note"))} ${esc(t("dq_checked", { e: this._dq.load.join(" + ") }))}</span></div>
+        ${this._dqWarnings()}
+        <div class="dq-foot">${view}<span class="muted">${esc(t("dq_note"))} ${esc(t("dq_checked", { e: this._dq.load.join(" + ") }))}${this._dq.rule ? " · " + esc(t("dq_auto", { v: this._dq.rule })) : ""}</span></div>
       </details>`;
   }
 
@@ -2775,7 +2916,10 @@ ${esc(navigator.userAgent)}</pre></details>
     if (!dq) return { empty: t("dq_loading") };
     if (dq.error) return { empty: t("dq_error", { v: dq.error }) };
     if (dq.nosource) return { empty: t("dq_no_source") };
-    if (dq.empty) return { empty: t("dq_no_history", { e: dq.load.join(", ") }) };
+    if (dq.empty) {
+      const gone = dq.load.filter((id) => !this._hass.states[id]);
+      return { empty: gone.length === dq.load.length ? t("dq_missing", { e: gone.join(", ") }) : t("dq_no_history", { e: dq.load.join(", ") }) };
+    }
     const S = this._scale();
     const padL = Math.round(36 * S), padR = 4, padT = 4;
     const rowH = Math.round(15 * S), gap = 3;
@@ -2791,7 +2935,7 @@ ${esc(navigator.userAgent)}</pre></details>
       return Math.round((a - b) / 86400e3);
     };
     const rowY = (di) => padT + (days - 1 - di) * (rowH + gap); // newest day on top
-    const fills = { "-1": "none", 0: "var(--pb-dq-ok)", 1: "var(--pb-dq-filled)", 2: "var(--pb-dq-unfilled)" };
+    const fills = { "-1": "none", 0: "var(--pb-dq-ok)", 1: "var(--pb-dq-filled)", 2: "var(--pb-dq-unfilled)", 3: "var(--pb-dq-unknown)" };
     const parts = [];
     let good = 0, total = 0;
     const cellAt = {};
@@ -2829,7 +2973,9 @@ ${esc(navigator.userAgent)}</pre></details>
       `<span><i style="--c:var(--pb-dq-ok)"></i>${esc(t("dq_l_ok"))}</span>`,
       `<span><i style="--c:var(--pb-dq-filled)"></i>${esc(t("dq_l_filled"))}</span>`,
       `<span><i style="--c:var(--pb-dq-unfilled)"></i>${esc(t("dq_l_unfilled"))}</span>`,
-      `<span class="muted">${esc(t("dq_checked", { e: dq.load.join(" + ") }))}</span>`,
+      dq.cells.includes(3) ? `<span><i style="--c:var(--pb-dq-unknown)"></i>${esc(t("dq_l_unknown"))}</span>` : "",
+      `<span class="muted">${esc(t("dq_checked", { e: dq.load.join(" + ") }))}${dq.power && dq.power.length ? " · " + esc(dq.power.join(" + ")) : ""}${dq.rule ? " · " + esc(t("dq_auto", { v: dq.rule })) : ""}</span>`,
+      this._dqWarnings(),
     ].join("");
     const wire = (chart) => {
       const svg = chart.querySelector("svg");
@@ -2846,7 +2992,7 @@ ${esc(navigator.userAgent)}</pre></details>
         const cell = cellAt[di + ":" + col];
         if (!cell || col < 0 || col > 47) { hide(); return; }
         const p = (dq.periods || []).find((q) => q.s < cell.tm + dq.slot && q.e > cell.tm);
-        const status = cell.v === -1 ? t("dq_l_nodata") : cell.v === 2 ? t("dq_l_unfilled") : cell.v === 1 ? t("dq_l_filled") : t("dq_l_ok");
+        const status = cell.v === -1 ? t("dq_l_nodata") : cell.v === 2 ? t("dq_l_unfilled") : cell.v === 3 ? t("dq_l_unknown") : cell.v === 1 ? t("dq_l_filled") : t("dq_l_ok");
         const lines = [
           `<div><b>${esc(this._dayWord(cell.tm))} ${esc(this._hm(cell.tm))}–${esc(this._hm(cell.tm + dq.slot))}</b></div>`,
           `<div class="row"><span class="tag"><i style="--c:${cell.v >= 0 ? fills[cell.v] : "var(--pb-line)"}"></i>${esc(status)}</span></div>`,
@@ -3507,93 +3653,61 @@ class PredbatCardEditor extends HTMLElement {
 
   _schema(t) {
     const bool = (name) => ({ name, selector: { boolean: {} } });
+    const select = (name, values, prefix) => ({
+      name,
+      selector: { select: { mode: "dropdown", options: values.map((v) => (typeof v === "object" ? v : { value: v, label: t(prefix + v) })) } },
+    });
+    const grid = (...schema) => ({ type: "grid", name: "", schema });
+    const section = (title, icon, schema, expanded = false) => ({ type: "expandable", flatten: true, title, icon, expanded, schema });
+    const ents = (title, keys) => ({
+      type: "expandable", name: "entities", title,
+      schema: keys.map((k) => ({ name: k, selector: { entity: {} } })),
+    });
     return [
-      {
-        name: "style",
-        selector: {
-          select: {
-            mode: "dropdown",
-            options: STYLE_NAMES.map((v) => ({ value: v, label: t("style_" + v) })),
-          },
+      section(t("sec_look"), "mdi:palette-outline", [
+        grid(select("style", STYLE_NAMES, "style_"), select("theme_mode", ["auto", "light", "dark"], "mode_")),
+        grid({ name: "title", selector: { text: {} } }, select("language", [
+          { value: "auto", label: t("ed_auto") }, { value: "en", label: "English" },
+          { value: "pl", label: "Polski" }, { value: "es", label: "Español" },
+        ])),
+        { name: "font_scale", selector: { number: { min: 0.8, max: 1.6, step: 0.05, mode: "slider" } } },
+      ], true),
+      section(t("sec_sections"), "mdi:view-dashboard-outline", [
+        grid(bool("show_header"), bool("show_overview"), bool("show_timeline"), bool("show_actions"), bool("show_table")),
+        { name: "max_actions", selector: { number: { min: 1, max: 12, step: 1, mode: "box" } } },
+      ]),
+      section(t("sec_charts"), "mdi:chart-line", [
+        grid(bool("show_chart"), bool("show_grid_chart"), bool("show_rates_chart"), bool("show_car_chart"), bool("show_base"), bool("show_rates")),
+        grid(select("chart_layout", ["tabs", "stacked"], "layout_"),
+          { name: "hours", selector: { number: { min: 4, max: 48, step: 1, mode: "box", unit_of_measurement: "h" } } }),
+      ]),
+      section(t("sec_car"), "mdi:car-electric", [
+        grid(select("show_car", ["auto", "on", "off"], "show_"), select("show_iboost", ["auto", "on", "off"], "show_")),
+        grid({ name: "car_names", selector: { text: {} } }, { name: "car_battery_size", selector: { text: {} } }),
+        {
+          type: "expandable", name: "entities", title: t("ed_car_sensors"), icon: "mdi:car-cog",
+          schema: CAR_OWN_KEYS.map((k) => ({ name: k, selector: { entity: { multiple: true } } })),
         },
-      },
-      {
-        name: "theme_mode",
-        selector: {
-          select: {
-            mode: "dropdown",
-            options: ["auto", "light", "dark"].map((v) => ({ value: v, label: t("mode_" + v) })),
-          },
-        },
-      },
-      {
-        type: "grid", name: "", schema: [
-          { name: "title", selector: { text: {} } },
-          { name: "prefix", selector: { text: {} } },
-        ],
-      },
-      {
-        name: "language",
-        selector: {
-          select: {
-            mode: "dropdown",
-            options: [
-              { value: "auto", label: t("ed_auto") },
-              { value: "en", label: "English" },
-              { value: "pl", label: "Polski" },
-              { value: "es", label: "Español" },
-            ],
-          },
-        },
-      },
-      {
-        type: "grid", name: "", schema: [
-          bool("show_header"), bool("show_overview"), bool("show_chart"), bool("show_grid_chart"),
-          bool("show_rates_chart"), bool("show_timeline"), bool("show_actions"), bool("show_table"),
-          bool("show_base"), bool("show_rates"), bool("show_data_quality"), bool("show_car_chart"),
-        ],
-      },
-      {
-        type: "grid", name: "", schema: [
-          { name: "hours", selector: { number: { min: 4, max: 48, step: 1, mode: "box", unit_of_measurement: "h" } } },
-          { name: "max_actions", selector: { number: { min: 1, max: 12, step: 1, mode: "box" } } },
-        ],
-      },
-      {
-        type: "grid", name: "", schema: ["show_car", "show_iboost"].map((name) => ({
-          name,
-          selector: { select: { mode: "dropdown", options: ["auto", "on", "off"].map((v) => ({ value: v, label: t("show_" + v) })) } },
-        })),
-      },
-      { name: "car_names", selector: { text: {} } },
-      {
-        name: "chart_layout",
-        selector: {
-          select: {
-            mode: "dropdown",
-            options: ["tabs", "stacked"].map((v) => ({ value: v, label: t("layout_" + v) })),
-          },
-        },
-      },
-      {
-        type: "grid", name: "", schema: [
+      ]),
+      section(t("sec_dq"), "mdi:alert-outline", [
+        bool("show_data_quality"),
+        grid(
           { name: "data_quality_days", selector: { number: { min: 1, max: 14, step: 1, mode: "box", unit_of_measurement: "d" } } },
           { name: "data_quality_minutes", selector: { number: { min: 10, max: 240, step: 5, mode: "box", unit_of_measurement: "min" } } },
-        ],
-      },
-      { name: "font_scale", selector: { number: { min: 0.8, max: 1.6, step: 0.05, mode: "slider" } } },
-      { name: "battery_capacity", selector: { number: { min: 0, max: 200, step: 0.1, mode: "box", unit_of_measurement: "kWh" } } },
-      { name: "car_battery_size", selector: { text: {} } },
-      {
-        type: "expandable", name: "entities", title: t("ed_car_sensors"), icon: "mdi:car-electric",
-        schema: CAR_OWN_KEYS.map((k) => ({ name: k, selector: { entity: { multiple: true } } })),
-      },
-      {
-        type: "expandable", name: "entities", title: t("ed_entities"), icon: "mdi:bat",
-        schema: ENTITY_KEYS.map((k) => (k === "load_today" || k === "load_power"
-          ? { name: k, selector: { entity: { multiple: true, filter: { domain: "sensor" } } } }
-          : { name: k, selector: { entity: {} } })),
-      },
+        ),
+        {
+          type: "expandable", name: "entities", title: t("ed_load_sensors"), icon: "mdi:home-lightning-bolt-outline", expanded: true,
+          schema: ["load_today", "load_power"].map((k) => ({ name: k, selector: { entity: { multiple: true, filter: { domain: "sensor" } } } })),
+        },
+      ]),
+      section(t("sec_advanced"), "mdi:tune-variant", [
+        grid({ name: "prefix", selector: { text: {} } },
+          { name: "battery_capacity", selector: { number: { min: 0, max: 200, step: 0.1, mode: "box", unit_of_measurement: "kWh" } } }),
+        ents(t("grp_plan"), ENTITY_GROUPS.plan),
+        ents(t("grp_costs"), ENTITY_GROUPS.costs),
+        ents(t("grp_car"), ENTITY_GROUPS.car),
+        ents(t("grp_iboost"), ENTITY_GROUPS.iboost),
+      ]),
     ];
   }
 
@@ -3620,9 +3734,11 @@ class PredbatCardEditor extends HTMLElement {
       this.attachShadow({ mode: "open" });
       this.shadowRoot.innerHTML = `
         <style>
-          .check { margin-top: 16px; padding: 12px 14px; border-radius: 12px;
+          .check { margin-top: 12px; padding: 10px 14px; border-radius: 12px;
             background: color-mix(in srgb, var(--primary-text-color) 5%, transparent); font-size: .85rem; }
-          .check h4 { margin: 0 0 6px; font-size: .9rem; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+          .check summary { cursor: pointer; font-weight: 500; font-size: .9rem; }
+          .check details[open] summary { margin-bottom: 8px; }
+          .check button { margin-top: 10px; }
           .check ul { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 16px; }
           .check li { padding: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--code-font-family, monospace); font-size: .76rem; }
           .ok { color: var(--success-color, #2e7d32); } .bad { color: var(--error-color, #c62828); } .opt { color: var(--secondary-text-color); }
@@ -3665,21 +3781,19 @@ class PredbatCardEditor extends HTMLElement {
   _renderCheck(t) {
     const data = this._data();
     const items = [];
-    const ids = Object.keys(this._hass.states || {});
+    const src = loadSources(this._config.entities || {}, this._hass.states);
     for (const k of ENTITY_KEYS) {
-      let v = data.entities[k];
       if (k === "load_today" || k === "load_power") {
-        let list = Array.isArray(v) ? v : v ? [v] : [];
-        let auto = false;
-        if (!list.length) {
-          const re = k === "load_today" ? /^sensor\.givtcp\d*_[^.]+_load_energy_today_kwh$/i : /^sensor\.givtcp\d*_[^.]+_load_power$/i;
-          list = ids.filter((e) => re.test(e)).sort();
-          auto = true;
+        const list = k === "load_today" ? src.load : src.power;
+        const auto = k === "load_today" ? src.autoLoad : src.autoPower;
+        if (!list.length) { items.push({ id: `${k}: ${t("ed_auto_none")}`, ok: k === "load_power" ? null : false }); continue; }
+        for (const id of list) {
+          const note = auto ? ` (${src.rule && k === "load_today" ? t("ed_auto_found_type", { v: src.rule }) : t("ed_auto_found")})` : "";
+          items.push({ id: id + note, ok: !!this._hass.states[id] });
         }
-        if (!list.length) { items.push({ id: `${k}: ${t("ed_auto_none")}`, ok: false }); continue; }
-        for (const id of list) items.push({ id: auto ? `${id} (${t("ed_auto_found")})` : id, ok: !!this._hass.states[id] });
         continue;
       }
+      const v = data.entities[k];
       const ok = !!(v && this._hass.states[v]);
       if (!ok && OPTIONAL_KEYS.includes(k)) { items.push({ id: v, ok: null }); continue; }
       items.push({ id: v, ok });
@@ -3687,12 +3801,17 @@ class PredbatCardEditor extends HTMLElement {
     const found = items.filter((i) => i.ok).length;
     const counted = items.filter((i) => i.ok !== null).length;
     const opt = items.filter((i) => i.ok === null).length;
-    const html = `
-      <h4><span>${t("ed_check")} · ${esc(t("ed_found", { n: found, t: counted }))}${opt ? ` · ${esc(t("ed_optional", { n: opt }))}` : ""}</span>
-      <button data-reset>${esc(t("ed_reset"))}</button></h4>
-      <ul>${items.map((i) => `<li class="${i.ok ? "ok" : i.ok === null ? "opt" : "bad"}" title="${esc(i.id)}">${i.ok ? "✓" : i.ok === null ? "–" : "✗"} ${esc(i.id)}</li>`).join("")}</ul>`;
+    const bad = counted - found;
     const box = this._root.querySelector(".check");
-    if (box.innerHTML !== html) box.innerHTML = html;
+    const wasOpen = box.querySelector("details")?.open;
+    const open = wasOpen !== undefined ? wasOpen : bad > 0;
+    const html = `
+      <details ${open ? "open" : ""}>
+        <summary><span class="${bad ? "bad" : "ok"}">${bad ? "✗" : "✓"}</span> ${esc(t("ed_check"))} · ${esc(t("ed_found", { n: found, t: counted }))}${opt ? ` · ${esc(t("ed_optional", { n: opt }))}` : ""}</summary>
+        <ul>${items.map((i) => `<li class="${i.ok ? "ok" : i.ok === null ? "opt" : "bad"}" title="${esc(i.id)}">${i.ok ? "✓" : i.ok === null ? "–" : "✗"} ${esc(i.id)}</li>`).join("")}</ul>
+        <button data-reset>${esc(t("ed_reset"))}</button>
+      </details>`;
+    if (box.dataset.html !== html) { box.innerHTML = html; box.dataset.html = html; }
   }
 
   _changed(value) {
