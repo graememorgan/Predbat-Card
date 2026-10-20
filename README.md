@@ -2,6 +2,8 @@
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/docs/faq/custom_repositories)
 [![GitHub release](https://img.shields.io/github/v/release/mimikm/Predbat-Card)](https://github.com/mimikm/Predbat-Card/releases)
+[![Downloads](https://img.shields.io/github/downloads/mimikm/Predbat-Card/total?label=downloads&color=7950f2)](https://github.com/mimikm/Predbat-Card/releases)
+[![Downloads of latest release](https://img.shields.io/github/downloads/mimikm/Predbat-Card/latest/total?label=latest%20release)](https://github.com/mimikm/Predbat-Card/releases/latest)
 [![Validate](https://github.com/mimikm/Predbat-Card/actions/workflows/validate.yaml/badge.svg)](https://github.com/mimikm/Predbat-Card/actions/workflows/validate.yaml)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?logo=buymeacoffee&logoColor=000)](https://buymeacoffee.com/mimikm)
 
