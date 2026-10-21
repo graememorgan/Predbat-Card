@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.4.2";
+const CARD_VERSION = "0.4.3";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -771,6 +771,83 @@ const TRANSLATIONS = {
   },
 };
 
+// solar, load, carbon and inverters
+Object.assign(TRANSLATIONS.en, {
+  tab_solar: "Solar", solar_chart: "Solar forecast", tab_carbon: "Carbon", carbon_chart: "Grid carbon intensity",
+  pv_today_tile: "Solar today", pv_left: "{v} kWh left", pv_tomorrow_v: "tomorrow {v}", pv_forecast: "Forecast",
+  pv_left_today: "Left today", pv_in_plan: "In the plan", pv_raw: "Before calibration {v} kWh", pv_raw_short: "Before calibration",
+  pv_from_plan: "From Predbat’s plan – add the solar forecast sensors for whole days and the 10–90% range",
+  pv_none: "No solar forecast found ({e}).",
+  solar: "Solar", house_load: "House load", load_high: "If load runs high",
+  carbon_tile: "Grid carbon", carbon_today_v: "today {v} kg", carbon_so_far: "Today so far", carbon_plan: "Plan",
+  carbon_cleanest: "Cleanest hour", carbon_none: "No carbon data. Turn on carbon_enable in Predbat’s apps.yaml.",
+  carbon_lvl_0: "Very low", carbon_lvl_1: "Low", carbon_lvl_2: "Moderate", carbon_lvl_3: "High", carbon_lvl_4: "Very high", carbon_lvl_5: "Extreme",
+  inverters: "Inverters", inverter_n: "Inverter {n}", inv_charging: "Charging {v}", inv_discharging: "Discharging {v}", inv_idle: "Idle",
+  inv_all: "All", inv_none: "No inverter sensors found. Add them in the card settings under Inverters.",
+  inv_missing: "Predbat runs {n} inverters, but the card can’t find their sensors. Add them in the card settings under Inverters to see each one.",
+  sec_inverters: "Solar, carbon and inverters",
+  ed_show_solar: "Solar forecast (tab and tile)", ed_show_carbon: "Carbon intensity (tab and tile)",
+  ed_show_load_forecast: "House load on grid chart", ed_show_grid_pv: "Solar on grid chart",
+  ed_show_inverters: "Inverter breakdown", ed_inverter_names: "Inverter names (comma separated)",
+  ed_inverter_power_invert: "Battery power is positive when charging", ed_inv_sensors: "Inverter sensors (optional, one per inverter)",
+  ed_inv_found: "{n} inverters found", ed_inv_found_type: "{n} inverters found ({v})",
+  e_inverter_soc: "Battery level (% or kWh)", e_inverter_battery_power: "Battery power", e_inverter_pv_power: "Solar power",
+  grp_solar: "Solar forecast", grp_carbon: "Carbon", grp_live: "Live totals",
+  e_pv_today: "PV forecast today", e_pv_tomorrow: "PV forecast tomorrow", e_pv_d2: "PV forecast day 3", e_pv_d3: "PV forecast day 4",
+  e_pv_now: "PV forecast now", e_carbon_now: "Grid carbon now", e_carbon_best: "Planned carbon", e_carbon_today: "Carbon today",
+  e_carbon_intensity: "Carbon intensity forecast", e_pv_power: "Solar power now (all inverters)", e_battery_power: "Battery power now (all inverters)",
+});
+Object.assign(TRANSLATIONS.pl, {
+  tab_solar: "PV", solar_chart: "Prognoza PV", tab_carbon: "CO₂", carbon_chart: "Emisyjność sieci",
+  pv_today_tile: "PV dziś", pv_left: "zostało {v} kWh", pv_tomorrow_v: "jutro {v}", pv_forecast: "Prognoza",
+  pv_left_today: "Zostało dziś", pv_in_plan: "W planie", pv_raw: "Przed kalibracją {v} kWh", pv_raw_short: "Przed kalibracją",
+  pv_from_plan: "Z planu Predbata – dodaj czujniki prognozy PV, aby zobaczyć całe dni i zakres 10–90%",
+  pv_none: "Nie znaleziono prognozy PV ({e}).",
+  solar: "PV", house_load: "Zużycie domu", load_high: "Przy wyższym zużyciu",
+  carbon_tile: "Emisje sieci", carbon_today_v: "dziś {v} kg", carbon_so_far: "Dziś do tej pory", carbon_plan: "Plan",
+  carbon_cleanest: "Najczystsza godzina", carbon_none: "Brak danych o emisjach. Włącz carbon_enable w apps.yaml Predbata.",
+  carbon_lvl_0: "Bardzo niska", carbon_lvl_1: "Niska", carbon_lvl_2: "Umiarkowana", carbon_lvl_3: "Wysoka", carbon_lvl_4: "Bardzo wysoka", carbon_lvl_5: "Ekstremalna",
+  inverters: "Falowniki", inverter_n: "Falownik {n}", inv_charging: "Ładuje {v}", inv_discharging: "Rozładowuje {v}", inv_idle: "Bezczynny",
+  inv_all: "Razem", inv_none: "Nie znaleziono czujników falowników. Dodaj je w ustawieniach karty w sekcji Falowniki.",
+  inv_missing: "Predbat obsługuje kilka falowników ({n}), ale karta nie znajduje ich czujników. Dodaj je w ustawieniach karty, aby zobaczyć każdy z nich.",
+  sec_inverters: "PV, emisje i falowniki",
+  ed_show_solar: "Prognoza PV (zakładka i kafelek)", ed_show_carbon: "Emisyjność (zakładka i kafelek)",
+  ed_show_load_forecast: "Zużycie domu na wykresie sieci", ed_show_grid_pv: "PV na wykresie sieci",
+  ed_show_inverters: "Podział na falowniki", ed_inverter_names: "Nazwy falowników (po przecinku)",
+  ed_inverter_power_invert: "Moc baterii dodatnia przy ładowaniu", ed_inv_sensors: "Czujniki falowników (opcjonalnie, jeden na falownik)",
+  ed_inv_found: "znaleziono falowniki: {n}", ed_inv_found_type: "znaleziono falowniki: {n} ({v})",
+  e_inverter_soc: "Poziom baterii (% lub kWh)", e_inverter_battery_power: "Moc baterii", e_inverter_pv_power: "Moc PV",
+  grp_solar: "Prognoza PV", grp_carbon: "Emisje", grp_live: "Bieżące sumy",
+  e_pv_today: "Prognoza PV dziś", e_pv_tomorrow: "Prognoza PV jutro", e_pv_d2: "Prognoza PV dzień 3", e_pv_d3: "Prognoza PV dzień 4",
+  e_pv_now: "Prognoza PV teraz", e_carbon_now: "Emisje sieci teraz", e_carbon_best: "Planowane emisje", e_carbon_today: "Emisje dziś",
+  e_carbon_intensity: "Prognoza emisyjności", e_pv_power: "Moc PV teraz (wszystkie falowniki)", e_battery_power: "Moc baterii teraz (wszystkie falowniki)",
+});
+Object.assign(TRANSLATIONS.es, {
+  tab_solar: "Solar", solar_chart: "Previsión solar", tab_carbon: "CO₂", carbon_chart: "Intensidad de carbono de la red",
+  pv_today_tile: "Solar hoy", pv_left: "quedan {v} kWh", pv_tomorrow_v: "mañana {v}", pv_forecast: "Previsión",
+  pv_left_today: "Queda hoy", pv_in_plan: "En el plan", pv_raw: "Sin calibrar {v} kWh", pv_raw_short: "Sin calibrar",
+  pv_from_plan: "Del plan de Predbat: añade los sensores de previsión solar para ver días completos y el rango 10–90%",
+  pv_none: "No se encontró la previsión solar ({e}).",
+  solar: "Solar", house_load: "Consumo de la casa", load_high: "Si el consumo es alto",
+  carbon_tile: "Carbono de la red", carbon_today_v: "hoy {v} kg", carbon_so_far: "Hoy hasta ahora", carbon_plan: "Plan",
+  carbon_cleanest: "Hora más limpia", carbon_none: "Sin datos de carbono. Activa carbon_enable en el apps.yaml de Predbat.",
+  carbon_lvl_0: "Muy baja", carbon_lvl_1: "Baja", carbon_lvl_2: "Moderada", carbon_lvl_3: "Alta", carbon_lvl_4: "Muy alta", carbon_lvl_5: "Extrema",
+  inverters: "Inversores", inverter_n: "Inversor {n}", inv_charging: "Cargando {v}", inv_discharging: "Descargando {v}", inv_idle: "En reposo",
+  inv_all: "Total", inv_none: "No se encontraron sensores de inversor. Añádelos en los ajustes de la tarjeta, en Inversores.",
+  inv_missing: "Predbat usa {n} inversores, pero la tarjeta no encuentra sus sensores. Añádelos en los ajustes de la tarjeta para ver cada uno.",
+  sec_inverters: "Solar, carbono e inversores",
+  ed_show_solar: "Previsión solar (pestaña y tarjeta)", ed_show_carbon: "Intensidad de carbono (pestaña y tarjeta)",
+  ed_show_load_forecast: "Consumo de la casa en el gráfico de red", ed_show_grid_pv: "Solar en el gráfico de red",
+  ed_show_inverters: "Desglose por inversor", ed_inverter_names: "Nombres de inversores (separados por comas)",
+  ed_inverter_power_invert: "La potencia de batería es positiva al cargar", ed_inv_sensors: "Sensores de inversor (opcional, uno por inversor)",
+  ed_inv_found: "{n} inversores encontrados", ed_inv_found_type: "{n} inversores encontrados ({v})",
+  e_inverter_soc: "Nivel de batería (% o kWh)", e_inverter_battery_power: "Potencia de batería", e_inverter_pv_power: "Potencia solar",
+  grp_solar: "Previsión solar", grp_carbon: "Carbono", grp_live: "Totales en vivo",
+  e_pv_today: "Previsión solar hoy", e_pv_tomorrow: "Previsión solar mañana", e_pv_d2: "Previsión solar día 3", e_pv_d3: "Previsión solar día 4",
+  e_pv_now: "Previsión solar ahora", e_carbon_now: "Carbono de la red ahora", e_carbon_best: "Carbono previsto", e_carbon_today: "Carbono hoy",
+  e_carbon_intensity: "Previsión de intensidad de carbono", e_pv_power: "Potencia solar ahora (todos los inversores)", e_battery_power: "Potencia de batería ahora (todos los inversores)",
+});
+
 function pickLang(hass, config) {
   const want = (config && config.language && config.language !== "auto")
     ? config.language
@@ -825,6 +902,20 @@ const CAR_PER_CAR = ["car_slot", "car_soc", "car_start", "car_manual_soc", "car_
 const CAR_OWN_KEYS = ["car_soc_sensor", "car_limit_sensor", "car_plugged_sensor", "car_charging_sensor"];
 // only needed when you have a car or iBoost; not counted as missing in the editor
 const OPTIONAL_KEYS = ["car_slot", "car_soc", "car_plan_time", "iboost_today", "iboost_max", "iboost_active", "iboost_enable", ...CAR_PB_KEYS];
+// solar forecast (today, tomorrow, day 3, day 4, now), carbon, and Predbat's live totals
+const PV_KEYS = ["pv_today", "pv_tomorrow", "pv_d2", "pv_d3", "pv_now"];
+const CARBON_KEYS = ["carbon_now", "carbon_best", "carbon_today", "carbon_intensity"];
+const LIVE_KEYS = ["pv_power", "battery_power"];
+ENTITY_KEYS.push(...PV_KEYS, ...CARBON_KEYS, ...LIVE_KEYS);
+ENTITY_GROUPS.solar = [...PV_KEYS];
+ENTITY_GROUPS.carbon = [...CARBON_KEYS];
+ENTITY_GROUPS.live = [...LIVE_KEYS];
+OPTIONAL_KEYS.push(...PV_KEYS, ...CARBON_KEYS, ...LIVE_KEYS);
+// the Solcast integration's own sensors, used when Predbat's are not there
+const SOLCAST_DAYS = ["sensor.solcast_pv_forecast_forecast_today", "sensor.solcast_pv_forecast_forecast_tomorrow",
+  "sensor.solcast_pv_forecast_forecast_day_3", "sensor.solcast_pv_forecast_forecast_day_4"];
+// your inverters' own sensors: one entity per inverter (a list)
+const INV_OWN_KEYS = ["inverter_soc", "inverter_battery_power", "inverter_pv_power"];
 
 function defaultEntities(prefix) {
   const p = (prefix || "predbat").trim() || "predbat";
@@ -871,6 +962,17 @@ function defaultEntities(prefix) {
     car_max_price: `input_number.${p}_car_charging_plan_max_price`,
     car_from_battery: `switch.${p}_car_charging_from_battery`,
     octopus_intelligent: `switch.${p}_octopus_intelligent_charging`,
+    pv_today: `sensor.${p}_pv_today`,
+    pv_tomorrow: `sensor.${p}_pv_tomorrow`,
+    pv_d2: `sensor.${p}_pv_d2`,
+    pv_d3: `sensor.${p}_pv_d3`,
+    pv_now: `sensor.${p}_pv_forecast_h0`,
+    carbon_now: `${p}.carbon_now`,
+    carbon_best: `${p}.carbon_best`,
+    carbon_today: `${p}.carbon_today`,
+    carbon_intensity: `sensor.${p}_carbon_intensity`,
+    pv_power: `${p}.pv_power`,
+    battery_power: `${p}.battery_power`,
   };
 }
 
@@ -900,6 +1002,13 @@ const DEFAULT_CONFIG = {
   show_car_chart: true,
   car_names: "",
   car_battery_size: "",
+  show_solar: "auto",
+  show_carbon: "auto",
+  show_load_forecast: true,
+  show_grid_pv: true,
+  show_inverters: "auto",
+  inverter_names: "",
+  inverter_power_invert: false,
   data_quality_days: 7,
   data_quality_minutes: 30,
   hours: 24,
@@ -1079,6 +1188,85 @@ function loadSources(entities, states) {
   }
   const missing = [...(autoLoad ? [] : load), ...(autoPower ? [] : power)].filter((id) => !states?.[id]);
   return { load, power, autoLoad, autoPower, rule: rule ? rule.name : null, missing };
+}
+
+/* Inverter sensors by name, from Predbat's apps.yaml templates. The bracketed parts
+ * tell inverters apart: a serial number, a battery number, or HA's own _2, _3 suffix. */
+const INV_RULES = [
+  { name: "GivTCP", soc: /^sensor\.givtcp\d*_([a-z0-9]+)_soc$/i, kwh: /^sensor\.givtcp\d*_([a-z0-9]+)_soc_kwh$/i,
+    batt: /^sensor\.givtcp\d*_([a-z0-9]+)_battery_power$/i, pv: /^sensor\.givtcp\d*_([a-z0-9]+)_pv_power$/i,
+    cap: /^sensor\.givtcp\d*_([a-z0-9]+)_battery_capacity_kwh$/i },
+  { name: "GivEnergy", soc: /^sensor\.ge_inverter_([a-z0-9]+)_battery_soc$/i, batt: /^sensor\.ge_inverter_([a-z0-9]+)_battery_power$/i,
+    pv: /^sensor\.ge_inverter_([a-z0-9]+)_solar_power$/i, cap: /^sensor\.ge_inverter_([a-z0-9]+)_battery_size$/i },
+  { name: "SolarEdge", soc: /^sensor\.solaredge_(b\d+)_state_of_energy$/i, batt: /^sensor\.solaredge_(b\d+)_dc_power$/i,
+    cap: /^sensor\.solaredge_(b\d+)_maximum_energy$/i },
+  { name: "Fox ESS", soc: /^sensor\.foxess(_\d+)?_battery_soc(_\d+)?$/i, batt: /^sensor\.foxess(_\d+)?_invbatpower(_\d+)?$/i,
+    pv: /^sensor\.foxess(_\d+)?_pv_power(_\d+)?$/i, kwh: /^sensor\.foxess(_\d+)?_soc_kwh_remaining(_\d+)?$/i },
+  { name: "Solis", soc: /^sensor\.solis(_\d+)?_battery_soc(_\d+)?$/i, batt: /^sensor\.solis(_\d+)?_battery_power(_\d+)?$/i,
+    pv: /^sensor\.solis(_\d+)?_pv_total_power(_\d+)?$/i },
+  { name: "Sunsynk", soc: /^sensor\.sunsynk(_\d+)?_battery_soc(_\d+)?$/i, batt: /^sensor\.sunsynk(_\d+)?_battery_output_power(_\d+)?$/i,
+    pv: /^sensor\.sunsynk(_\d+)?_total_solar(_\d+)?$/i },
+  { name: "SolaX", soc: /^sensor\.solax(_\d+)?_battery_capacity(_\d+)?$/i, batt: /^sensor\.solax(_\d+)?_battery_power_charge(_\d+)?$/i,
+    pv: /^sensor\.solax(_\d+)?_pv_power_total(_\d+)?$/i },
+  { name: "Kostal", soc: /^sensor\.scb(_\d+)?_battery_soc(_\d+)?$/i, batt: /^sensor\.scb(_\d+)?_battery_power(_\d+)?$/i,
+    pv: /^sensor\.scb(_\d+)?_sum_power_of_all_pv_dc_inputs(_\d+)?$/i },
+  { name: "Growatt", soc: /^sensor\.growatt_sp[ah](_\d+)?_battery_state_of_charge(_\d+)?$/i,
+    batt: /^sensor\.growatt_sp[ah](_\d+)?_battery_power(_\d+)?$/i, pv: /^sensor\.growatt_sp[ah](_\d+)?_pv_power(_\d+)?$/i },
+];
+const INV_PARTS = ["soc", "kwh", "batt", "pv", "cap"];
+
+/** Which inverter sensors to show: the ones set in the card, else found by name. */
+function inverterSources(entities, states) {
+  const own = INV_OWN_KEYS.map((k) => idList(entities?.[k]));
+  const n = Math.max(0, ...own.map((l) => l.length));
+  if (n > 0) {
+    const list = [];
+    for (let i = 0; i < n; i++) {
+      list.push({ key: String(i + 1), soc: own[0][i] || null, kwh: null, batt: own[1][i] || null, pv: own[2][i] || null, cap: null });
+    }
+    return { list, rule: null, auto: false };
+  }
+  const ids = Object.keys(states || {}).filter((e) => e.startsWith("sensor."));
+  for (const r of INV_RULES) {
+    const map = new Map();
+    for (const part of INV_PARTS) {
+      if (!r[part]) continue;
+      for (const e of ids) {
+        const m = r[part].exec(e);
+        if (!m) continue;
+        const key = m.slice(1).filter(Boolean).join("").toLowerCase();
+        if (!map.has(key)) map.set(key, { key, soc: null, kwh: null, batt: null, pv: null, cap: null });
+        const x = map.get(key);
+        if (!x[part]) x[part] = e;
+      }
+    }
+    // order like apps.yaml: givtcp_ before givtcp2_, foxess before foxess_2
+    const order = (x) => String(x.soc || x.kwh || x.batt).replace(/^sensor\.([a-z]+)_/, (m, p) => `sensor.${p}1_`);
+    const list = [...map.values()].filter((x) => x.soc || x.kwh || x.batt)
+      .sort((a, b) => order(a).localeCompare(order(b), "en", { numeric: true }));
+    if (list.length) return { list, rule: r.name, auto: true };
+  }
+  return { list: [], rule: null, auto: true };
+}
+
+/** A power sensor in kW, whatever unit it reports in. */
+function powerKw(st) {
+  const v = num(st?.state);
+  if (v === null) return null;
+  const unit = String(st.attributes?.unit_of_measurement || "").toLowerCase();
+  if (unit === "kw") return v;
+  if (unit === "mw") return v * 1000;
+  if (unit === "w") return v / 1000;
+  return Math.abs(v) > 30 ? v / 1000 : v; // no unit: big numbers are watts
+}
+
+/** Grid carbon intensity bands (g/kWh), the same ones Predbat colours its plan with. */
+const CARBON_BANDS = [40, 120, 200, 290, 450];
+const CARBON_COLORS = ["#2f9e44", "#82c91e", "#fab005", "#fd7e14", "#e03131", "#862e2e"];
+function carbonLevel(v) {
+  let i = 0;
+  while (i < CARBON_BANDS.length && v >= CARBON_BANDS[i]) i++;
+  return i;
 }
 
 /** Turn one entity's history (full or compressed websocket format) into
@@ -1730,6 +1918,44 @@ details.dq[open] summary::after { transform: rotate(180deg); }
 .s-neon { --pb-car: #3df5ff; --pb-car2: #c77dff; --pb-iboost: #ff5c8a; }
 .s-terminal { --pb-car: #7cfff0; --pb-car2: #d0bfff; --pb-iboost: #ff8c42; }
 .m-light.s-terminal { --pb-car: #1d5c63; --pb-car2: #5c3d7a; --pb-iboost: #9c3d12; }
+
+/* solar, load, carbon, inverters */
+ha-card { --pb-pv: #f2b705; --pb-load: color-mix(in srgb, var(--primary-text-color, #000) 72%, transparent); }
+ha-card.m-light { --pb-pv: #e0a500; }
+.s-neon { --pb-pv: #c6ff3d; --pb-load: #f0f0ff; }
+.m-light.s-neon { --pb-pv: #5f8f00; --pb-load: #15142c; }
+.s-terminal { --pb-pv: #ffd866; }
+.m-light.s-terminal { --pb-pv: #7a5d00; }
+.tabs { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { white-space: nowrap; flex: none; }
+.pv-days { display: inline-flex; gap: 4px; margin-right: 4px; }
+.pv-days button { border: 1px solid var(--pb-line); background: none; color: var(--pb-muted); font: inherit; font-weight: 600;
+  padding: 2px 10px; border-radius: 999px; cursor: pointer; }
+.pv-days button.on { border-color: var(--pb-pv); color: var(--primary-text-color); background: color-mix(in srgb, var(--pb-pv) 18%, transparent); }
+.s-neon .pv-days button, .s-terminal .pv-days button { border-radius: 3px; }
+.legend .co2-key { display: inline-flex; gap: 2px; margin-left: auto; }
+.legend .co2-key i { width: 12px; height: 6px; margin: 0; border-radius: 2px; vertical-align: 1px; }
+.inv-hint { display: flex; gap: 8px; align-items: flex-start; }
+.inv-hint ha-icon { --mdc-icon-size: calc(1.1 * var(--u)); color: var(--pb-muted); flex: none; }
+.inv-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+@container (min-width: 540px) { .inv-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container (min-width: 1080px) { .inv-list { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.inv { padding: 10px 12px; border-radius: calc(var(--pb-radius) - 4px); background: var(--pb-tile); min-width: 0; }
+.inv-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.inv-name { font-weight: 600; font-size: calc(.86 * var(--u)); display: inline-flex; gap: 6px; align-items: center; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inv-name ha-icon { --mdc-icon-size: calc(1.05 * var(--u)); color: var(--pb-muted); }
+.inv-pct { font-weight: 700; font-size: calc(1.05 * var(--u)); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.inv-pct small { font-weight: 500; font-size: .72em; color: var(--pb-muted); margin-left: 5px; }
+.inv .meter { height: 6px; margin: 6px 0 6px; }
+.inv-flow { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: calc(.8 * var(--u)); color: var(--pb-muted); }
+.inv-flow span { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.inv-flow ha-icon, .inv-total ha-icon { --mdc-icon-size: calc(.95 * var(--u)); }
+.inv-b.chg ha-icon { color: var(--pb-charge); } .inv-b.dis ha-icon { color: var(--pb-export); } .inv-pv ha-icon { color: var(--pb-pv); }
+.inv-total { font-size: calc(.8 * var(--u)); display: inline-flex; align-items: center; gap: 4px; }
+.s-minimal .inv { background: none; padding: 8px 0; border-radius: 0; border-bottom: 1px solid var(--pb-line); }
+.s-terminal .inv { border-radius: 0; border: 1px dashed var(--pb-line); background: none; }
+.s-neon .inv { border: 1px solid var(--pb-line); }
 .s-terminal .lane { border-radius: 0; } .s-terminal .lane > div { border-radius: 0; background: repeating-linear-gradient(90deg, var(--c) 0 3px, transparent 3px 4px); }
 .s-minimal .lane { height: 4px; border-radius: 0; } .s-minimal .lane > div { border-radius: 0; }
 .s-minimal .meter { height: 2px; }
@@ -1904,6 +2130,21 @@ ${esc(navigator.userAgent)}</pre></details>
         if (st) parts.push(st.last_updated + "|" + st.state);
       }
     }
+    for (const id of SOLCAST_DAYS) {
+      const st = this._hass.states[id];
+      if (st) parts.push(st.last_updated);
+    }
+    // inverter sensors change every few seconds, so only redraw when the shown value changes
+    if (this._config.show_inverters !== false && this._config.show_inverters !== "off") {
+      for (const x of this._invSrc().list) {
+        for (const part of INV_PARTS) {
+          const st = x[part] && this._hass.states[x[part]];
+          if (!st) continue;
+          const v = num(st.state);
+          parts.push(v === null ? st.state : part === "batt" || part === "pv" ? (powerKw(st) || 0).toFixed(1) : Math.round(v));
+        }
+      }
+    }
     return parts.join(";");
   }
 
@@ -1927,7 +2168,11 @@ ${esc(navigator.userAgent)}</pre></details>
         exp: num(r.export_rate),
         soc: num(r.soc_percent),
         pv: num(r.pv_forecast),
+        pv10: num(r.pv_forecast10),
         load: num(r.load_forecast),
+        load10: num(r.load_forecast10),
+        carbon: num(r.carbon_intensity),
+        carbonKg: num(r.total_carbon),
         cost: num(r.cost_change),
         total: num(r.total_cost),
         carKwh: num(r.car_charging),
@@ -2044,6 +2289,7 @@ ${esc(navigator.userAgent)}</pre></details>
       ["header", c.show_header !== false ? this._renderHeader(status) : ""],
       ["alerts", alerts],
       ["overview", c.show_overview !== false ? this._renderOverview() : ""],
+      ["inverters", this._renderInverters()],
       ["charts", this._renderCharts()],
       ["timeline", c.show_timeline !== false ? this._renderTimeline() : ""],
       ["actions", c.show_actions !== false ? this._renderActions() : ""],
@@ -2241,7 +2487,7 @@ ${esc(navigator.userAgent)}</pre></details>
         </div>`;
     };
 
-    return `<div class="overview">${battery}${nowTile}${costTile}${savTile}${winTile("charge")}${winTile("export")}${this._carTiles()}${this._iboostTile()}</div>`;
+    return `<div class="overview">${battery}${nowTile}${costTile}${savTile}${winTile("charge")}${winTile("export")}${this._solarTile()}${this._carbonTile()}${this._carTiles()}${this._iboostTile()}</div>`;
   }
 
   /** Predicted cost at the end of today for the Predbat plan and the baseline,
@@ -3018,6 +3264,430 @@ ${esc(navigator.userAgent)}</pre></details>
     return { H, svg: parts.join(""), legend, wire };
   }
 
+  /* ---------- solar forecast ---------- */
+  /** The forecast sensor for day i (0 today … 3): the card setting, Predbat's, or Solcast's own. */
+  _pvEntity(i) {
+    const key = PV_KEYS[i];
+    const set = this._config.entities?.[key];
+    if (set) return this._hass.states[set] ? set : null;
+    const id = this._eid(key);
+    if (this._hass.states[id]) return id;
+    return this._hass.states[SOLCAST_DAYS[i]] ? SOLCAST_DAYS[i] : null;
+  }
+
+  /** Solar forecast per day: half-hour points in kW with the 10% and 90% range, and day totals. */
+  _pvDays() {
+    if (this._pvCache && this._pvCache.at === this._ctx) return this._pvCache.days;
+    const days = [];
+    const midnight = (tm, add = 0) => { const d = new Date(tm); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + add); return d.getTime(); };
+    const today = midnight(Date.now());
+    for (let i = 0; i < 4; i++) {
+      const id = this._pvEntity(i);
+      if (!id) continue;
+      const st = this._hass.states[id];
+      const a = st.attributes || {};
+      let list = a.detailedForecast || a.detailed_forecast || [];
+      if (typeof list === "string") { try { list = JSON.parse(list); } catch (e) { list = []; } }
+      const pts = (Array.isArray(list) ? list : []).map((p) => ({
+        t: parseTime(p.period_start)?.getTime() ?? null,
+        v: num(p.pv_estimate), v10: num(p.pv_estimate10), v90: num(p.pv_estimate90), cl: num(p.pv_estimateCL),
+      })).filter((p) => p.t !== null && p.v !== null).sort((x, y) => x.t - y.t);
+      const start = pts.length ? midnight(pts[Math.floor(pts.length / 2)].t) : midnight(today, i);
+      const state = num(st.state);
+      const total = num(a.total ?? a.estimate);
+      const totalCL = num(a.totalCL);
+      // Predbat's state is the calibrated total when its PV calibration is on
+      const calibrated = totalCL !== null && total !== null && state !== null && Math.abs(state - totalCL) < 0.015 && Math.abs(totalCL - total) > 0.05;
+      days.push({
+        i, id, start, end: midnight(start, 1), pts, calibrated, source: "sensor",
+        total: state ?? (calibrated ? totalCL : total),
+        raw: total,
+        total10: num(a.total10 ?? a.estimate10),
+        total90: num(a.total90 ?? a.estimate90),
+        left: num(calibrated ? a.remainingCL : a.remaining),
+        left10: num(a.remaining10), left90: num(a.remaining90),
+      });
+    }
+    // no forecast sensors: use the solar in Predbat's plan (the next day or two only)
+    if (!days.length) {
+      const rows = this._ctx.plan.rows.filter((r) => r.end > this._ctx.now && r.pv !== null);
+      if (rows.some((r) => r.pv > 0)) {
+        const byDay = new Map();
+        for (const r of rows) {
+          const d0 = midnight(r.t);
+          if (!byDay.has(d0)) byDay.set(d0, []);
+          const h = Math.max(0.05, (r.end - r.t) / 3600e3);
+          byDay.get(d0).push({ t: r.t, len: r.end - r.t, v: r.pv / h, v10: r.pv10 !== null ? r.pv10 / h : null, v90: null, cl: null, kwh: r.pv, kwh10: r.pv10 });
+        }
+        for (const [start, pts] of byDay) {
+          const sum = (k) => pts.reduce((s, p) => s + (p[k] || 0), 0);
+          days.push({
+            i: Math.round((start - today) / 86400e3), id: this._eid("plan"), start, end: midnight(start, 1), pts, calibrated: false, source: "plan",
+            total: null, raw: null, total10: null, total90: null, left: sum("kwh"), left10: pts.some((p) => p.kwh10 !== null) ? sum("kwh10") : null, left90: null,
+          });
+        }
+      }
+    }
+    // a day's points are averages over their period: work out the period length
+    for (const d of days) {
+      for (let j = 0; j < d.pts.length; j++) {
+        const p = d.pts[j];
+        if (!p.len) p.len = d.pts[j + 1] ? Math.min(3600e3, d.pts[j + 1].t - p.t) : (d.pts[j - 1] ? p.t - d.pts[j - 1].t : 30 * 60e3);
+      }
+      if (d.left === null && d.i === 0 && d.pts.length) {
+        const now = Date.now();
+        d.left = d.pts.reduce((s, p) => {
+          const from = Math.max(now, p.t), to = p.t + p.len;
+          return to > from ? s + ((d.calibrated && p.cl !== null ? p.cl : p.v) * (to - from)) / 3600e3 : s;
+        }, 0);
+      }
+    }
+    this._pvCache = { at: this._ctx, days };
+    return days;
+  }
+
+  _solarShown() {
+    const f = this._flag(this._config.show_solar);
+    if (f === false) return false;
+    return f === true || this._pvDays().length > 0;
+  }
+
+  _solarTile() {
+    if (this._flag(this._config.show_solar) === false) return "";
+    const days = this._pvDays().filter((d) => d.source === "sensor");
+    const d0 = days.find((d) => d.i === 0);
+    if (!d0) return "";
+    const t = this.t;
+    const d1 = days.find((d) => d.i === 1);
+    const bits = [];
+    if (d0.left !== null) bits.push(t("pv_left", { v: d0.left.toFixed(1) }));
+    if (d1 && d1.total !== null) bits.push(t("pv_tomorrow_v", { v: d1.total.toFixed(1) }));
+    const range = d0.total10 !== null && d0.total90 !== null ? `${d0.total10.toFixed(1)}–${d0.total90.toFixed(1)} kWh (10–90%)` : "";
+    return `<div class="tile clickable" style="--c:var(--pb-pv)" data-more="${esc(d0.id)}" title="${esc(range)}">
+        <span class="accent-bar"></span>
+        <div class="tile-label"><ha-icon icon="mdi:solar-power-variant"></ha-icon>${esc(t("pv_today_tile"))}</div>
+        <div class="tile-value tv-lg">${d0.total === null ? "–" : d0.total.toFixed(1)}<small>kWh</small></div>
+        <div class="tile-sub">${bits.length ? esc(bits.join(" · ")) : "&nbsp;"}</div>
+      </div>`;
+  }
+
+  _dayLabel(start) {
+    const t = this.t;
+    const d = Math.round((start - new Date().setHours(0, 0, 0, 0)) / 86400e3);
+    if (d === 0) return t("today");
+    if (d === 1) return t("tomorrow");
+    return this._timeFmt({ weekday: "short" }).format(new Date(start + 12 * 3600e3));
+  }
+
+  /** "Nice" axis step so there are 3–5 gridlines. */
+  _niceStep(max, lines = 4) {
+    const raw = max / lines;
+    const p = Math.pow(10, Math.floor(Math.log10(raw || 1)));
+    for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= raw) return m * p;
+    return 10 * p;
+  }
+
+  _chartSolar(W) {
+    const t = this.t;
+    const days = this._pvDays();
+    if (!days.length) return { empty: t("pv_none", { e: this._eid("pv_today") }) };
+    let sel = days.findIndex((d) => d.i === (this._pvDay ?? 0));
+    if (sel < 0) sel = 0;
+    const d = days[sel];
+    const H = Math.round(180 + (this._scale() - 1) * 45);
+    const fromPlan = d.source === "plan";
+    const f = this._frame(W, H, { padL: 38, padR: 10, from: fromPlan ? Math.max(d.start, this._ctx.now) : d.start, to: d.end });
+    const { X, padL, padT, iw, ih } = f;
+    const main = (p) => (d.calibrated && p.cl !== null ? p.cl : p.v);
+    const mid = (p) => p.t + p.len / 2;
+    const pts = d.pts.filter((p) => p.t + p.len > f.now && p.t < f.horizon);
+    const maxV = Math.max(0.5, ...pts.map((p) => Math.max(main(p), p.v, p.v90 ?? 0, p.v10 ?? 0))) * 1.12;
+    const step = this._niceStep(maxV / 1.12);
+    const Y = (v) => padT + (1 - Math.max(0, v) / maxV) * ih;
+    const parts = [];
+    for (let v = 0; v <= maxV + 1e-9; v += step) {
+      parts.push(`<line class="grid" x1="${padL}" x2="${padL + iw}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" ${v === 0 ? "" : 'stroke-dasharray="2 4"'}/>`);
+      parts.push(`<text class="axis" x="${padL - 6}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${esc((step < 1 ? v.toFixed(1) : Math.round(v)) + (v === 0 ? " kW" : ""))}</text>`);
+    }
+    this._xAxis(f, parts);
+    const now = Date.now();
+    // the part of today that has gone
+    if (!fromPlan && now > f.now && now < f.horizon) {
+      parts.push(`<rect x="${padL}" y="${padT}" width="${(X(now) - padL).toFixed(1)}" height="${ih}" fill="var(--pb-line)" opacity=".55"/>`);
+      parts.push(`<line x1="${X(now).toFixed(1)}" x2="${X(now).toFixed(1)}" y1="${padT}" y2="${padT + ih}" stroke="var(--pb-muted)" stroke-width="1" stroke-dasharray="3 3"/>`);
+      parts.push(`<text class="axis" x="${(X(now) + 4).toFixed(1)}" y="${padT + 11}">${esc(t("now"))}</text>`);
+    }
+    if (pts.length) {
+      const xs = pts.map((p) => X(mid(p)).toFixed(1));
+      const line = (get) => pts.map((p, j) => `${j ? "L" : "M"}${xs[j]},${Y(get(p)).toFixed(1)}`).join("");
+      const has10 = pts.some((p) => p.v10 !== null), has90 = pts.some((p) => p.v90 !== null);
+      if (has10 || has90) {
+        const up = pts.map((p, j) => `${j ? "L" : "M"}${xs[j]},${Y(p.v90 ?? main(p)).toFixed(1)}`).join("");
+        const down = pts.map((p, j) => [xs[j], Y(p.v10 ?? main(p)).toFixed(1)]).reverse().map(([x, y]) => `L${x},${y}`).join("");
+        parts.push(`<path d="${up}${down}Z" fill="var(--pb-pv)" opacity=".2" class="l-band"/>`);
+      }
+      const ml = line(main);
+      parts.push(`<defs><linearGradient id="pvg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--pb-pv)" stop-opacity=".35"/><stop offset="1" stop-color="var(--pb-pv)" stop-opacity="0"/></linearGradient></defs>`);
+      parts.push(`<path d="${ml}L${xs[xs.length - 1]},${Y(0).toFixed(1)}L${xs[0]},${Y(0).toFixed(1)}Z" fill="url(#pvg)"/>`);
+      if (d.calibrated) parts.push(`<path d="${line((p) => p.v)}" fill="none" stroke="var(--pb-muted)" stroke-width="1.3" stroke-dasharray="4 3" class="l-raw"/>`);
+      parts.push(`<path d="${ml}" fill="none" stroke="var(--pb-pv)" stroke-width="2.2" stroke-linejoin="round" class="l-pv"/>`);
+      // peak
+      let pk = pts[0];
+      for (const p of pts) if (main(p) > main(pk)) pk = p;
+      if (main(pk) > 0.05) {
+        const px = X(mid(pk)), py = Y(main(pk));
+        parts.push(`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3" fill="var(--card-background-color,#fff)" stroke="var(--pb-pv)" stroke-width="1.6"/>`);
+        parts.push(`<text class="axis" x="${px.toFixed(1)}" y="${Math.max(padT + 9, py - 7).toFixed(1)}" text-anchor="middle" style="fill:var(--primary-text-color);font-weight:600">${main(pk).toFixed(1)} kW</text>`);
+      }
+    }
+    parts.push(this._hoverParts(f, "var(--pb-pv)"));
+
+    // legend: pick a day, then the totals
+    const chips = days.length > 1
+      ? `<span class="pv-days">${days.map((x) => `<button data-pvday="${x.i}" class="${x === d ? "on" : ""}">${esc(this._dayLabel(x.start))}</button>`).join("")}</span>`
+      : "";
+    const k = (v) => (v === null ? "–" : v.toFixed(1));
+    const stats = [];
+    if (d.total !== null) stats.push(`<span><i class="line" style="--c:var(--pb-pv)"></i>${esc(t("pv_forecast"))} <b>${k(d.total)} kWh</b></span>`);
+    if (d.total10 !== null && d.total90 !== null) stats.push(`<span><i style="--c:color-mix(in srgb, var(--pb-pv) 35%, transparent)"></i>10–90% <b>${k(d.total10)}–${k(d.total90)} kWh</b></span>`);
+    if (d.left !== null && (d.i === 0 || fromPlan)) stats.push(`<span>${esc(fromPlan ? t("pv_in_plan") : t("pv_left_today"))} <b>${k(d.left)} kWh</b>${d.left10 !== null && d.left90 !== null && !fromPlan ? ` <span class="muted">(${k(d.left10)}–${k(d.left90)})</span>` : ""}</span>`);
+    if (d.calibrated) stats.push(`<span class="muted"><i class="dash" style="--c:var(--pb-muted)"></i>${esc(t("pv_raw", { v: k(d.raw) }))}</span>`);
+    if (fromPlan && d.left10 !== null) stats.push(`<span><i style="--c:color-mix(in srgb, var(--pb-pv) 35%, transparent)"></i>10% <b>${k(d.left10)} kWh</b></span>`);
+    if (fromPlan) stats.push(`<span class="muted">${esc(t("pv_from_plan"))}</span>`);
+    const legend = chips + stats.join("");
+
+    const hover = {
+      f,
+      pick: (tm) => {
+        if (!pts.length) return null;
+        let p = pts[0];
+        for (const q of pts) if (Math.abs(mid(q) - tm) < Math.abs(mid(p) - tm)) p = q;
+        const lines = [`<div><b>${esc(this._dayLabel(d.start))} ${esc(this._hm(p.t))}–${esc(this._hm(p.t + p.len))}</b></div>`,
+          `<div class="row"><span>${esc(t("pv_forecast"))}</span><b>${main(p).toFixed(2)} kW</b></div>`];
+        if (p.v10 !== null || p.v90 !== null) lines.push(`<div class="row muted"><span>10–90%</span><span>${p.v10 !== null ? p.v10.toFixed(2) : "–"}–${p.v90 !== null ? p.v90.toFixed(2) : "–"} kW</span></div>`);
+        if (d.calibrated) lines.push(`<div class="row muted"><span>${esc(t("pv_raw_short"))}</span><span>${p.v.toFixed(2)} kW</span></div>`);
+        return { x: X(mid(p)), y: Y(main(p)), html: lines.join(""), color: "var(--pb-pv)" };
+      },
+    };
+    const wire = (el) => {
+      this._wireHover(el, hover);
+      const lg = this.shadowRoot.querySelector('.legend[data-legend="solar"]');
+      lg?.querySelectorAll("[data-pvday]").forEach((b) => b.addEventListener("click", () => {
+        this._pvDay = Number(b.getAttribute("data-pvday"));
+        this._drawCharts(true);
+      }));
+    };
+    return { H, svg: parts.join(""), legend, wire };
+  }
+
+  /* ---------- carbon ---------- */
+  /** Grid carbon intensity per slot (g/kWh): Predbat's plan, else its carbon sensor's forecast. */
+  _carbonSeries() {
+    if (this._co2Cache && this._co2Cache.at === this._ctx) return this._co2Cache.list;
+    const { now, horizon, rows } = this._ctx;
+    let list = rows.filter((r) => r.carbon !== null).map((r) => ({ s: r.t, e: r.end, v: r.carbon, r }));
+    if (!list.length) {
+      const fc = this._st("carbon_intensity")?.attributes?.forecast;
+      if (Array.isArray(fc)) {
+        list = fc.map((p) => ({ s: parseTime(p.from)?.getTime(), e: parseTime(p.to)?.getTime(), v: num(p.intensity), r: null }))
+          .filter((p) => p.s && p.e && p.v !== null && p.e > now && p.s < horizon).sort((a, b) => a.s - b.s);
+        for (const p of list) p.r = this._rowAt(Math.max(p.s, now));
+      }
+    }
+    this._co2Cache = { at: this._ctx, list };
+    return list;
+  }
+
+  _carbonOn() {
+    const raw = this._ctx?.plan?.raw;
+    if (raw && raw.carbon_enable !== undefined) return !!raw.carbon_enable;
+    return num(this._st("carbon_now")?.state) !== null || this._carbonSeries().length > 0;
+  }
+
+  _carbonShown() {
+    const f = this._flag(this._config.show_carbon);
+    return f === "auto" ? this._carbonOn() : f;
+  }
+
+  _carbonNow() {
+    const v = num(this._st("carbon_now")?.state);
+    if (v !== null) return v;
+    const s = this._carbonSeries();
+    return s.length && s[0].s <= Date.now() + 60e3 ? s[0].v : num(this._st("carbon_intensity")?.state);
+  }
+
+  _carbonTile() {
+    if (!this._carbonShown()) return "";
+    const t = this.t;
+    const v = this._carbonNow();
+    const lvl = v === null ? null : carbonLevel(v);
+    const today = num(this._st("carbon_today")?.state);
+    const bits = [];
+    if (lvl !== null) bits.push(t("carbon_lvl_" + lvl));
+    if (today !== null) bits.push(t("carbon_today_v", { v: (today / 1000).toFixed(1) }));
+    return `<div class="tile clickable" style="--c:${lvl === null ? "var(--pb-muted)" : CARBON_COLORS[lvl]}" data-more="${esc(this._st("carbon_now") ? this._eid("carbon_now") : this._eid("carbon_intensity"))}">
+        <span class="accent-bar"></span>
+        <div class="tile-label"><ha-icon icon="mdi:molecule-co2"></ha-icon>${esc(t("carbon_tile"))}</div>
+        <div class="tile-value tv-lg">${v === null ? "–" : Math.round(v)}<small>g/kWh</small></div>
+        <div class="tile-sub">${bits.length ? esc(bits.join(" · ")) : "&nbsp;"}</div>
+      </div>`;
+  }
+
+  _chartCarbon(W) {
+    const t = this.t;
+    const { now, horizon, cur } = this._ctx;
+    const list = this._carbonSeries();
+    if (!list.length) return { empty: t("carbon_none") };
+    const H = Math.round(170 + (this._scale() - 1) * 40);
+    const f = this._frame(W, H, { padL: 40, padR: 10 });
+    const { X, padL, padT, iw, ih } = f;
+    const maxV = Math.max(50, ...list.map((p) => p.v)) * 1.12;
+    const step = this._niceStep(maxV / 1.12);
+    const Y = (v) => padT + (1 - Math.max(0, v) / maxV) * ih;
+    const parts = [];
+    for (let v = 0; v <= maxV + 1e-9; v += step) {
+      parts.push(`<line class="grid" x1="${padL}" x2="${padL + iw}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" ${v === 0 ? "" : 'stroke-dasharray="2 4"'}/>`);
+      parts.push(`<text class="axis" x="${padL - 6}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${Math.round(v)}</text>`);
+    }
+    parts.push(`<text class="axis" x="${padL + 4}" y="${padT + 10}">g/kWh</text>`);
+    this._xAxis(f, parts);
+    for (const p of list) {
+      const x1 = X(Math.max(p.s, now)) + 0.5, x2 = X(Math.min(p.e, horizon)) - 0.5;
+      if (x2 - x1 < 0.3) continue;
+      parts.push(`<rect class="bar-co2" x="${x1.toFixed(1)}" y="${Y(p.v).toFixed(1)}" width="${(x2 - x1).toFixed(1)}" height="${(Y(0) - Y(p.v)).toFixed(1)}" rx="1.5" fill="${CARBON_COLORS[carbonLevel(p.v)]}" opacity=".85"/>`);
+    }
+    // the plan's charge and export slots underneath, so you can see when the battery fills from the grid
+    for (const r of this._ctx.rows) {
+      if (r.cat !== "charge" && r.cat !== "export") continue;
+      const x1 = X(r.t), x2 = X(r.end);
+      if (x2 - x1 >= 0.5) parts.push(`<rect x="${x1.toFixed(1)}" y="${padT + ih + 1}" width="${(x2 - x1).toFixed(1)}" height="3" fill="var(--pb-${r.cat})"/>`);
+    }
+    parts.push(this._hoverParts(f, "var(--primary-text-color)"));
+    // cleanest stretch of an hour or more
+    let best = null;
+    for (let i = 0; i < list.length; i++) {
+      let j = i, sum = 0, n = 0;
+      for (; j < list.length; j++) {
+        sum += list[j].v; n++;
+        if (list[j].e - list[i].s >= 3600e3 - 1) break;
+      }
+      if (j >= list.length) break; // less than an hour left
+      const avg = sum / n;
+      if (!best || avg < best.avg - 0.5) best = { s: Math.max(list[i].s, now), e: list[j].e, avg };
+    }
+    const vNow = this._carbonNow();
+    const plan = num(this._st("carbon_best")?.state);
+    const today = num(this._st("carbon_today")?.state);
+    const legend = [
+      vNow !== null ? `<span><i style="--c:${CARBON_COLORS[carbonLevel(vNow)]}"></i>${esc(t("now"))} <b>${Math.round(vNow)} g/kWh</b> ${esc(t("carbon_lvl_" + carbonLevel(vNow)).toLowerCase())}</span>` : "",
+      best ? `<span>${esc(t("carbon_cleanest"))} <b>${esc(this._dayWord(best.s) === t("today") ? "" : this._dayWord(best.s) + " ")}${esc(this._hm(best.s))}–${esc(this._hm(best.e))}</b> <span class="muted">${Math.round(best.avg)} g</span></span>` : "",
+      today !== null ? `<span>${esc(t("carbon_so_far"))} <b>${(today / 1000).toFixed(1)} kg</b></span>` : "",
+      plan !== null ? `<span>${esc(t("carbon_plan"))} <b>${(plan / 1000).toFixed(1)} kg</b></span>` : "",
+      `<span class="co2-key">${CARBON_COLORS.map((c, i) => `<i style="--c:${c}" title="${esc(t("carbon_lvl_" + i))}"></i>`).join("")}</span>`,
+    ].join("");
+    const hover = {
+      f,
+      pick: (tm) => {
+        const p = list.find((x) => x.s <= tm && x.e > tm) || (tm < list[0].s ? list[0] : list[list.length - 1]);
+        const lines = [`<div><b>${esc(this._dayWord(p.s))} ${esc(this._hm(Math.max(p.s, now)))}–${esc(this._hm(p.e))}</b></div>`,
+          `<div class="row"><span class="tag"><i style="--c:${CARBON_COLORS[carbonLevel(p.v)]}"></i>${esc(t("carbon_lvl_" + carbonLevel(p.v)))}</span><b>${Math.round(p.v)} g/kWh</b></div>`];
+        if (p.r) {
+          lines.push(`<div class="row muted"><span>${esc(t("rate"))}</span><span>${esc(this._rate(p.r.imp, cur))}</span></div>`);
+          lines.push(this._tipState(p.r));
+        }
+        return { x: (X(Math.max(p.s, now)) + X(Math.min(p.e, horizon))) / 2, y: Y(p.v), html: lines.join(""), color: CARBON_COLORS[carbonLevel(p.v)] };
+      },
+    };
+    return { H, svg: parts.join(""), legend, hover };
+  }
+
+  /* ---------- inverters ---------- */
+  /** Inverter sensors, looked up again only when entities are added or removed, or the settings change. */
+  _invSrc() {
+    const states = this._hass.states;
+    const key = `${Object.keys(states).length}|${JSON.stringify(INV_OWN_KEYS.map((k) => this._config.entities?.[k] || ""))}`;
+    if (!this._invSrcCache || this._invSrcCache.key !== key) this._invSrcCache = { key, src: inverterSources(this._config.entities, states) };
+    return this._invSrcCache.src;
+  }
+
+  _inverters() {
+    const src = this._invSrc();
+    const st = (id) => (id ? this._hass.states[id] : undefined);
+    let names = this._config.inverter_names;
+    if (typeof names === "string") names = names.split(",");
+    const invert = this._config.inverter_power_invert === true;
+    return src.list.map((x, n) => {
+      const socSt = st(x.soc), kwhSt = st(x.kwh), capSt = st(x.cap);
+      let pct = null, kwh = num(kwhSt?.state);
+      const cap = num(capSt?.state);
+      const v = num(socSt?.state);
+      if (v !== null) {
+        const unit = String(socSt.attributes?.unit_of_measurement || "%").toLowerCase();
+        if (unit === "kwh") { kwh = v; pct = cap ? (v / cap) * 100 : null; }
+        else if (unit === "wh") { kwh = v / 1000; pct = cap ? (kwh / cap) * 100 : null; }
+        else pct = v;
+      } else if (kwh !== null && cap) pct = (kwh / cap) * 100;
+      let batt = x.batt ? powerKw(st(x.batt)) : null;
+      if (batt !== null && invert) batt = -batt;
+      const name = Array.isArray(names) && String(names[n] ?? "").trim() ? String(names[n]).trim() : this.t("inverter_n", { n: n + 1 });
+      return {
+        n, name, key: x.key, pct: pct === null ? null : Math.max(0, Math.min(100, pct)), kwh, cap,
+        batt, pv: x.pv ? powerKw(st(x.pv)) : null,
+        more: x.soc || x.kwh || x.batt, ids: [x.soc, x.kwh, x.batt, x.pv, x.cap].filter(Boolean),
+      };
+    });
+  }
+
+  _numInverters() {
+    return num(this._st("inverter_config")?.attributes?.num_inverters) || 0;
+  }
+
+  _renderInverters() {
+    const f = this._flag(this._config.show_inverters);
+    if (f === false) return "";
+    const t = this.t;
+    const list = this._inverters();
+    const pbN = this._numInverters();
+    if (f === "auto" && list.length < 2) {
+      // Predbat runs several inverters but we can't find their sensors: say how to add them
+      if (pbN >= 2 && this._config.show_overview !== false) {
+        return `<div class="warn inv-hint"><ha-icon icon="mdi:information-outline"></ha-icon><span>${esc(t("inv_missing", { n: pbN }))}</span></div>`;
+      }
+      return "";
+    }
+    if (!list.length) {
+      return `<div class="section"><div class="section-head"><div class="section-title">${esc(t("inverters"))}</div></div>
+        <div class="muted">${esc(t("inv_none"))}</div></div>`;
+    }
+    const kw = (v) => `${Math.abs(v) >= 10 ? Math.abs(v).toFixed(0) : Math.abs(v).toFixed(1)} kW`;
+    const flow = (b) => {
+      if (b === null) return "";
+      if (Math.abs(b) < 0.05) return `<span class="inv-b idle"><ha-icon icon="mdi:battery-outline"></ha-icon>${esc(t("inv_idle"))}</span>`;
+      return b < 0
+        ? `<span class="inv-b chg"><ha-icon icon="mdi:battery-arrow-up"></ha-icon>${esc(t("inv_charging", { v: kw(b) }))}</span>`
+        : `<span class="inv-b dis"><ha-icon icon="mdi:battery-arrow-down"></ha-icon>${esc(t("inv_discharging", { v: kw(b) }))}</span>`;
+    };
+    const items = list.map((x) => {
+      const col = x.pct === null ? "var(--pb-muted)" : x.pct < 20 ? "var(--pb-error)" : x.pct < 40 ? "var(--pb-freeze_export)" : "var(--pb-accent)";
+      return `<div class="inv clickable" data-more="${esc(x.more || "")}" title="${esc(x.ids.join("\n"))}">
+          <div class="inv-top"><span class="inv-name"><ha-icon icon="mdi:home-battery-outline"></ha-icon>${esc(x.name)}</span>
+            <span class="inv-pct">${x.pct === null ? "–" : Math.round(x.pct) + "%"}${x.kwh !== null ? `<small>${x.kwh.toFixed(1)} kWh</small>` : ""}</span></div>
+          <div class="meter" style="--c:${col}"><div style="width:${(x.pct ?? 0).toFixed(1)}%;background:${col}"></div></div>
+          <div class="inv-flow">${flow(x.batt)}${x.pv !== null ? `<span class="inv-pv"><ha-icon icon="mdi:solar-power"></ha-icon>${kw(x.pv)}</span>` : ""}</div>
+        </div>`;
+    }).join("");
+    // Predbat's own totals for all inverters
+    const tb = powerKw(this._st("battery_power"));
+    const tp = powerKw(this._st("pv_power"));
+    const total = [tp !== null ? `<ha-icon icon="mdi:solar-power"></ha-icon>${kw(tp)}` : "",
+      tb !== null ? (Math.abs(tb) < 0.05 ? esc(t("inv_idle")) : `<ha-icon icon="${tb < 0 ? "mdi:battery-arrow-up" : "mdi:battery-arrow-down"}"></ha-icon>${kw(tb)}`) : ""].filter(Boolean).join(" · ");
+    return `<div class="section">
+        <div class="section-head"><div class="section-title">${esc(t("inverters"))}</div>${total ? `<div class="inv-total muted clickable" data-more="${esc(this._eid("battery_power"))}">${esc(t("inv_all"))}: ${total}</div>` : ""}</div>
+        <div class="inv-list">${items}</div>
+      </div>`;
+  }
+
   /* ---------- charts ---------- */
   _scale() {
     const s = num(this._config.font_scale);
@@ -3030,13 +3700,16 @@ ${esc(navigator.userAgent)}</pre></details>
     if (c.show_chart !== false) out.push("battery");
     if (c.show_grid_chart !== false) out.push("grid");
     if (c.show_rates_chart !== false) out.push("rates");
+    if (this._hass && this._solarShown()) out.push("solar");
+    if (this._hass && this._carbonShown()) out.push("carbon");
     if (c.show_car_chart !== false && this._hass && this._carShown()) out.push("car");
     if (this._dqEnabled()) out.push("data");
     return out;
   }
 
   _chartTitle(k) {
-    return { battery: this.t("forecast"), grid: this.t("grid_chart"), rates: this.t("rates_chart"), car: this.t("car_chart"), data: this.t("dq_title") }[k];
+    return { battery: this.t("forecast"), grid: this.t("grid_chart"), rates: this.t("rates_chart"), solar: this.t("solar_chart"),
+      carbon: this.t("carbon_chart"), car: this.t("car_chart"), data: this.t("dq_title") }[k];
   }
 
   _chartBox(k) {
@@ -3066,10 +3739,12 @@ ${esc(navigator.userAgent)}</pre></details>
 
   _drawCharts(force) {
     if (!this._ctx) return;
-    const keys = ["soc_best", "soc_base", "rates", "rates_export", "export_energy", "import_energy", "plan", "car_slot", "car_soc"];
+    const keys = ["soc_best", "soc_base", "rates", "rates_export", "export_energy", "import_energy", "plan", "car_slot", "car_soc",
+      "pv_today", "pv_tomorrow", "pv_d2", "pv_d3", "carbon_intensity", "carbon_best", "carbon_today"];
     const own = CAR_OWN_KEYS.map((k) => this._carOwn(k, 0)).filter(Boolean).map((id) => this._hass.states[id]?.state).join(",");
+    const solcast = SOLCAST_DAYS.map((id) => this._hass.states[id]?.last_updated || "-").join(",");
     const sig = keys.map((k) => this._st(k)?.last_updated || "-").join("|") +
-      `|${this._chartWidth}|${Math.floor(Date.now() / 60000)}|${this._tab}|${this._scale()}|dq${this._dqVer || 0}|${own}`;
+      `|${this._chartWidth}|${Math.floor(Date.now() / 60000)}|${this._tab}|${this._scale()}|dq${this._dqVer || 0}|${own}|${solcast}|${this._pvDay || 0}`;
     if (!force && sig === this._chartSig) return;
     this._chartSig = sig;
     this.shadowRoot.querySelectorAll(".chart[data-chart]").forEach((el) => {
@@ -3077,7 +3752,8 @@ ${esc(navigator.userAgent)}</pre></details>
       const W = Math.max(220, Math.round(el.clientWidth) || this._chartWidth || 600);
       const host = el.querySelector(".svg-host");
       const legendEl = this.shadowRoot.querySelector(`.legend[data-legend="${key}"]`);
-      const fn = { battery: this._chartBattery, grid: this._chartGrid, rates: this._chartRates, car: this._chartCar, data: this._chartDQ }[key];
+      const fn = { battery: this._chartBattery, grid: this._chartGrid, rates: this._chartRates, solar: this._chartSolar,
+        carbon: this._chartCarbon, car: this._chartCar, data: this._chartDQ }[key];
       if (!fn) return;
       const res = fn.call(this, W);
       if (res.empty) {
@@ -3096,7 +3772,8 @@ ${esc(navigator.userAgent)}</pre></details>
     const padL = Math.round((opts.padL ?? 34) * S);
     const padR = Math.round((opts.padR ?? 10) * S);
     const padT = 8, padB = Math.round(22 * S);
-    const { now, horizon } = this._ctx;
+    // charts can show their own time span (the solar chart shows a whole day)
+    const now = opts.from ?? this._ctx.now, horizon = opts.to ?? this._ctx.horizon;
     const iw = W - padL - padR, ih = H - padT - padB;
     const X = (tm) => padL + ((Math.max(now, Math.min(horizon, tm)) - now) / (horizon - now)) * iw;
     return { S, padL, padR, padT, padB, iw, ih, X, now, horizon, W, H };
@@ -3264,7 +3941,9 @@ ${esc(navigator.userAgent)}</pre></details>
     const { now, horizon, rows, cur } = this._ctx;
     const exp = seriesFrom(this._st("export_energy")?.attributes?.results);
     const imp = seriesFrom(this._st("import_energy")?.attributes?.results);
-    if (!exp.length && !imp.length) return { empty: t("no_forecast", { e: this._eid("export_energy") }) };
+    const showLoad = this._config.show_load_forecast !== false && rows.some((r) => r.load !== null);
+    const showPv = this._config.show_grid_pv !== false && rows.some((r) => (r.pv || 0) > 0);
+    if (!exp.length && !imp.length && !showLoad) return { empty: t("no_forecast", { e: this._eid("export_energy") }) };
     const H = Math.round(170 + (this._scale() - 1) * 40);
     const f = this._frame(W, H, { padL: 40, padR: 10 });
     const { X, padL, padT, iw, ih } = f;
@@ -3280,12 +3959,19 @@ ${esc(navigator.userAgent)}</pre></details>
       if (tm <= ser[0][0]) return ser[0][1];
       return stepAt(ser, tm) ?? 0;
     };
-    const data = slots.map(([s, e, r]) => ({
-      s, e, r,
-      exp: Math.max(0, at(exp, e) - at(exp, s)),
-      imp: Math.max(0, at(imp, e) - at(imp, s)),
-    }));
-    const maxV = Math.max(0.1, ...data.map((d) => Math.max(d.exp, d.imp))) * 1.1;
+    const data = slots.map(([s, e, r]) => {
+      // the slot now has only partly left: count that part of the load and solar
+      const part = r && r.end > r.t ? (e - s) / (r.end - r.t) : 0;
+      return {
+        s, e, r,
+        exp: Math.max(0, at(exp, e) - at(exp, s)),
+        imp: Math.max(0, at(imp, e) - at(imp, s)),
+        load: r && r.load !== null ? Math.max(0, r.load * part) : null,
+        load10: r && r.load10 !== null ? Math.max(0, r.load10 * part) : null,
+        pv: r && r.pv !== null ? Math.max(0, r.pv * part) : null,
+      };
+    });
+    const maxV = Math.max(0.1, ...data.map((d) => Math.max(d.exp, d.imp, showLoad ? d.load || 0 : 0, showPv ? d.pv || 0 : 0))) * 1.1;
     const mid = padT + ih / 2;
     const k = (ih / 2) / maxV;
     const parts = [];
@@ -3305,10 +3991,27 @@ ${esc(navigator.userAgent)}</pre></details>
       if (d.imp > 0.005) parts.push(`<rect class="bar-imp" x="${x1.toFixed(1)}" y="${mid.toFixed(1)}" width="${w.toFixed(1)}" height="${(d.imp * k).toFixed(1)}" rx="1.5" fill="var(--pb-import)"/>`);
     }
     parts.push(`<line x1="${padL}" x2="${padL + iw}" y1="${mid.toFixed(1)}" y2="${mid.toFixed(1)}" stroke="var(--pb-muted)" stroke-width="1" opacity=".6"/>`);
+    // solar above the line (energy coming in), house load below it (energy going out to the house)
+    const stepLine = (get, sign) => {
+      let d = "";
+      for (const x of data) {
+        const v = get(x);
+        if (v === null) { continue; }
+        const y = (mid - sign * v * k).toFixed(1);
+        d += d ? `V${y}H${X(x.e).toFixed(1)}` : `M${X(x.s).toFixed(1)},${y}H${X(x.e).toFixed(1)}`;
+      }
+      return d;
+    };
+    let tl = 0, tp = 0;
+    for (const d of data) { tl += d.load || 0; tp += d.pv || 0; }
+    if (showPv) parts.push(`<path d="${stepLine((x) => x.pv, 1)}" fill="none" stroke="var(--pb-pv)" stroke-width="1.8" stroke-linejoin="round" class="l-pv"/>`);
+    if (showLoad) parts.push(`<path d="${stepLine((x) => x.load, -1)}" fill="none" stroke="var(--pb-load)" stroke-width="1.8" stroke-linejoin="round" class="l-load"/>`);
     parts.push(this._hoverParts(f));
     const legend = [
       `<span><i style="--c:var(--pb-export)"></i>${esc(t("export"))} <b>${te.toFixed(1)} kWh</b></span>`,
       `<span><i style="--c:var(--pb-import)"></i>${esc(t("import"))} <b>${ti.toFixed(1)} kWh</b></span>`,
+      showPv ? `<span><i class="line" style="--c:var(--pb-pv)"></i>${esc(t("solar"))} <b>${tp.toFixed(1)} kWh</b></span>` : "",
+      showLoad ? `<span><i class="line" style="--c:var(--pb-load)"></i>${esc(t("house_load"))} <b>${tl.toFixed(1)} kWh</b></span>` : "",
     ].join("");
     const hover = {
       f,
@@ -3320,6 +4023,11 @@ ${esc(navigator.userAgent)}</pre></details>
           `<div class="row"><span>${esc(t("export"))}</span><b>${d.exp.toFixed(2)} kWh</b></div>`,
           `<div class="row"><span>${esc(t("import"))}</span><b>${d.imp.toFixed(2)} kWh</b></div>`,
         ];
+        if (showPv && d.pv !== null) lines.push(`<div class="row"><span>${esc(t("solar"))}</span><b>${d.pv.toFixed(2)} kWh</b></div>`);
+        if (showLoad && d.load !== null) {
+          lines.push(`<div class="row"><span>${esc(t("house_load"))}</span><b>${d.load.toFixed(2)} kWh</b></div>`);
+          if (d.load10 !== null && d.load10 > d.load + 0.005) lines.push(`<div class="row muted"><span>${esc(t("load_high"))}</span><span>${d.load10.toFixed(2)} kWh</span></div>`);
+        }
         if (d.r) {
           lines.push(`<div class="row muted"><span>${esc(t("rate"))}</span><span>${esc(this._rate(d.r.imp, cur))}</span></div>`);
           lines.push(`<div class="row muted"><span>${esc(t("export_rate"))}</span><span>${esc(this._rate(d.r.exp, cur))}</span></div>`);
@@ -3644,7 +4352,7 @@ class PredbatCardEditor extends HTMLElement {
   _data() {
     const c = { ...DEFAULT_CONFIG, ...this._config };
     c.entities = { ...defaultEntities(c.prefix), ...(this._config.entities || {}) };
-    for (const k of ["load_today", "load_power", ...CAR_OWN_KEYS]) {
+    for (const k of ["load_today", "load_power", ...CAR_OWN_KEYS, ...INV_OWN_KEYS]) {
       const v = c.entities[k];
       c.entities[k] = Array.isArray(v) ? v : typeof v === "string" && v ? v.split(",").map((x) => x.trim()).filter(Boolean) : [];
     }
@@ -3677,7 +4385,8 @@ class PredbatCardEditor extends HTMLElement {
         { name: "max_actions", selector: { number: { min: 1, max: 12, step: 1, mode: "box" } } },
       ]),
       section(t("sec_charts"), "mdi:chart-line", [
-        grid(bool("show_chart"), bool("show_grid_chart"), bool("show_rates_chart"), bool("show_car_chart"), bool("show_base"), bool("show_rates")),
+        grid(bool("show_chart"), bool("show_grid_chart"), bool("show_rates_chart"), bool("show_car_chart"), bool("show_base"), bool("show_rates"),
+          bool("show_load_forecast"), bool("show_grid_pv")),
         grid(select("chart_layout", ["tabs", "stacked"], "layout_"),
           { name: "hours", selector: { number: { min: 4, max: 48, step: 1, mode: "box", unit_of_measurement: "h" } } }),
       ]),
@@ -3687,6 +4396,15 @@ class PredbatCardEditor extends HTMLElement {
         {
           type: "expandable", name: "entities", title: t("ed_car_sensors"), icon: "mdi:car-cog",
           schema: CAR_OWN_KEYS.map((k) => ({ name: k, selector: { entity: { multiple: true } } })),
+        },
+      ]),
+      section(t("sec_inverters"), "mdi:solar-power-variant", [
+        grid(select("show_solar", ["auto", "on", "off"], "show_"), select("show_carbon", ["auto", "on", "off"], "show_")),
+        grid(select("show_inverters", ["auto", "on", "off"], "show_"), bool("inverter_power_invert")),
+        { name: "inverter_names", selector: { text: {} } },
+        {
+          type: "expandable", name: "entities", title: t("ed_inv_sensors"), icon: "mdi:home-battery-outline",
+          schema: INV_OWN_KEYS.map((k) => ({ name: k, selector: { entity: { multiple: true, filter: { domain: "sensor" } } } })),
         },
       ]),
       section(t("sec_dq"), "mdi:alert-outline", [
@@ -3707,6 +4425,9 @@ class PredbatCardEditor extends HTMLElement {
         ents(t("grp_costs"), ENTITY_GROUPS.costs),
         ents(t("grp_car"), ENTITY_GROUPS.car),
         ents(t("grp_iboost"), ENTITY_GROUPS.iboost),
+        ents(t("grp_solar"), ENTITY_GROUPS.solar),
+        ents(t("grp_carbon"), ENTITY_GROUPS.carbon),
+        ents(t("grp_live"), ENTITY_GROUPS.live),
       ]),
     ];
   }
@@ -3724,7 +4445,8 @@ class PredbatCardEditor extends HTMLElement {
       charge_start: "e_charge_start", charge_end: "e_charge_end", charge_limit: "e_charge_limit",
       export_start: "e_export_start", export_end: "e_export_end", export_limit: "e_export_limit", export_energy: "e_export_energy", load_today: "e_load_today", load_power: "e_load_power", car_slot: "e_car_slot", car_soc: "e_car_soc", car_plan_time: "e_car_plan_time", iboost_today: "e_iboost_today", iboost_max: "e_iboost_max", iboost_active: "e_iboost_active", iboost_enable: "e_iboost_enable", import_energy: "e_import_energy",
     };
-    return (s) => t(map[s.name] || s.name);
+    const en = TRANSLATIONS.en;
+    return (s) => t(map[s.name] || (en["ed_" + s.name] ? "ed_" + s.name : en["e_" + s.name] ? "e_" + s.name : s.name));
   }
 
   _update(hassOnly) {
@@ -3797,6 +4519,12 @@ class PredbatCardEditor extends HTMLElement {
       const ok = !!(v && this._hass.states[v]);
       if (!ok && OPTIONAL_KEYS.includes(k)) { items.push({ id: v, ok: null }); continue; }
       items.push({ id: v, ok });
+    }
+    // inverters: the ones set in the card, or found by name
+    const inv = inverterSources(this._config.entities || {}, this._hass.states);
+    if (inv.list.length) {
+      items.push({ id: inv.rule ? t("ed_inv_found_type", { n: inv.list.length, v: inv.rule }) : t("ed_inv_found", { n: inv.list.length }), ok: null });
+      if (!inv.auto) for (const x of inv.list) for (const id of [x.soc, x.batt, x.pv].filter(Boolean)) items.push({ id, ok: !!this._hass.states[id] });
     }
     const found = items.filter((i) => i.ok).length;
     const counted = items.filter((i) => i.ok !== null).length;
