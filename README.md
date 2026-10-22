@@ -34,6 +34,7 @@ A Home Assistant Lovelace card that shows what [Predbat](https://github.com/spri
 - **iBoost (hot water)** – energy used today against the daily limit, whether it's heating now, and planned heating windows.
 - **Zero-load alarm** – spots the "zero load" problems Predbat warns about in its log (your daily load total stops rising while the house is using power), with a header chip, a list of recent periods and a 7-day data-quality view. See [Zero-load alarm](#zero-load-alarm).
 - **Charts your way** – turn each chart on or off, and show them as tabs (one at a time) or stacked.
+- **Drag-and-drop layout** – rearrange sections, overview tiles and chart tabs in the visual editor. Blocks snap into place, and you can drop them on Hidden to hide them. There's a separate phone layout too. See [Layout](#layout).
 - **Text size** – scale all the card's text from 80% to 160%.
 - **Plan timeline** – a colour-coded ribbon of every plan slot (charge, hold, freeze, export, demand).
 - **Upcoming actions** – the next forced charge/export windows merged into readable blocks with average rate and the SoC they end at.
@@ -84,6 +85,7 @@ Everything can be set in the visual editor, grouped into sections you can open a
 | **Car and hot water** | Show car / iBoost, car names, battery size, your car's own sensors |
 | **Solar, carbon and inverters** | Show the solar forecast, carbon and inverter breakdown, inverter names, your inverter sensors |
 | **Load data alarm** | Turn it on or off, days to check, how long counts as flat, load sensors |
+| **Layout** | Drag sections, overview tiles and chart tabs into order or onto Hidden, with separate Desktop and Phone layouts. See [Layout](#layout). |
 | **Advanced: Predbat entities** | Prefix, battery size, and every Predbat entity the card reads, grouped by topic |
 
 The **Entity check** at the bottom shows how many entities were found. It opens by itself when something required is missing.
@@ -128,6 +130,12 @@ The **Entity check** at the bottom shows how many entities were found. It opens 
 | `max_actions` | `4` | Maximum number of upcoming actions. |
 | `battery_capacity` | – | Battery size in kWh. Only needed if the card cannot read it from Predbat. |
 | `currency` / `currency_minor` | from Predbat | Override the currency symbols, e.g. `€` and `c`. |
+| `section_order` | default order | Order of the sections: `header`, `alerts`, `overview`, `inverters`, `charts`, `timeline`, `actions`, `table`. Anything you leave out is added at the end. |
+| `tile_order` | default order | Order of the overview tiles: `battery`, `now`, `cost`, `saving`, `charge`, `export`, `solar`, `carbon`, `car`, `iboost`. |
+| `chart_order` | default order | Order of the chart tabs: `battery`, `grid`, `rates`, `solar`, `carbon`, `car`, `data`. |
+| `hidden_sections` / `hidden_tiles` / `hidden_charts` | – | Lists of sections, tiles or chart tabs to hide. Warnings (`alerts`) can't be hidden. |
+| `phone_layout` | – | A separate layout for phones, with the same six keys as above. Leave it out and phones use the desktop layout. |
+| `phone_breakpoint` | `600` | The phone layout is used on screens narrower than this, in px. |
 | `entities` | see below | Override any individual entity. |
 
 ### Entities
@@ -249,6 +257,18 @@ show_data_quality: true
 data_quality_days: 7     # days of history to check, 1 – 14
 data_quality_minutes: 30 # flag the load total when flat this long
 
+# Layout (easier in the editor: Layout → drag and drop)
+# section_order: [header, alerts, overview, inverters, charts, timeline, actions, table]
+# tile_order: [battery, now, cost, saving, charge, export, solar, carbon, car, iboost]
+# chart_order: [battery, grid, rates, solar, carbon, car, data]
+# hidden_sections: []
+# hidden_tiles: []
+# hidden_charts: []
+# phone_layout:            # optional, used on screens narrower than phone_breakpoint
+#   section_order: [overview, header, charts]
+#   hidden_sections: [table]
+# phone_breakpoint: 600
+
 # Time and limits
 hours: 24                # hours ahead to show, 4 – 48
 max_actions: 4           # upcoming actions to list, 1 – 12
@@ -363,6 +383,22 @@ style: glass
 Top row: `modern`, `glass`, `neon`. Bottom row: `minimal`, `native`, `terminal`.
 
 Every style follows your theme by default, except `neon` and `terminal`, which are dark unless you choose otherwise. Set `theme_mode: light` or `theme_mode: dark` (or **Light / dark** in the editor) to force either look on any style. `neon` and `terminal` each have their own light version: a pale grid, and a classic grey-green LCD.
+
+## Layout
+
+![Layout editor](https://github.com/mimikm/Predbat-Card/raw/main/images/layout-editor.png)
+
+Open **Layout** at the bottom of the visual editor to arrange the card by dragging:
+
+- **Sections** (header, warnings, overview tiles, inverters, charts, plan timeline, upcoming actions, full plan table): drag up or down.
+- **Overview tiles**: drag inside the tile grid.
+- **Chart tabs**: drag inside the Charts block. The first one is the tab that opens first.
+
+While you drag, the block follows your finger or mouse, the others slide out of the way, and it snaps into the gap when you let go. Drop anything on **Hidden** to hide it, and drag it back to show it again. It comes back where it was. Warnings can be moved but not hidden, so you never miss an error. A block marked **off** is turned off in the settings above it (for example *Overview tiles* under Sections). Layout only changes where things go.
+
+**Phone layout.** Switch to **📱 Phone** and press **Create phone layout**. It starts as a copy of your desktop layout. Arrange it for small screens, for example the tiles first and the table hidden. It's used on screens narrower than 600 px; you can change that number. Your desktop layout isn't affected. Use **Copy desktop layout** to start again, or **Remove phone layout** to go back to one layout for everything.
+
+**Reset layout** puts the desktop layout back to the default.
 
 ## Zero-load alarm
 
@@ -527,6 +563,7 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 | 0.4.1 | Car support uses every Predbat car entity plus your car's own sensors, with fallbacks; warns when Predbat's car charge level is wrong |
 | 0.4.2 | Load data alarm finds sensors for many inverters, reports missing sensors, handles no load power and Wh units; visual editor reorganised into sections |
 | 0.4.3 | Solar forecast tab (4 days, 10–90% range, calibrated vs raw) and tile, house load and solar on the grid chart, carbon intensity tab and tile, per-inverter breakdown with auto-detected sensors |
+| 0.4.4 | Drag-and-drop layout in the visual editor: reorder and hide sections, overview tiles and chart tabs, with a separate phone layout |
 
 ### 🔜 0.4.x – More of Predbat's data
 
@@ -546,8 +583,9 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 
 ### 0.6 – Customisation
 
-- [ ] Choose which overview tiles to show, and in what order
-- [ ] Reorder sections
+- [x] Choose which overview tiles to show, and in what order (done early, in 0.4.4)
+- [x] Reorder sections (done early, in 0.4.4)
+- [x] Reorder and hide chart tabs, and a separate phone layout (done early, in 0.4.4)
 - [ ] Custom accent colour
 - [ ] Compact mode: a small card with battery, now, next action and saving
 - [ ] More translations (German, French, Dutch – volunteers welcome)
