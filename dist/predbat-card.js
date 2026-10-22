@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.4.3";
+const CARD_VERSION = "0.4.4";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -848,6 +848,38 @@ Object.assign(TRANSLATIONS.es, {
   e_carbon_intensity: "Previsión de intensidad de carbono", e_pv_power: "Potencia solar ahora (todos los inversores)", e_battery_power: "Potencia de batería ahora (todos los inversores)",
 });
 
+// layout editor
+Object.assign(TRANSLATIONS.en, {
+  sec_layout: "Layout", lay_desktop: "Desktop", lay_phone: "Phone",
+  lay_hint: "Drag a block to move it. It snaps into place. Drag it onto Hidden to hide it, and back to show it again.",
+  lay_hidden: "Hidden", lay_hidden_empty: "Drag here to hide", lay_off: "off", lay_off_title: "Turned off in the settings above",
+  lay_reset: "Reset layout", lay_phone_none: "No phone layout yet. Phones use the desktop layout.",
+  lay_phone_create: "Create phone layout", lay_phone_copy: "Copy desktop layout", lay_phone_remove: "Remove phone layout",
+  lay_phone_bp: "Use on screens narrower than", lay_phone_hint: "Arrange the card for phones. Your desktop layout isn't affected.",
+  lay_s_header: "Header", lay_s_alerts: "Warnings", lay_s_overview: "Overview tiles", lay_s_inverters: "Inverters", lay_s_charts: "Charts",
+  lay_s_timeline: "Plan timeline", lay_s_actions: "Upcoming actions", lay_s_table: "Full plan table",
+});
+Object.assign(TRANSLATIONS.pl, {
+  sec_layout: "Układ", lay_desktop: "Komputer", lay_phone: "Telefon",
+  lay_hint: "Przeciągnij blok, aby go przesunąć. Wskoczy na miejsce. Upuść go w Ukrytych, aby go schować, i z powrotem, aby go pokazać.",
+  lay_hidden: "Ukryte", lay_hidden_empty: "Przeciągnij tutaj, aby ukryć", lay_off: "wył.", lay_off_title: "Wyłączone w ustawieniach powyżej",
+  lay_reset: "Przywróć układ", lay_phone_none: "Brak układu telefonu. Telefony używają układu komputera.",
+  lay_phone_create: "Utwórz układ telefonu", lay_phone_copy: "Skopiuj układ komputera", lay_phone_remove: "Usuń układ telefonu",
+  lay_phone_bp: "Używaj na ekranach węższych niż", lay_phone_hint: "Ułóż kartę dla telefonów. Układ komputera się nie zmieni.",
+  lay_s_header: "Nagłówek", lay_s_alerts: "Ostrzeżenia", lay_s_overview: "Kafelki", lay_s_inverters: "Falowniki", lay_s_charts: "Wykresy",
+  lay_s_timeline: "Oś planu", lay_s_actions: "Nadchodzące działania", lay_s_table: "Pełna tabela planu",
+});
+Object.assign(TRANSLATIONS.es, {
+  sec_layout: "Diseño", lay_desktop: "Ordenador", lay_phone: "Móvil",
+  lay_hint: "Arrastra un bloque para moverlo. Se coloca solo en su sitio. Arrástralo a Ocultos para ocultarlo, y de vuelta para mostrarlo.",
+  lay_hidden: "Ocultos", lay_hidden_empty: "Arrastra aquí para ocultar", lay_off: "apagado", lay_off_title: "Desactivado en los ajustes de arriba",
+  lay_reset: "Restablecer diseño", lay_phone_none: "Aún no hay diseño para móvil. Los móviles usan el diseño de ordenador.",
+  lay_phone_create: "Crear diseño para móvil", lay_phone_copy: "Copiar diseño de ordenador", lay_phone_remove: "Quitar diseño para móvil",
+  lay_phone_bp: "Usar en pantallas de menos de", lay_phone_hint: "Organiza la tarjeta para móviles. El diseño de ordenador no cambia.",
+  lay_s_header: "Encabezado", lay_s_alerts: "Avisos", lay_s_overview: "Tarjetas resumen", lay_s_inverters: "Inversores", lay_s_charts: "Gráficos",
+  lay_s_timeline: "Línea del plan", lay_s_actions: "Próximas acciones", lay_s_table: "Tabla completa del plan",
+});
+
 function pickLang(hass, config) {
   const want = (config && config.language && config.language !== "auto")
     ? config.language
@@ -975,6 +1007,50 @@ function defaultEntities(prefix) {
     battery_power: `${p}.battery_power`,
   };
 }
+
+/* Layout: what can be arranged, in default order */
+const SECTION_IDS = ["header", "alerts", "overview", "inverters", "charts", "timeline", "actions", "table"];
+const TILE_IDS = ["battery", "now", "cost", "saving", "charge", "export", "solar", "carbon", "car", "iboost"];
+const CHART_IDS = ["battery", "grid", "rates", "solar", "carbon", "car", "data"];
+const LAYOUT_KEYS = { sections: "section_order", tiles: "tile_order", charts: "chart_order" };
+const HIDDEN_KEYS = { sections: "hidden_sections", tiles: "hidden_tiles", charts: "hidden_charts" };
+const LAYOUT_IDS = { sections: SECTION_IDS, tiles: TILE_IDS, charts: CHART_IDS };
+
+/** A saved order with unknown ids dropped and anything new added at the end. */
+function orderOf(saved, ids) {
+  const list = idList(saved).filter((x, i, a) => ids.includes(x) && a.indexOf(x) === i);
+  return [...list, ...ids.filter((x) => !list.includes(x))];
+}
+
+/** The layout in use: the phone one on narrow screens if you have made one. */
+function activeLayout(config, screenW) {
+  const ph = config.phone_layout && typeof config.phone_layout === "object" ? config.phone_layout : null;
+  const bp = num(config.phone_breakpoint) || 600;
+  const src = ph && screenW && screenW < bp ? ph : config;
+  const out = { phone: src === ph };
+  for (const k of Object.keys(LAYOUT_KEYS)) {
+    out[k] = orderOf(src[LAYOUT_KEYS[k]] ?? config[LAYOUT_KEYS[k]], LAYOUT_IDS[k]);
+    out["hidden_" + k] = idList(src[HIDDEN_KEYS[k]] ?? (src === ph ? [] : config[HIDDEN_KEYS[k]]));
+  }
+  return out;
+}
+
+const LAYOUT_ICON = {
+  sections: { header: "mdi:page-layout-header", alerts: "mdi:alert-outline", overview: "mdi:view-grid-outline", inverters: "mdi:home-battery-outline",
+    charts: "mdi:chart-line", timeline: "mdi:timeline-outline", actions: "mdi:format-list-checks", table: "mdi:table" },
+  tiles: { battery: "mdi:battery-60", now: "mdi:home-lightning-bolt-outline", cost: "mdi:cash", saving: "mdi:piggy-bank-outline",
+    charge: "mdi:battery-arrow-up", export: "mdi:battery-arrow-down", solar: "mdi:solar-power-variant", carbon: "mdi:molecule-co2",
+    car: "mdi:car-electric", iboost: "mdi:water-boiler" },
+  charts: { battery: "mdi:battery-charging-high", grid: "mdi:transmission-tower", rates: "mdi:cash-multiple", solar: "mdi:white-balance-sunny",
+    carbon: "mdi:molecule-co2", car: "mdi:car-electric", data: "mdi:database-alert-outline" },
+};
+const TILE_LABEL = { battery: "battery", now: "now", cost: "cost_today", saving: "saving_today", charge: "next_charge", export: "next_export",
+  solar: "pv_today_tile", carbon: "carbon_tile", car: "car", iboost: "iboost" };
+const LAYOUT_LABEL = {
+  sections: (id, t) => [t("lay_s_" + id), LAYOUT_ICON.sections[id]],
+  tiles: (id, t) => [t(TILE_LABEL[id]), LAYOUT_ICON.tiles[id]],
+  charts: (id, t) => [t("tab_" + id), LAYOUT_ICON.charts[id]],
+};
 
 const STYLE_NAMES = ["modern", "glass", "neon", "minimal", "native", "terminal"];
 
@@ -2077,12 +2153,20 @@ ${esc(navigator.userAgent)}</pre></details>
       });
     }
     this._observe();
+    if (!this._onWinResize) {
+      this._onWinResize = () => {
+        const phone = activeLayout(this._config || {}, window.innerWidth || 0).phone;
+        if (this._layout && phone !== this._layout.phone) this._safeRender();
+      };
+    }
+    window.addEventListener("resize", this._onWinResize);
     clearInterval(this._tick);
     this._tick = setInterval(() => { this._sig = ""; if (this._hass) this.hass = this._hass; }, 60000);
   }
 
   disconnectedCallback() {
     if (this._ro) this._ro.disconnect();
+    if (this._onWinResize) window.removeEventListener("resize", this._onWinResize);
     clearInterval(this._tick);
   }
 
@@ -2268,6 +2352,7 @@ ${esc(navigator.userAgent)}</pre></details>
     const t = this.t;
     this._dqMaybeFetch();
 
+    this._layout = activeLayout(c, window.innerWidth || 0);
     const plan = this._plan();
     const cur = this._currency(plan.raw);
     const socMax = this._socMax(plan.raw);
@@ -2285,19 +2370,22 @@ ${esc(navigator.userAgent)}</pre></details>
     alerts += this._renderMissing(plan);
     alerts += this._renderDQNotice();
 
-    const sections = [
-      ["header", c.show_header !== false ? this._renderHeader(status) : ""],
-      ["alerts", alerts],
-      ["overview", c.show_overview !== false ? this._renderOverview() : ""],
-      ["inverters", this._renderInverters()],
-      ["charts", this._renderCharts()],
-      ["timeline", c.show_timeline !== false ? this._renderTimeline() : ""],
-      ["actions", c.show_actions !== false ? this._renderActions() : ""],
-      ["table", c.show_table !== false && rows.length ? this._renderTable() : ""],
-    ];
+    const L = this._layout;
+    const build = {
+      header: () => (c.show_header !== false ? this._renderHeader(status) : ""),
+      alerts: () => alerts,
+      overview: () => (c.show_overview !== false ? this._renderOverview() : ""),
+      inverters: () => this._renderInverters(),
+      charts: () => this._renderCharts(),
+      timeline: () => (c.show_timeline !== false ? this._renderTimeline() : ""),
+      actions: () => (c.show_actions !== false ? this._renderActions() : ""),
+      table: () => (c.show_table !== false && rows.length ? this._renderTable() : ""),
+    };
+    // your section order; warnings can be moved but never hidden
+    const sections = L.sections.map((k) => [k, k !== "alerts" && L.hidden_sections.includes(k) ? "" : build[k]()]);
 
-    // Rebuild the whole card only when its frame changes (style, mode, text size).
-    const shell = `${this._style()}|${this._mode()}|${this._scale()}`;
+    // Rebuild the whole card only when its frame changes (style, mode, text size, section order).
+    const shell = `${this._style()}|${this._mode()}|${this._scale()}|${L.sections.join(",")}`;
     if (shell !== this._shell || !this.shadowRoot.querySelector(".wrap")) {
       this._shell = shell;
       this._secHtml = {};
@@ -2487,7 +2575,14 @@ ${esc(navigator.userAgent)}</pre></details>
         </div>`;
     };
 
-    return `<div class="overview">${battery}${nowTile}${costTile}${savTile}${winTile("charge")}${winTile("export")}${this._solarTile()}${this._carbonTile()}${this._carTiles()}${this._iboostTile()}</div>`;
+    const tiles = {
+      battery: () => battery, now: () => nowTile, cost: () => costTile, saving: () => savTile,
+      charge: () => winTile("charge"), export: () => winTile("export"), solar: () => this._solarTile(),
+      carbon: () => this._carbonTile(), car: () => this._carTiles(), iboost: () => this._iboostTile(),
+    };
+    const L = this._layout || activeLayout(this._config, 0);
+    const html = L.tiles.filter((k) => !L.hidden_tiles.includes(k)).map((k) => tiles[k]()).join("");
+    return html ? `<div class="overview">${html}</div>` : "";
   }
 
   /** Predicted cost at the end of today for the Predbat plan and the baseline,
@@ -3704,7 +3799,8 @@ ${esc(navigator.userAgent)}</pre></details>
     if (this._hass && this._carbonShown()) out.push("carbon");
     if (c.show_car_chart !== false && this._hass && this._carShown()) out.push("car");
     if (this._dqEnabled()) out.push("data");
-    return out;
+    const L = this._layout || activeLayout(c, 0);
+    return L.charts.filter((k) => out.includes(k) && !L.hidden_charts.includes(k));
   }
 
   _chartTitle(k) {
@@ -4467,8 +4563,56 @@ class PredbatCardEditor extends HTMLElement {
           button { background: none; border: 1px solid var(--divider-color); color: var(--primary-text-color); border-radius: 999px; padding: 4px 10px; cursor: pointer; font: inherit; font-size: .75rem; }
           .ver { margin-top: 8px; font-size: .72rem; color: var(--secondary-text-color); text-align: right; } .ver a { color: inherit; }
           @media (max-width: 500px) { .check ul { columns: 1; } }
+          .lay { margin-top: 12px; border: 1px solid var(--divider-color, #ddd); border-radius: 12px; padding: 0 14px; }
+          .lay > summary { cursor: pointer; padding: 12px 0; font-weight: 500; display: flex; align-items: center; gap: 10px; list-style: none; }
+          .lay > summary::-webkit-details-marker { display: none; }
+          .lay > summary::after { content: "▾"; margin-left: auto; opacity: .6; transition: transform .2s; }
+          .lay[open] > summary::after { transform: rotate(180deg); }
+          .lay[open] { padding-bottom: 14px; }
+          .lay .hint { font-size: .78rem; color: var(--secondary-text-color); margin: 6px 0 10px; }
+          .seg { display: inline-flex; border: 1px solid var(--divider-color, #ddd); border-radius: 10px; overflow: hidden; }
+          .seg button { border: 0; border-radius: 0; padding: 7px 14px; margin: 0; font-size: .82rem; }
+          .seg button.on { background: var(--primary-color, #03a9f4); color: var(--text-primary-color, #fff); }
+          .ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; font-size: .82rem; }
+          .ctl input { width: 80px; padding: 4px 6px; border: 1px solid var(--divider-color); border-radius: 6px; background: none; color: inherit; font: inherit; }
+          .ctl button.primary { background: var(--primary-color, #03a9f4); color: var(--text-primary-color, #fff); border-color: transparent; }
+          .stage { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 12px; align-items: start; margin-top: 10px; user-select: none; -webkit-user-select: none; }
+          .stage.phone { grid-template-columns: minmax(0, 230px) minmax(0, 1fr); }
+          @media (max-width: 520px) { .stage, .stage.phone { grid-template-columns: minmax(0, 1fr); } }
+          .zone.sections { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 14px; min-height: 60px;
+            background: var(--card-background-color, #fff); border: 1px solid var(--divider-color, #ddd); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+          .it { touch-action: none; cursor: grab; box-sizing: border-box; }
+          .it .row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+          .it ha-icon { --mdc-icon-size: 16px; width: 16px; height: 16px; flex: none; color: var(--secondary-text-color); }
+          .it .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+          .it .grip { opacity: .35; font-size: .7rem; letter-spacing: -2px; flex: none; }
+          .it .off { margin-left: auto; font-size: .62rem; padding: 0 5px; border-radius: 6px; background: color-mix(in srgb, var(--secondary-text-color) 20%, transparent); color: var(--secondary-text-color); }
+          .zone.sections > .it { padding: 8px 10px; border-radius: 10px; font-size: .84rem; font-weight: 500;
+            background: color-mix(in srgb, var(--primary-text-color) 5%, transparent); border: 1px solid color-mix(in srgb, var(--primary-text-color) 10%, transparent); }
+          .zone.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin-top: 7px; min-height: 30px; }
+          .stage.phone .zone.tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .zone.charts { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; min-height: 28px; }
+          .zone.tiles > .it, .zone.charts > .it, .zone.hid > .it { padding: 5px 7px; border-radius: 8px; font-size: .74rem; font-weight: 400;
+            background: var(--card-background-color, #fff); border: 1px solid var(--divider-color, #ddd); }
+          .zone.charts > .it { border-radius: 999px; padding: 4px 9px; }
+          .zone.tiles .grip, .zone.charts .grip, .zone.hid .grip { display: none; }
+          .tray-t { font-size: .78rem; font-weight: 500; color: var(--secondary-text-color); display: flex; align-items: center; gap: 6px; margin: 2px 0 6px; }
+          .tray-t ha-icon { --mdc-icon-size: 16px; width: 16px; height: 16px; }
+          .zone.hid { display: flex; flex-direction: column; gap: 5px; min-height: 90px; padding: 8px; border-radius: 12px; border: 1.5px dashed var(--divider-color, #bbb); }
+          .zone.hid:empty::before { content: attr(data-empty); font-size: .74rem; color: var(--secondary-text-color); margin: auto; text-align: center; }
+          .zone.hid .it .zone { display: none; }
+          .zone.hid > .it { opacity: .75; }
+          .it.ph { opacity: .35; outline: 2px dashed var(--primary-color, #03a9f4); outline-offset: -2px; }
+          .it.ph * { visibility: hidden; }
+          .ghost { position: absolute; z-index: 10; pointer-events: none; opacity: .95; cursor: grabbing; margin: 0;
+            box-shadow: 0 10px 26px rgba(0,0,0,.3); border-color: var(--primary-color, #03a9f4) !important; transform: rotate(-1deg); }
+          .ghost.it { padding: 8px 10px; border-radius: 10px; font-size: .84rem; background: var(--card-background-color, #fff); border: 1px solid; }
+          .ghost.it[data-kind="tiles"], .ghost.it[data-kind="charts"] { padding: 5px 7px; font-size: .74rem; }
+          .ghost .grip { display: none; }
+
         </style>
         <div class="form"></div>
+        <div class="layout"></div>
         <div class="check"></div>
         <div class="ver">Predbat Card v${CARD_VERSION} · data by <a href="https://github.com/springfall2008/batpred" target="_blank" rel="noreferrer">Predbat</a> by Trefor Southwell</div>`;
       this._root = this.shadowRoot;
@@ -4498,6 +4642,201 @@ class PredbatCardEditor extends HTMLElement {
       this._form.data = this._data();
     }
     this._renderCheck(t);
+    this._renderLayout(t);
+  }
+
+  /* ---------- layout: drag blocks, they snap into place ---------- */
+  _layoutTarget(cfg) {
+    return this._layMode === "phone" ? (cfg.phone_layout && typeof cfg.phone_layout === "object" ? cfg.phone_layout : null) : cfg;
+  }
+
+  _renderLayout(t) {
+    if (this._dragging) return;
+    const box = this._root.querySelector(".layout");
+    const c = { ...DEFAULT_CONFIG, ...this._config };
+    const phone = this._layMode === "phone";
+    const ph = c.phone_layout && typeof c.phone_layout === "object" ? c.phone_layout : null;
+    const L = activeLayout(c, phone && ph ? 0 : 99999);
+    if (phone && ph) {
+      for (const k of Object.keys(LAYOUT_KEYS)) {
+        L[k] = orderOf(ph[LAYOUT_KEYS[k]] ?? c[LAYOUT_KEYS[k]], LAYOUT_IDS[k]);
+        L["hidden_" + k] = idList(ph[HIDDEN_KEYS[k]]);
+      }
+    }
+    const off = (v) => v === false || v === "off";
+    const secOff = { header: off(c.show_header), overview: off(c.show_overview), timeline: off(c.show_timeline), actions: off(c.show_actions),
+      table: off(c.show_table), inverters: off(c.show_inverters) };
+    const tileOff = { solar: off(c.show_solar), carbon: off(c.show_carbon), car: off(c.show_car), iboost: off(c.show_iboost) };
+    const chartOff = { battery: off(c.show_chart), grid: off(c.show_grid_chart), rates: off(c.show_rates_chart), solar: off(c.show_solar),
+      carbon: off(c.show_carbon), car: off(c.show_car_chart) || off(c.show_car), data: off(c.show_data_quality) };
+    const badge = (o) => (o ? `<span class="off" title="${esc(t("lay_off_title"))}">${esc(t("lay_off"))}</span>` : "");
+    const chip = (kind, id) => {
+      const [label, icon] = LAYOUT_LABEL[kind](id, t);
+      const o = kind === "tiles" ? tileOff[id] : kind === "charts" ? chartOff[id] : secOff[id];
+      return `<div class="it" data-kind="${kind}" data-id="${id}" title="${esc(label)}"><span class="row"><span class="grip">⋮⋮</span><ha-icon icon="${icon}"></ha-icon><span class="nm">${esc(label)}</span>${badge(o)}</span>${
+        kind === "sections" && id === "overview" ? `<div class="zone tiles" data-zone="tiles">${L.tiles.filter((x) => !L.hidden_tiles.includes(x)).map((x) => chip("tiles", x)).join("")}</div>` : ""}${
+        kind === "sections" && id === "charts" ? `<div class="zone charts" data-zone="charts">${L.charts.filter((x) => !L.hidden_charts.includes(x)).map((x) => chip("charts", x)).join("")}</div>` : ""}</div>`;
+    };
+    const hidden = [
+      ...L.sections.filter((x) => L.hidden_sections.includes(x) && x !== "alerts").map((x) => chip("sections", x)),
+      ...L.tiles.filter((x) => L.hidden_tiles.includes(x)).map((x) => chip("tiles", x)),
+      ...L.charts.filter((x) => L.hidden_charts.includes(x)).map((x) => chip("charts", x)),
+    ].join("");
+    let controls = "";
+    if (phone) {
+      controls = ph
+        ? `<div class="hint">${esc(t("lay_phone_hint"))}</div>
+           <div class="ctl"><label>${esc(t("lay_phone_bp"))} <input type="number" min="300" max="2000" step="10" data-bp value="${esc(num(c.phone_breakpoint) || 600)}"> px</label></div>
+           <div class="ctl"><button data-lay="copy">${esc(t("lay_phone_copy"))}</button><button data-lay="remove">${esc(t("lay_phone_remove"))}</button></div>`
+        : `<div class="hint">${esc(t("lay_phone_none"))}</div><div class="ctl"><button data-lay="create" class="primary">${esc(t("lay_phone_create"))}</button></div>`;
+    }
+    const stage = !phone || ph
+      ? `<div class="stage${phone ? " phone" : ""}">
+          <div class="zone sections" data-zone="sections">${L.sections.filter((x) => x === "alerts" || !L.hidden_sections.includes(x)).map((x) => chip("sections", x)).join("")}</div>
+          <div class="tray"><div class="tray-t"><ha-icon icon="mdi:eye-off-outline"></ha-icon>${esc(t("lay_hidden"))}</div>
+            <div class="zone hid" data-zone="hidden" data-empty="${esc(t("lay_hidden_empty"))}">${hidden}</div></div>
+        </div>${phone ? "" : `<div class="ctl"><button data-lay="reset">${esc(t("lay_reset"))}</button></div>`}`
+      : "";
+    const html = `<details class="lay"${this._layOpen ? " open" : ""}>
+        <summary><ha-icon icon="mdi:view-grid-plus-outline"></ha-icon>${esc(t("sec_layout"))}</summary>
+        <div class="seg"><button data-lmode="desktop" class="${phone ? "" : "on"}">🖥️ ${esc(t("lay_desktop"))}</button><button data-lmode="phone" class="${phone ? "on" : ""}">📱 ${esc(t("lay_phone"))}</button></div>
+        ${phone ? "" : `<div class="hint">${esc(t("lay_hint"))}</div>`}${controls}${stage}
+      </details>`;
+    if (box.dataset.html === html) return;
+    box.dataset.html = html;
+    box.innerHTML = html;
+    box.querySelector("details").addEventListener("toggle", (e) => { this._layOpen = e.target.open; });
+    box.querySelectorAll("[data-lmode]").forEach((b) => b.addEventListener("click", () => { this._layMode = b.dataset.lmode; this._renderLayout(t); }));
+    box.querySelectorAll("[data-lay]").forEach((b) => b.addEventListener("click", () => this._layAction(b.dataset.lay)));
+    const bp = box.querySelector("[data-bp]");
+    if (bp) bp.addEventListener("change", () => { const cfg = { ...this._config }; const v = num(bp.value); if (v && v !== 600) cfg.phone_breakpoint = v; else delete cfg.phone_breakpoint; this._emit(cfg); });
+    const st = box.querySelector(".stage");
+    if (st) st.addEventListener("pointerdown", (e) => this._layDown(e, st));
+  }
+
+  _layAction(a) {
+    const cfg = { ...this._config };
+    const copy = () => {
+      const L = activeLayout(cfg, 99999);
+      const out = {};
+      for (const k of Object.keys(LAYOUT_KEYS)) { out[LAYOUT_KEYS[k]] = L[k]; out[HIDDEN_KEYS[k]] = L["hidden_" + k]; }
+      return out;
+    };
+    if (a === "create" || a === "copy") cfg.phone_layout = copy();
+    else if (a === "remove") { delete cfg.phone_layout; delete cfg.phone_breakpoint; }
+    else if (a === "reset") for (const k of Object.keys(LAYOUT_KEYS)) { delete cfg[LAYOUT_KEYS[k]]; delete cfg[HIDDEN_KEYS[k]]; }
+    this._emit(cfg);
+  }
+
+  /** Pointer drag: the block follows your finger, the others slide aside, and it snaps into the gap on release. */
+  _layDown(e, stage) {
+    const it = e.target.closest(".it");
+    if (!it || !stage.contains(it) || e.button > 0) return;
+    const kind = it.dataset.kind;
+    const x0 = e.clientX, y0 = e.clientY;
+    let ghost = null, offX = 0, offY = 0;
+    const zones = () => [...stage.querySelectorAll(`.zone[data-zone="${kind}"], .zone[data-zone="hidden"]`)]
+      .filter((z) => !(z.dataset.zone === "hidden" && it.dataset.id === "alerts" && kind === "sections") && !it.contains(z));
+    const flip = (fn) => {
+      const els = [...stage.querySelectorAll(".it")].filter((x) => x !== it);
+      const before = new Map(els.map((x) => [x, x.getBoundingClientRect()]));
+      fn();
+      for (const x of els) {
+        const a = before.get(x), b = x.getBoundingClientRect();
+        const dx = a.left - b.left, dy = a.top - b.top;
+        if (!dx && !dy) continue;
+        x.style.transition = "none";
+        x.style.transform = `translate(${dx}px,${dy}px)`;
+        requestAnimationFrame(() => { x.style.transition = "transform .18s ease"; x.style.transform = ""; });
+      }
+    };
+    const start = () => {
+      this._dragging = true;
+      const r = it.getBoundingClientRect(), s = stage.getBoundingClientRect();
+      offX = x0 - r.left; offY = y0 - r.top;
+      ghost = it.cloneNode(true);
+      ghost.classList.add("ghost");
+      ghost.style.width = r.width + "px";
+      ghost.style.left = r.left - s.left + "px";
+      ghost.style.top = r.top - s.top + "px";
+      stage.appendChild(ghost);
+      it.classList.add("ph");
+    };
+    const move = (ev) => {
+      if (!ghost) {
+        if (Math.hypot(ev.clientX - x0, ev.clientY - y0) < 5) return;
+        start();
+      }
+      ev.preventDefault();
+      const s = stage.getBoundingClientRect();
+      ghost.style.left = ev.clientX - s.left - offX + "px";
+      ghost.style.top = ev.clientY - s.top - offY + "px";
+      const pad = 12;
+      const zone = zones().find((z) => { const r = z.getBoundingClientRect(); return ev.clientX >= r.left - pad && ev.clientX <= r.right + pad && ev.clientY >= r.top - pad && ev.clientY <= r.bottom + pad; });
+      if (!zone) return;
+      const items = [...zone.children].filter((x) => x.classList.contains("it") && x !== it);
+      const vertical = zone.dataset.zone === "sections";
+      let before = null;
+      for (const o of items) {
+        const r = o.getBoundingClientRect();
+        const ahead = vertical ? ev.clientY < r.top + r.height / 2
+          : ev.clientY < r.top || (ev.clientY <= r.bottom && ev.clientX < r.left + r.width / 2);
+        if (ahead) { before = o; break; }
+      }
+      if (it.parentElement === zone && (before ? it.nextElementSibling === before : !it.nextElementSibling)) return;
+      flip(() => (before ? zone.insertBefore(it, before) : zone.appendChild(it)));
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+      if (!ghost) return;
+      // snap: slide the ghost onto its slot, then save
+      const r = it.getBoundingClientRect(), s = stage.getBoundingClientRect();
+      ghost.style.transition = "left .15s ease, top .15s ease, width .15s ease";
+      ghost.style.left = r.left - s.left + "px";
+      ghost.style.top = r.top - s.top + "px";
+      ghost.style.width = r.width + "px";
+      setTimeout(() => {
+        ghost.remove();
+        it.classList.remove("ph");
+        this._dragging = false;
+        this._laySave(stage);
+      }, 160);
+    };
+    window.addEventListener("pointermove", move, { passive: false });
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+  }
+
+  _laySave(stage) {
+    const ids = (sel) => [...stage.querySelectorAll(sel)].map((x) => x.dataset.id);
+    const hid = (kind) => ids(`.zone.hid > .it[data-kind="${kind}"]`);
+    const shown = {
+      sections: ids(".zone.sections > .it"),
+      tiles: ids(".zone.tiles > .it"),
+      charts: ids(".zone.charts > .it"),
+    };
+    const cfg = { ...this._config };
+    const phone = this._layMode === "phone";
+    const target = phone ? { ...(cfg.phone_layout || {}) } : cfg;
+    for (const k of Object.keys(LAYOUT_KEYS)) {
+      const h = hid(k);
+      // hidden items keep their old place in the order, so they come back where they were
+      const prev = orderOf(target[LAYOUT_KEYS[k]] ?? cfg[LAYOUT_KEYS[k]], LAYOUT_IDS[k]);
+      const order = [...shown[k]];
+      for (const x of prev) {
+        if (order.includes(x)) continue;
+        const i = prev.indexOf(x);
+        const after = prev.slice(0, i).reverse().find((y) => order.includes(y));
+        order.splice(after ? order.indexOf(after) + 1 : 0, 0, x);
+      }
+      const isDefault = order.join() === LAYOUT_IDS[k].join();
+      if (!phone && isDefault) delete target[LAYOUT_KEYS[k]]; else target[LAYOUT_KEYS[k]] = order;
+      if (!phone && !h.length) delete target[HIDDEN_KEYS[k]]; else target[HIDDEN_KEYS[k]] = h;
+    }
+    if (phone) cfg.phone_layout = target;
+    this._emit(cfg);
   }
 
   _renderCheck(t) {
@@ -4565,6 +4904,7 @@ class PredbatCardEditor extends HTMLElement {
     this._config = cfg;
     if (this._form) this._form.data = this._data();
     this._renderCheck(this._t());
+    this._renderLayout(this._t());
     const ev = new Event("config-changed", { bubbles: true, composed: true });
     ev.detail = { config: cfg };
     this.dispatchEvent(ev);
