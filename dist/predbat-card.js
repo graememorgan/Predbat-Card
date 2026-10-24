@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.4.5";
+const CARD_VERSION = "0.4.6";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -4422,7 +4422,7 @@ ${esc(navigator.userAgent)}</pre></details>
         <td>${r.soc === null ? "–" : Math.round(r.soc) + "%"}</td>
         ${carCol ? `<td>${r.carKwh ? f(r.carKwh) : "–"}</td>` : ""}
         ${ibCol ? `<td>${r.iboostKwh ? f(r.iboostKwh) : "–"}</td>` : ""}
-        <td>${r.cost === null ? "–" : cur.major + r.cost.toFixed(2)}</td>
+        <td>${r.cost === null ? "–" : esc(cur.major + r.cost.toFixed(2))}</td>
       </tr>`).join("");
     return `<div class="section">${btn}
         <div class="table-wrap"><table>
