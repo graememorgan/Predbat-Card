@@ -187,7 +187,9 @@ Defaults for the `predbat` prefix. Only add the ones you want to change.
 | `carbon_best` / `carbon_today` | `predbat.carbon_best` / `predbat.carbon_today` | Planned carbon and carbon so far today |
 | `carbon_intensity` | `sensor.predbat_carbon_intensity` | Carbon forecast, used when the plan has no carbon column |
 | `pv_power` / `battery_power` | `predbat.pv_power` / `predbat.battery_power` | Totals for all inverters, shown above the inverter breakdown |
-| `inverter_soc` | auto | **Your inverters'** battery level sensors (% or kWh), one per inverter, as a list. Found automatically for GivTCP, GivEnergy, SolarEdge, Fox ESS, Solis, Sunsynk, SolaX, Kostal and Growatt. |
+| `inverter_soc` | auto | **Your inverters'** battery level in %, one per inverter, as a list. Found automatically for GivTCP, GivEnergy, SolarEdge, Fox ESS, Solis, Sunsynk, SolaX, Kostal and Growatt. |
+| `inverter_soc_kwh` | auto | Battery level in kWh (or Wh), one per inverter |
+| `inverter_capacity` | auto (GivTCP, GivEnergy, SolarEdge) | Battery size in kWh per inverter: a sensor, an `input_number`, or just a number in YAML. One value covers all inverters. With it, the card works out % from kWh or kWh from %, so both always show. |
 | `inverter_battery_power` | auto | Battery power per inverter (W or kW, positive = discharging) |
 | `inverter_pv_power` | auto | Solar power per inverter (W or kW) |
 | `load_power` | auto | Zero-load alarm – the `load_power` sensor(s) from your `apps.yaml`. Found automatically like `load_today`. Can be a list. |
@@ -337,6 +339,8 @@ entities:
   battery_power: predbat.battery_power
   # your inverters' own sensors (optional, one per inverter; leave out to auto-detect):
   # inverter_soc: [sensor.givtcp_XXXX_soc, sensor.givtcp2_YYYY_soc]
+  # inverter_soc_kwh: [sensor.givtcp_XXXX_soc_kwh, sensor.givtcp2_YYYY_soc_kwh]
+  # inverter_capacity: [9.5, 9.5]
   # inverter_battery_power: [sensor.givtcp_XXXX_battery_power, sensor.givtcp2_YYYY_battery_power]
   # inverter_pv_power: [sensor.givtcp_XXXX_pv_power, sensor.givtcp2_YYYY_pv_power]
   # your car's own sensors (optional, one per car):
@@ -492,17 +496,28 @@ The **Solar today** tile shows today's total, what's left and tomorrow's total. 
 
 **Carbon intensity.** If you've turned on `carbon_enable` in Predbat's `apps.yaml`, the card adds a **Grid carbon** tile (g CO₂ per kWh now, its level and today's total so far) and a **Carbon** tab: the carbon intensity for each slot, coloured from very low (green) to very high (red) using Predbat's own bands, the cleanest hour ahead, the carbon so far today and the plan's total. Charge and export slots are marked underneath. Nothing appears when the carbon option is off.
 
-**Inverters.** Predbat only publishes totals for all your inverters, so for a per-inverter view the card reads each inverter's own sensors, the same ones you list in `apps.yaml`. For each inverter it shows battery level (% and kWh), charging or discharging power and solar power, with Predbat's totals at the top. Tap one to open its sensor.
+**Inverters.** Predbat only publishes totals for all your inverters, so for a per-inverter view the card reads each inverter's own sensors, the same ones you list in `apps.yaml`. For each inverter it shows battery level in % and kWh, out of the battery size when it's known, charging or discharging power and solar power, with Predbat's totals at the top. Tap one to open its sensor.
 
 1. **If you set them** (editor → *Solar, carbon and inverters* → *Inverter sensors*, or YAML), those are used, one entry per inverter in the same order as `apps.yaml`.
 2. **If you don't**, the card looks for the names from Predbat's templates: GivTCP (`givtcp_`, `givtcp2_` …), GivEnergy cloud, SolarEdge (`b1`, `b2` …), Fox ESS, Solis, Sunsynk, SolaX, Kostal and Growatt. For the brands that don't put a serial number in the name, a second inverter is found by Home Assistant's `_2` ending.
 
+When it looks for sensors by name, the card leaves out:
+- **sensors that are unavailable**, such as leftovers from an integration you removed or added again,
+- **a GivEnergy Gateway** (serial starting `gw`) when there are AIOs too, because the gateway only reports totals of the same batteries. With one AIO and a gateway, you get one inverter,
+- **anything over Predbat's own count** (`num_inverters` in `sensor.predbat_inverter_config`). If it finds more, it keeps the ones with the most live data. The exception is several AIOs run through a gateway, which Predbat counts as one; then each AIO is shown.
+
+The editor's **Entity check** lists the inverters it found and anything it left out, with the reason.
+
 The breakdown appears with two or more inverters (`show_inverters: on` shows it for one). If Predbat says it runs more than one inverter but the card can't find their sensors, a short note tells you where to add them. Battery power is read the Predbat way (positive = discharging); if yours is the other way round, set `inverter_power_invert: true`.
+
+You only need one of `inverter_soc` (%) and `inverter_soc_kwh` (kWh). Add `inverter_capacity` and the card fills in the other, so each inverter shows both.
 
 ```yaml
 inverter_names: Garage, House
 entities:
   inverter_soc: [sensor.givtcp_XXXX_soc, sensor.givtcp2_YYYY_soc]
+  inverter_soc_kwh: [sensor.givtcp_XXXX_soc_kwh, sensor.givtcp2_YYYY_soc_kwh]
+  inverter_capacity: [9.5, 9.5]        # or sensors / input_numbers
   inverter_battery_power: [sensor.givtcp_XXXX_battery_power, sensor.givtcp2_YYYY_battery_power]
   inverter_pv_power: [sensor.givtcp_XXXX_pv_power, sensor.givtcp2_YYYY_pv_power]
 ```
@@ -537,6 +552,7 @@ Yesterday's figure uses a different baseline (one cheap charge per night), so th
 - **Every zero-load period says “power unknown”** – the card has no `load_power` sensor. Set it to the same sensor as in your `apps.yaml`.
 - **Data tab says “No load sensors found” or “No history for …”** – set `load_today` and `load_power` to the sensors from your `apps.yaml`, and make sure they're recorded.
 - **No Solar tab** – check that `sensor.predbat_pv_today` exists. Predbat only creates it when it fetches the solar forecast itself; if you use the Solcast integration, the card reads its sensors instead. Set `pv_today` / `pv_tomorrow` if yours are named differently.
+- **The card shows two inverters but you have one** – open the editor's Entity check to see which sensors it picked. Update to 0.4.5 or later, which skips unavailable leftovers, GivEnergy Gateway totals and anything over Predbat's own inverter count. You can always list your sensors yourself, or set `show_inverters: off`.
 - **Inverter breakdown missing or wrong** – set `inverter_soc`, `inverter_battery_power` and `inverter_pv_power` to the sensors from your `apps.yaml`. If charging shows as discharging, set `inverter_power_invert: true`.
 - **“N Predbat entities not found”** – tap the notice to see which ones. Check the names in the editor's entity check, or set `prefix` if you changed it in Predbat.
 
@@ -564,6 +580,7 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 | 0.4.2 | Load data alarm finds sensors for many inverters, reports missing sensors, handles no load power and Wh units; visual editor reorganised into sections |
 | 0.4.3 | Solar forecast tab (4 days, 10–90% range, calibrated vs raw) and tile, house load and solar on the grid chart, carbon intensity tab and tile, per-inverter breakdown with auto-detected sensors |
 | 0.4.4 | Drag-and-drop layout in the visual editor: reorder and hide sections, overview tiles and chart tabs, with a separate phone layout |
+| 0.4.5 | Inverter breakdown no longer counts one inverter twice: skips unavailable leftover sensors and GivEnergy Gateway totals, never shows more than Predbat's own inverter count; the editor shows what was found and what was left out. New battery level (kWh) and battery size slots per inverter, so each shows % and kWh |
 
 ### 🔜 0.4.x – More of Predbat's data
 
