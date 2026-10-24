@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.4.4";
+const CARD_VERSION = "0.4.5";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -791,7 +791,7 @@ Object.assign(TRANSLATIONS.en, {
   ed_show_inverters: "Inverter breakdown", ed_inverter_names: "Inverter names (comma separated)",
   ed_inverter_power_invert: "Battery power is positive when charging", ed_inv_sensors: "Inverter sensors (optional, one per inverter)",
   ed_inv_found: "{n} inverters found", ed_inv_found_type: "{n} inverters found ({v})",
-  e_inverter_soc: "Battery level (% or kWh)", e_inverter_battery_power: "Battery power", e_inverter_pv_power: "Solar power",
+  e_inverter_soc: "Battery level (%)", e_inverter_soc_kwh: "Battery level (kWh)", e_inverter_capacity: "Battery size (kWh)", e_inverter_battery_power: "Battery power", e_inverter_pv_power: "Solar power",
   grp_solar: "Solar forecast", grp_carbon: "Carbon", grp_live: "Live totals",
   e_pv_today: "PV forecast today", e_pv_tomorrow: "PV forecast tomorrow", e_pv_d2: "PV forecast day 3", e_pv_d3: "PV forecast day 4",
   e_pv_now: "PV forecast now", e_carbon_now: "Grid carbon now", e_carbon_best: "Planned carbon", e_carbon_today: "Carbon today",
@@ -816,7 +816,7 @@ Object.assign(TRANSLATIONS.pl, {
   ed_show_inverters: "Podział na falowniki", ed_inverter_names: "Nazwy falowników (po przecinku)",
   ed_inverter_power_invert: "Moc baterii dodatnia przy ładowaniu", ed_inv_sensors: "Czujniki falowników (opcjonalnie, jeden na falownik)",
   ed_inv_found: "znaleziono falowniki: {n}", ed_inv_found_type: "znaleziono falowniki: {n} ({v})",
-  e_inverter_soc: "Poziom baterii (% lub kWh)", e_inverter_battery_power: "Moc baterii", e_inverter_pv_power: "Moc PV",
+  e_inverter_soc: "Poziom baterii (%)", e_inverter_soc_kwh: "Poziom baterii (kWh)", e_inverter_capacity: "Pojemność baterii (kWh)", e_inverter_battery_power: "Moc baterii", e_inverter_pv_power: "Moc PV",
   grp_solar: "Prognoza PV", grp_carbon: "Emisje", grp_live: "Bieżące sumy",
   e_pv_today: "Prognoza PV dziś", e_pv_tomorrow: "Prognoza PV jutro", e_pv_d2: "Prognoza PV dzień 3", e_pv_d3: "Prognoza PV dzień 4",
   e_pv_now: "Prognoza PV teraz", e_carbon_now: "Emisje sieci teraz", e_carbon_best: "Planowane emisje", e_carbon_today: "Emisje dziś",
@@ -841,7 +841,7 @@ Object.assign(TRANSLATIONS.es, {
   ed_show_inverters: "Desglose por inversor", ed_inverter_names: "Nombres de inversores (separados por comas)",
   ed_inverter_power_invert: "La potencia de batería es positiva al cargar", ed_inv_sensors: "Sensores de inversor (opcional, uno por inversor)",
   ed_inv_found: "{n} inversores encontrados", ed_inv_found_type: "{n} inversores encontrados ({v})",
-  e_inverter_soc: "Nivel de batería (% o kWh)", e_inverter_battery_power: "Potencia de batería", e_inverter_pv_power: "Potencia solar",
+  e_inverter_soc: "Nivel de batería (%)", e_inverter_soc_kwh: "Nivel de batería (kWh)", e_inverter_capacity: "Capacidad de batería (kWh)", e_inverter_battery_power: "Potencia de batería", e_inverter_pv_power: "Potencia solar",
   grp_solar: "Previsión solar", grp_carbon: "Carbono", grp_live: "Totales en vivo",
   e_pv_today: "Previsión solar hoy", e_pv_tomorrow: "Previsión solar mañana", e_pv_d2: "Previsión solar día 3", e_pv_d3: "Previsión solar día 4",
   e_pv_now: "Previsión solar ahora", e_carbon_now: "Carbono de la red ahora", e_carbon_best: "Carbono previsto", e_carbon_today: "Carbono hoy",
@@ -879,6 +879,10 @@ Object.assign(TRANSLATIONS.es, {
   lay_s_header: "Encabezado", lay_s_alerts: "Avisos", lay_s_overview: "Tarjetas resumen", lay_s_inverters: "Inversores", lay_s_charts: "Gráficos",
   lay_s_timeline: "Línea del plan", lay_s_actions: "Próximas acciones", lay_s_table: "Tabla completa del plan",
 });
+
+Object.assign(TRANSLATIONS.en, { ed_inv_skip_unavailable: "ignored: unavailable", ed_inv_skip_gateway: "ignored: GivEnergy Gateway (totals)", ed_inv_skip_extra: "ignored: Predbat runs {n}" });
+Object.assign(TRANSLATIONS.pl, { ed_inv_skip_unavailable: "pominięty: niedostępny", ed_inv_skip_gateway: "pominięty: GivEnergy Gateway (sumy)", ed_inv_skip_extra: "pominięty: Predbat obsługuje {n}" });
+Object.assign(TRANSLATIONS.es, { ed_inv_skip_unavailable: "ignorado: no disponible", ed_inv_skip_gateway: "ignorado: GivEnergy Gateway (totales)", ed_inv_skip_extra: "ignorado: Predbat usa {n}" });
 
 function pickLang(hass, config) {
   const want = (config && config.language && config.language !== "auto")
@@ -947,7 +951,7 @@ OPTIONAL_KEYS.push(...PV_KEYS, ...CARBON_KEYS, ...LIVE_KEYS);
 const SOLCAST_DAYS = ["sensor.solcast_pv_forecast_forecast_today", "sensor.solcast_pv_forecast_forecast_tomorrow",
   "sensor.solcast_pv_forecast_forecast_day_3", "sensor.solcast_pv_forecast_forecast_day_4"];
 // your inverters' own sensors: one entity per inverter (a list)
-const INV_OWN_KEYS = ["inverter_soc", "inverter_battery_power", "inverter_pv_power"];
+const INV_OWN_KEYS = ["inverter_soc", "inverter_soc_kwh", "inverter_capacity", "inverter_battery_power", "inverter_pv_power"];
 
 function defaultEntities(prefix) {
   const p = (prefix || "predbat").trim() || "predbat";
@@ -1291,25 +1295,40 @@ const INV_RULES = [
 ];
 const INV_PARTS = ["soc", "kwh", "batt", "pv", "cap"];
 
-/** Which inverter sensors to show: the ones set in the card, else found by name. */
-function inverterSources(entities, states) {
-  const own = INV_OWN_KEYS.map((k) => idList(entities?.[k]));
-  const n = Math.max(0, ...own.map((l) => l.length));
+/** Which inverter sensors to show: the ones set in the card, else found by name.
+ *  expected = Predbat's own inverter count (num_inverters), when known. */
+function inverterSources(entities, states, expected) {
+  const own = Object.fromEntries(INV_OWN_KEYS.map((k) => [k, idList(entities?.[k])]));
+  // the battery size alone doesn't make an inverter
+  const n = Math.max(0, ...INV_OWN_KEYS.filter((k) => k !== "inverter_capacity").map((k) => own[k].length));
   if (n > 0) {
     const list = [];
     for (let i = 0; i < n; i++) {
-      list.push({ key: String(i + 1), soc: own[0][i] || null, kwh: null, batt: own[1][i] || null, pv: own[2][i] || null, cap: null });
+      list.push({
+        key: String(i + 1), soc: own.inverter_soc[i] || null, kwh: own.inverter_soc_kwh[i] || null,
+        // one battery size can cover every inverter
+        cap: own.inverter_capacity[i] || (own.inverter_capacity.length === 1 ? own.inverter_capacity[0] : null),
+        batt: own.inverter_battery_power[i] || null, pv: own.inverter_pv_power[i] || null,
+      });
     }
-    return { list, rule: null, auto: false };
+    return { list, rule: null, auto: false, skipped: [] };
   }
   const ids = Object.keys(states || {}).filter((e) => e.startsWith("sensor."));
+  // leftovers from a removed or re-added integration stay in HA as "unavailable": don't count them
+  const live = (e) => { const st = states[e]; return !!st && !BAD.test(String(st.state)) && st.attributes?.restored !== true; };
   for (const r of INV_RULES) {
     const map = new Map();
+    const dead = new Map(); // one line per dead inverter, not one per sensor
     for (const part of INV_PARTS) {
       if (!r[part]) continue;
       for (const e of ids) {
         const m = r[part].exec(e);
         if (!m) continue;
+        if (!live(e)) {
+          const k = m.slice(1).filter(Boolean).join("").toLowerCase();
+          if (!dead.has(k)) dead.set(k, e);
+          continue;
+        }
         const key = m.slice(1).filter(Boolean).join("").toLowerCase();
         if (!map.has(key)) map.set(key, { key, soc: null, kwh: null, batt: null, pv: null, cap: null });
         const x = map.get(key);
@@ -1318,11 +1337,33 @@ function inverterSources(entities, states) {
     }
     // order like apps.yaml: givtcp_ before givtcp2_, foxess before foxess_2
     const order = (x) => String(x.soc || x.kwh || x.batt).replace(/^sensor\.([a-z]+)_/, (m, p) => `sensor.${p}1_`);
-    const list = [...map.values()].filter((x) => x.soc || x.kwh || x.batt)
+    let list = [...map.values()].filter((x) => x.soc || x.kwh || x.batt)
       .sort((a, b) => order(a).localeCompare(order(b), "en", { numeric: true }));
-    if (list.length) return { list, rule: r.name, auto: true };
+    if (!list.length) continue;
+    const skipped = [...dead].filter(([k]) => !map.has(k)).map(([, id]) => ({ id, why: "unavailable" }));
+    const first = (x) => x.soc || x.kwh || x.batt;
+    // a GivEnergy Gateway (serial gw…) reports totals for the AIOs behind it: it isn't an inverter of its own
+    let viaGateway = false;
+    if (r.name === "GivTCP" || r.name === "GivEnergy") {
+      const gw = list.filter((x) => /^gw/.test(x.key));
+      if (gw.length && gw.length < list.length) {
+        viaGateway = true;
+        for (const x of gw) skipped.push({ id: first(x), why: "gateway" });
+        list = list.filter((x) => !gw.includes(x));
+      }
+    }
+    // never show more inverters than Predbat says it runs: keep the ones with the most live data
+    const n = Math.round(num(expected) || 0);
+    // (several AIOs run through a gateway count as one for Predbat, but each AIO is real)
+    if (n >= 1 && list.length > n && !(viaGateway && n === 1)) {
+      const score = (x) => (x.soc ? 4 : 0) + (x.kwh ? 2 : 0) + (x.batt ? 2 : 0) + (x.pv ? 1 : 0) + (x.key === "" ? 1 : 0);
+      const keep = [...list].sort((a, b) => score(b) - score(a)).slice(0, n);
+      for (const x of list) if (!keep.includes(x)) skipped.push({ id: first(x), why: "extra", n });
+      list = list.filter((x) => keep.includes(x));
+    }
+    return { list, rule: r.name, auto: true, skipped };
   }
-  return { list: [], rule: null, auto: true };
+  return { list: [], rule: null, auto: true, skipped: [] };
 }
 
 /** A power sensor in kW, whatever unit it reports in. */
@@ -1492,8 +1533,9 @@ function normaliseConfig(config) {
   if (ents && typeof ents === "object" && !Array.isArray(ents)) {
     for (const [k, v] of Object.entries(ents)) {
       if (typeof v === "string" && v.trim()) out.entities[k] = v.trim();
+      else if (typeof v === "number") out.entities[k] = String(v);
       else if (Array.isArray(v)) {
-        const list = v.filter((x) => typeof x === "string" && x.trim()).map((x) => x.trim());
+        const list = v.filter((x) => (typeof x === "string" && x.trim()) || typeof x === "number").map((x) => String(x).trim());
         if (list.length) out.entities[k] = list;
       }
     }
@@ -3701,8 +3743,9 @@ ${esc(navigator.userAgent)}</pre></details>
   /** Inverter sensors, looked up again only when entities are added or removed, or the settings change. */
   _invSrc() {
     const states = this._hass.states;
-    const key = `${Object.keys(states).length}|${JSON.stringify(INV_OWN_KEYS.map((k) => this._config.entities?.[k] || ""))}`;
-    if (!this._invSrcCache || this._invSrcCache.key !== key) this._invSrcCache = { key, src: inverterSources(this._config.entities, states) };
+    const n = this._numInverters();
+    const key = `${Object.keys(states).length}|${n}|${Math.floor(Date.now() / 300000)}|${JSON.stringify(INV_OWN_KEYS.map((k) => this._config.entities?.[k] || ""))}`;
+    if (!this._invSrcCache || this._invSrcCache.key !== key) this._invSrcCache = { key, src: inverterSources(this._config.entities, states, n) };
     return this._invSrcCache.src;
   }
 
@@ -3713,23 +3756,34 @@ ${esc(navigator.userAgent)}</pre></details>
     if (typeof names === "string") names = names.split(",");
     const invert = this._config.inverter_power_invert === true;
     return src.list.map((x, n) => {
-      const socSt = st(x.soc), kwhSt = st(x.kwh), capSt = st(x.cap);
-      let pct = null, kwh = num(kwhSt?.state);
-      const cap = num(capSt?.state);
+      // energy in kWh whatever the sensor's unit (no unit = kWh)
+      const kwhOf = (state) => {
+        const v = num(state?.state);
+        if (v === null) return null;
+        const u = String(state.attributes?.unit_of_measurement || "kwh").toLowerCase();
+        return u === "wh" ? v / 1000 : u === "mwh" ? v * 1000 : v;
+      };
+      const socSt = st(x.soc);
+      let pct = null;
+      let kwh = kwhOf(st(x.kwh));
+      // battery size: a sensor, an input_number, or just a number in YAML
+      const cap = x.cap && num(x.cap) !== null && !st(x.cap) ? num(x.cap) : kwhOf(st(x.cap));
       const v = num(socSt?.state);
       if (v !== null) {
         const unit = String(socSt.attributes?.unit_of_measurement || "%").toLowerCase();
-        if (unit === "kwh") { kwh = v; pct = cap ? (v / cap) * 100 : null; }
-        else if (unit === "wh") { kwh = v / 1000; pct = cap ? (kwh / cap) * 100 : null; }
+        if (unit === "kwh" || unit === "wh") { if (kwh === null) kwh = kwhOf(socSt); }
         else pct = v;
-      } else if (kwh !== null && cap) pct = (kwh / cap) * 100;
+      }
+      // fill in whichever one is missing from the battery size
+      if (pct === null && kwh !== null && cap) pct = (kwh / cap) * 100;
+      if (kwh === null && pct !== null && cap) kwh = (pct / 100) * cap;
       let batt = x.batt ? powerKw(st(x.batt)) : null;
       if (batt !== null && invert) batt = -batt;
       const name = Array.isArray(names) && String(names[n] ?? "").trim() ? String(names[n]).trim() : this.t("inverter_n", { n: n + 1 });
       return {
         n, name, key: x.key, pct: pct === null ? null : Math.max(0, Math.min(100, pct)), kwh, cap,
         batt, pv: x.pv ? powerKw(st(x.pv)) : null,
-        more: x.soc || x.kwh || x.batt, ids: [x.soc, x.kwh, x.batt, x.pv, x.cap].filter(Boolean),
+        more: x.soc || x.kwh || x.batt, ids: [x.soc, x.kwh, x.batt, x.pv, x.cap].filter((id) => id && st(id)),
       };
     });
   }
@@ -3767,7 +3821,8 @@ ${esc(navigator.userAgent)}</pre></details>
       const col = x.pct === null ? "var(--pb-muted)" : x.pct < 20 ? "var(--pb-error)" : x.pct < 40 ? "var(--pb-freeze_export)" : "var(--pb-accent)";
       return `<div class="inv clickable" data-more="${esc(x.more || "")}" title="${esc(x.ids.join("\n"))}">
           <div class="inv-top"><span class="inv-name"><ha-icon icon="mdi:home-battery-outline"></ha-icon>${esc(x.name)}</span>
-            <span class="inv-pct">${x.pct === null ? "–" : Math.round(x.pct) + "%"}${x.kwh !== null ? `<small>${x.kwh.toFixed(1)} kWh</small>` : ""}</span></div>
+            <span class="inv-pct">${x.pct !== null ? Math.round(x.pct) + "%" + (x.kwh !== null ? `<small>${x.kwh.toFixed(1)}${x.cap ? ` / ${x.cap.toFixed(1)}` : ""} kWh</small>` : "")
+              : x.kwh !== null ? `${x.kwh.toFixed(1)}<small>kWh</small>` : "–"}</span></div>
           <div class="meter" style="--c:${col}"><div style="width:${(x.pct ?? 0).toFixed(1)}%;background:${col}"></div></div>
           <div class="inv-flow">${flow(x.batt)}${x.pv !== null ? `<span class="inv-pv"><ha-icon icon="mdi:solar-power"></ha-icon>${kw(x.pv)}</span>` : ""}</div>
         </div>`;
@@ -4500,7 +4555,8 @@ class PredbatCardEditor extends HTMLElement {
         { name: "inverter_names", selector: { text: {} } },
         {
           type: "expandable", name: "entities", title: t("ed_inv_sensors"), icon: "mdi:home-battery-outline",
-          schema: INV_OWN_KEYS.map((k) => ({ name: k, selector: { entity: { multiple: true, filter: { domain: "sensor" } } } })),
+          schema: INV_OWN_KEYS.map((k) => ({ name: k, selector: { entity: { multiple: true,
+            filter: k === "inverter_capacity" ? [{ domain: "sensor" }, { domain: "input_number" }, { domain: "number" }] : { domain: "sensor" } } } })),
         },
       ]),
       section(t("sec_dq"), "mdi:alert-outline", [
@@ -4860,10 +4916,13 @@ class PredbatCardEditor extends HTMLElement {
       items.push({ id: v, ok });
     }
     // inverters: the ones set in the card, or found by name
-    const inv = inverterSources(this._config.entities || {}, this._hass.states);
-    if (inv.list.length) {
+    const pbN = num(this._hass.states[data.entities.inverter_config]?.attributes?.num_inverters);
+    const inv = inverterSources(this._config.entities || {}, this._hass.states, pbN);
+    if (inv.list.length || inv.skipped.length) {
       items.push({ id: inv.rule ? t("ed_inv_found_type", { n: inv.list.length, v: inv.rule }) : t("ed_inv_found", { n: inv.list.length }), ok: null });
-      if (!inv.auto) for (const x of inv.list) for (const id of [x.soc, x.batt, x.pv].filter(Boolean)) items.push({ id, ok: !!this._hass.states[id] });
+      if (!inv.auto) for (const x of inv.list) for (const id of [x.soc, x.kwh, x.cap, x.batt, x.pv].filter((v) => v && num(v) === null)) items.push({ id, ok: !!this._hass.states[id] });
+      else for (const x of inv.list) items.push({ id: `${x.soc || x.kwh || x.batt} (${t("ed_auto_found")})`, ok: null });
+      for (const x of inv.skipped) items.push({ id: `${x.id} – ${t("ed_inv_skip_" + x.why, { n: x.n })}`, ok: null });
     }
     const found = items.filter((i) => i.ok).length;
     const counted = items.filter((i) => i.ok !== null).length;
