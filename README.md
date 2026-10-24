@@ -1,6 +1,6 @@
 # Predbat Card
 
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/docs/faq/custom_repositories)
+[![HACS](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=mimikm&repository=Predbat-Card&category=plugin)
 [![GitHub release](https://img.shields.io/github/v/release/mimikm/Predbat-Card)](https://github.com/mimikm/Predbat-Card/releases)
 [![Downloads](https://img.shields.io/github/downloads/mimikm/Predbat-Card/total?label=downloads&color=7950f2)](https://github.com/mimikm/Predbat-Card/releases)
 [![Downloads of latest release](https://img.shields.io/github/downloads/mimikm/Predbat-Card/latest/total?label=latest%20release)](https://github.com/mimikm/Predbat-Card/releases/latest)
@@ -55,11 +55,26 @@ Excluding Predbat entities from the recorder does not affect this card; it only 
 
 ## Installation
 
-### HACS (custom repository)
+### HACS (recommended)
+
+[![Open your Home Assistant instance and open Predbat Card in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=mimikm&repository=Predbat-Card&category=plugin)
+
+1. Open **HACS** in Home Assistant and search for **Predbat Card**, or use the button above.
+2. Open it and press **Download**.
+3. Reload the browser when asked (on the Companion app, close and reopen it).
+
+HACS adds the dashboard resource for you, so there is nothing else to set up. Updates appear in HACS like any other.
+
+<details>
+<summary>Not showing up in HACS search?</summary>
+
+Until Predbat Card is in the HACS default list for your install, add it as a custom repository:
 
 1. Open HACS → three dots (top right) → **Custom repositories**.
 2. Add `https://github.com/mimikm/Predbat-Card` with type **Dashboard**.
 3. Search for **Predbat Card**, download it, and reload the browser when asked.
+
+</details>
 
 ### Manual
 
@@ -581,6 +596,7 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 | 0.4.3 | Solar forecast tab (4 days, 10–90% range, calibrated vs raw) and tile, house load and solar on the grid chart, carbon intensity tab and tile, per-inverter breakdown with auto-detected sensors |
 | 0.4.4 | Drag-and-drop layout in the visual editor: reorder and hide sections, overview tiles and chart tabs, with a separate phone layout |
 | 0.4.5 | Inverter breakdown no longer counts one inverter twice: skips unavailable leftover sensors and GivEnergy Gateway totals, never shows more than Predbat's own inverter count; the editor shows what was found and what was left out. New battery level (kWh) and battery size slots per inverter, so each shows % and kWh |
+| 0.4.6 | Plan table escapes the currency symbol like the rest of the card (HACS review); README install leads with HACS search |
 
 ### 🔜 0.4.x – More of Predbat's data
 
@@ -613,7 +629,7 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 - [ ] Automated tests for plan parsing and the editor
 - [ ] Full documentation with screenshots for every style
 - [ ] Link in the Predbat documentation
-- [ ] Submitted to the HACS default store
+- [x] Submitted to the HACS default store
 
 ### 💡 Ideas we're considering
 
