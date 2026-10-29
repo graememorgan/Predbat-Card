@@ -3974,20 +3974,24 @@ ${esc(navigator.userAgent)}</pre></details>
   }
 
   _planBands(f, parts, opacity = 0.16) {
+    const hatchId = `pb-mixed-${this._hatchId = (this._hatchId || 0) + 1}`;
+    parts.push(`<defs>
+      <pattern id="${hatchId}" width="12" height="12"
+              patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="12" height="12" fill="var(--pb-charge)"/>
+        <rect width="6" height="12" fill="var(--pb-export)"/>
+      </pattern>
+    </defs>`);
+
     for (const r of this._stateRows()) {
       if (r.cat === "demand") continue;
       const x1 = f.X(r.t), x2 = f.X(r.end);
       if (x2 - x1 < 0.5) continue;
-      // In an untimed mixed Charge+Export row, show BOTH categories over
-      // the same X interval, in different vertical halves of the band.
-      const categories = r.mixedChargeExport ? ["charge", "export"] : [r.cat];
-      categories.forEach((cat, i) => {
-        const col = `var(--pb-${cat})`;
-        const height = f.ih / categories.length;
-        const y = f.padT + i * height;
-        parts.push(`<rect class="band" x="${x1.toFixed(1)}" y="${y}" width="${(x2 - x1).toFixed(1)}" height="${height}" fill="${col}" opacity="${opacity}"/>`);
-        parts.push(`<rect x="${x1.toFixed(1)}" y="${(y + height - 3).toFixed(1)}" width="${(x2 - x1).toFixed(1)}" height="3" fill="${col}" opacity=".9"/>`);
-      });
+     const col = r.mixedChargeExport
+       ? `url(#${hatchId})`
+       : `var(--pb-${r.cat})`;
+     parts.push(`<rect class="band" x="${x1.toFixed(1)}" y="${f.padT}" width="${(x2 - x1).toFixed(1)}" height="${f.ih}" fill="${col}" opacity="${opacity}"/>`);
+     parts.push(`<rect x="${x1.toFixed(1)}" y="${(f.padT + f.ih - 3).toFixed(1)}" width="${(x2 - x1).toFixed(1)}" height="3" fill="${col}" opacity=".9"/>`);
     }
   }
 
