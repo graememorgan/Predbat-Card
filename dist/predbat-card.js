@@ -3,7 +3,7 @@
  * https://github.com/mimikm/Predbat-Card
  * MIT License
  */
-const CARD_VERSION = "0.4.6";
+const CARD_VERSION = "0.4.7";
 const CARD_TAG = "predbat-card";
 const EDITOR_TAG = "predbat-card-editor";
 
@@ -884,6 +884,22 @@ Object.assign(TRANSLATIONS.en, { ed_inv_skip_unavailable: "ignored: unavailable"
 Object.assign(TRANSLATIONS.pl, { ed_inv_skip_unavailable: "pominięty: niedostępny", ed_inv_skip_gateway: "pominięty: GivEnergy Gateway (sumy)", ed_inv_skip_extra: "pominięty: Predbat obsługuje {n}" });
 Object.assign(TRANSLATIONS.es, { ed_inv_skip_unavailable: "ignorado: no disponible", ed_inv_skip_gateway: "ignorado: GivEnergy Gateway (totales)", ed_inv_skip_extra: "ignorado: Predbat usa {n}" });
 
+Object.assign(TRANSLATIONS.en, {
+  pv_actual: "Actual", pv_vs_forecast: "vs {v} forecast so far", pv_actual_none: "No history for actual solar ({e}). Set your PV sensor under Solar sensors.",
+  ed_show_pv_actual: "Actual solar on the Solar chart", ed_next_include_hold: "Hold and freeze count as next charge/export",
+  ed_pv_sensors: "Solar sensors (optional)", e_pv_actual: "Actual solar (PV power or PV today)",
+});
+Object.assign(TRANSLATIONS.pl, {
+  pv_actual: "Rzeczywista", pv_vs_forecast: "wobec {v} z prognozy do teraz", pv_actual_none: "Brak historii produkcji PV ({e}). Ustaw czujnik PV w Czujnikach PV.",
+  ed_show_pv_actual: "Rzeczywista produkcja na wykresie PV", ed_next_include_hold: "Wstrzymanie i zamrożenie liczą się jako następne ładowanie/oddawanie",
+  ed_pv_sensors: "Czujniki PV (opcjonalnie)", e_pv_actual: "Rzeczywista produkcja (moc PV lub PV dziś)",
+});
+Object.assign(TRANSLATIONS.es, {
+  pv_actual: "Real", pv_vs_forecast: "frente a {v} previstos hasta ahora", pv_actual_none: "Sin historial de producción solar ({e}). Indica tu sensor solar en Sensores solares.",
+  ed_show_pv_actual: "Producción real en el gráfico solar", ed_next_include_hold: "Mantener y congelar cuentan como próxima carga/exportación",
+  ed_pv_sensors: "Sensores solares (opcional)", e_pv_actual: "Producción solar real (potencia o energía de hoy)",
+});
+
 function pickLang(hass, config) {
   const want = (config && config.language && config.language !== "auto")
     ? config.language
@@ -1086,6 +1102,8 @@ const DEFAULT_CONFIG = {
   show_carbon: "auto",
   show_load_forecast: true,
   show_grid_pv: true,
+  next_include_hold: false,
+  show_pv_actual: true,
   show_inverters: "auto",
   inverter_names: "",
   inverter_power_invert: false,
@@ -2038,7 +2056,7 @@ details.dq[open] summary::after { transform: rotate(180deg); }
 .m-light.s-terminal { --pb-car: #1d5c63; --pb-car2: #5c3d7a; --pb-iboost: #9c3d12; }
 
 /* solar, load, carbon, inverters */
-ha-card { --pb-pv: #f2b705; --pb-load: color-mix(in srgb, var(--primary-text-color, #000) 72%, transparent); }
+ha-card { --pb-pv: #f2b705; --pb-pv-act: #12b886; --pb-load: color-mix(in srgb, var(--primary-text-color, #000) 72%, transparent); }
 ha-card.m-light { --pb-pv: #e0a500; }
 .s-neon { --pb-pv: #c6ff3d; --pb-load: #f0f0ff; }
 .m-light.s-neon { --pb-pv: #5f8f00; --pb-load: #15142c; }
@@ -2403,6 +2421,7 @@ ${esc(navigator.userAgent)}</pre></details>
     const horizon = now + Math.max(1, num(c.hours) || 24) * 3600e3;
     const rows = plan.rows.filter((r) => r.end > now && r.t < horizon);
     this._ctx = { plan, cur, socMax, now, horizon, rows };
+    try { this._pvActMaybeFetch(); } catch (e) { /* actual solar is optional */ }
 
     const status = this._st("status");
     let alerts = "";
@@ -2512,14 +2531,19 @@ ${esc(navigator.userAgent)}</pre></details>
     return { s: s.getTime(), e: e.getTime(), target: lim };
   }
 
-  _windowFromRows(kind) {
+  /** The next charge or export window in Predbat's plan. Hold and freeze slots only count
+   *  when next_include_hold is on: they keep the battery where it is rather than fill or empty it. */
+  _windowFromRows(kind, holds = this._config.next_include_hold === true) {
     const rows = this._ctx.plan.rows.filter((r) => r.end > this._ctx.now);
-    const match = kind === "charge" ? (r) => r.cat === "charge" : (r) => r.cat === "export";
+    const cats = kind === "charge"
+      ? (holds ? ["charge", "hold_charge", "freeze_charge"] : ["charge"])
+      : (holds ? ["export", "freeze_export", "hold_export"] : ["export"]);
+    const match = (r) => cats.includes(r.cat);
     const i = rows.findIndex(match);
     if (i < 0) return null;
     let j = i;
     while (j + 1 < rows.length && match(rows[j + 1]) && rows[j + 1].t <= rows[j].end) j++;
-    return { s: rows[i].t, e: rows[j].end, target: rows[j].target ?? rows[i].target };
+    return { s: rows[i].t, e: rows[j].end, target: rows[j].target ?? rows[i].target, cat: rows[i].cat };
   }
 
   _renderOverview() {
@@ -2601,7 +2625,9 @@ ${esc(navigator.userAgent)}</pre></details>
     }
 
     const winTile = (kind) => {
-      const w = this._windowFromEntities(kind) || this._windowFromRows(kind);
+      // Predbat's best_charge/best_export entities are its first window of any kind, freeze and hold
+      // included, so read the plan instead and only use the entities when there is no plan
+      const w = this._ctx.plan.rows.length ? this._windowFromRows(kind) : this._windowFromEntities(kind);
       const label = kind === "charge" ? t("next_charge") : t("next_export");
       const icon = kind === "charge" ? "mdi:battery-arrow-up" : "mdi:battery-arrow-down";
       if (!w) {
@@ -2613,7 +2639,7 @@ ${esc(navigator.userAgent)}</pre></details>
           <span class="accent-bar"></span>
           <div class="tile-label"><ha-icon icon="${icon}"></ha-icon>${esc(label)}</div>
           <div class="tile-value tv-lg">${esc(this._hm(w.s))}–${esc(this._hm(w.e))}</div>
-          <div class="tile-sub">${esc(active ? t("now") : this._dayWord(w.s))}${w.target !== null ? " · " + esc(t("target", { v: Math.round(w.target) })) : ""}</div>
+          <div class="tile-sub">${esc(active ? t("now") : this._dayWord(w.s))}${w.cat && w.cat !== kind ? " · " + esc(t("st_" + w.cat)) : w.target !== null ? " · " + esc(t("target", { v: Math.round(w.target) })) : ""}</div>
         </div>`;
     };
 
@@ -3538,7 +3564,18 @@ ${esc(navigator.userAgent)}</pre></details>
     const main = (p) => (d.calibrated && p.cl !== null ? p.cl : p.v);
     const mid = (p) => p.t + p.len / 2;
     const pts = d.pts.filter((p) => p.t + p.len > f.now && p.t < f.horizon);
-    const maxV = Math.max(0.5, ...pts.map((p) => Math.max(main(p), p.v, p.v90 ?? 0, p.v10 ?? 0))) * 1.12;
+    // actual generation so far today, per forecast slot (kW average over the part that has passed)
+    const nowMs = Date.now();
+    const act = new Map();
+    if (d.i === 0 && !fromPlan && this._config.show_pv_actual !== false) {
+      for (const p of pts) {
+        const b = Math.min(p.t + p.len, nowMs);
+        if (b <= p.t + 60e3) continue;
+        const kwh = this._pvActKwh(p.t, b);
+        if (kwh !== null) act.set(p, { kwh, kw: kwh / ((b - p.t) / 3600e3), end: b });
+      }
+    }
+    const maxV = Math.max(0.5, ...pts.map((p) => Math.max(main(p), p.v, p.v90 ?? 0, p.v10 ?? 0, act.get(p)?.kw ?? 0))) * 1.12;
     const step = this._niceStep(maxV / 1.12);
     const Y = (v) => padT + (1 - Math.max(0, v) / maxV) * ih;
     const parts = [];
@@ -3553,6 +3590,11 @@ ${esc(navigator.userAgent)}</pre></details>
       parts.push(`<rect x="${padL}" y="${padT}" width="${(X(now) - padL).toFixed(1)}" height="${ih}" fill="var(--pb-line)" opacity=".55"/>`);
       parts.push(`<line x1="${X(now).toFixed(1)}" x2="${X(now).toFixed(1)}" y1="${padT}" y2="${padT + ih}" stroke="var(--pb-muted)" stroke-width="1" stroke-dasharray="3 3"/>`);
       parts.push(`<text class="axis" x="${(X(now) + 4).toFixed(1)}" y="${padT + 11}">${esc(t("now"))}</text>`);
+    }
+    for (const [p, a] of act) {
+      const x1 = X(p.t) + 0.6, x2 = X(a.end) - 0.6;
+      if (x2 - x1 < 0.5 || a.kw < 0.005) continue;
+      parts.push(`<rect class="bar-pv-act" x="${x1.toFixed(1)}" y="${Y(a.kw).toFixed(1)}" width="${(x2 - x1).toFixed(1)}" height="${(Y(0) - Y(a.kw)).toFixed(1)}" rx="1.5" fill="var(--pb-pv-act)" opacity=".7"/>`);
     }
     if (pts.length) {
       const xs = pts.map((p) => X(mid(p)).toFixed(1));
@@ -3589,6 +3631,20 @@ ${esc(navigator.userAgent)}</pre></details>
     if (d.total !== null) stats.push(`<span><i class="line" style="--c:var(--pb-pv)"></i>${esc(t("pv_forecast"))} <b>${k(d.total)} kWh</b></span>`);
     if (d.total10 !== null && d.total90 !== null) stats.push(`<span><i style="--c:color-mix(in srgb, var(--pb-pv) 35%, transparent)"></i>10–90% <b>${k(d.total10)}–${k(d.total90)} kWh</b></span>`);
     if (d.left !== null && (d.i === 0 || fromPlan)) stats.push(`<span>${esc(fromPlan ? t("pv_in_plan") : t("pv_left_today"))} <b>${k(d.left)} kWh</b>${d.left10 !== null && d.left90 !== null && !fromPlan ? ` <span class="muted">(${k(d.left10)}–${k(d.left90)})</span>` : ""}</span>`);
+    if (act.size) {
+      // compare with what the forecast expected for the same time
+      let actual = 0, expected = 0;
+      for (const p of pts) {
+        const b = Math.min(p.t + p.len, nowMs);
+        if (b <= p.t) continue;
+        expected += (main(p) * (b - p.t)) / 3600e3;
+        actual += act.get(p)?.kwh || 0;
+      }
+      const pc = expected > 0.05 ? Math.round((actual / expected) * 100) : null;
+      stats.push(`<span><i style="--c:var(--pb-pv-act)"></i>${esc(t("pv_actual"))} <b>${k(actual)} kWh</b> <span class="muted">${esc(t("pv_vs_forecast", { v: k(expected) }))}${pc !== null ? ` (${pc}%)` : ""}</span></span>`);
+    } else if (d.i === 0 && !fromPlan && this._config.show_pv_actual !== false && this._pvAct && !this._pvAct.series.length && this._pvAct.at) {
+      stats.push(`<span class="muted">${esc(t("pv_actual_none", { e: this._pvActSources().ids.join(", ") }))}</span>`);
+    }
     if (d.calibrated) stats.push(`<span class="muted"><i class="dash" style="--c:var(--pb-muted)"></i>${esc(t("pv_raw", { v: k(d.raw) }))}</span>`);
     if (fromPlan && d.left10 !== null) stats.push(`<span><i style="--c:color-mix(in srgb, var(--pb-pv) 35%, transparent)"></i>10% <b>${k(d.left10)} kWh</b></span>`);
     if (fromPlan) stats.push(`<span class="muted">${esc(t("pv_from_plan"))}</span>`);
@@ -3604,6 +3660,8 @@ ${esc(navigator.userAgent)}</pre></details>
           `<div class="row"><span>${esc(t("pv_forecast"))}</span><b>${main(p).toFixed(2)} kW</b></div>`];
         if (p.v10 !== null || p.v90 !== null) lines.push(`<div class="row muted"><span>10–90%</span><span>${p.v10 !== null ? p.v10.toFixed(2) : "–"}–${p.v90 !== null ? p.v90.toFixed(2) : "–"} kW</span></div>`);
         if (d.calibrated) lines.push(`<div class="row muted"><span>${esc(t("pv_raw_short"))}</span><span>${p.v.toFixed(2)} kW</span></div>`);
+        const a = act.get(p);
+        if (a) lines.push(`<div class="row"><span class="tag"><i style="--c:var(--pb-pv-act)"></i>${esc(t("pv_actual"))}</span><b>${a.kw.toFixed(2)} kW</b></div>`);
         return { x: X(mid(p)), y: Y(main(p)), html: lines.join(""), color: "var(--pb-pv)" };
       },
     };
@@ -3616,6 +3674,94 @@ ${esc(navigator.userAgent)}</pre></details>
       }));
     };
     return { H, svg: parts.join(""), legend, wire };
+  }
+
+  /* ---------- actual solar (for the Solar chart) ---------- */
+  /** Sensors to read today's generation from: yours, else Predbat's PV power, else your inverters' PV power. */
+  _pvActSources() {
+    const set = idList(this._config.entities?.pv_actual);
+    if (set.length) return { ids: set, alt: [], auto: false };
+    const alt = this._invSrc().list.map((x) => x.pv).filter(Boolean);
+    return { ids: [this._eid("pv_power")], alt, auto: true };
+  }
+
+  _pvActWanted() {
+    return this._config.show_pv_actual !== false && this._hass && typeof this._hass.callWS === "function" &&
+      this._enabledCharts().includes("solar") && this._pvDays().some((d) => d.i === 0 && d.source === "sensor");
+  }
+
+  /** Read today's history once every 5 minutes. */
+  _pvActMaybeFetch() {
+    if (!this._pvActWanted()) return;
+    const src = this._pvActSources();
+    const all = [...src.ids, ...src.alt].filter((id, i, a) => this._hass.states[id] && a.indexOf(id) === i);
+    const d0 = new Date(); d0.setHours(0, 0, 0, 0);
+    const key = `${all.join(",")}|${d0.getTime()}`;
+    if (this._pvActBusy || (this._pvAct && this._pvAct.key === key && Date.now() - this._pvAct.at < 5 * 60e3)) return;
+    if (!all.length) { this._pvAct = { key, at: Date.now(), series: [], used: [], missing: src.ids }; return; }
+    this._pvActBusy = true;
+    const end = Date.now();
+    Promise.resolve()
+      .then(() => this._hass.callWS({
+        type: "history/history_during_period",
+        start_time: new Date(d0.getTime()).toISOString(),
+        end_time: new Date(end).toISOString(),
+        entity_ids: all,
+        minimal_response: true,
+        no_attributes: true,
+        significant_changes_only: true,
+        include_start_time_state: true,
+      }))
+      .then((res) => {
+        const read = (id) => {
+          const u = String(this._hass.states[id]?.attributes?.unit_of_measurement || "").toLowerCase();
+          const energy = u === "kwh" || u === "wh" || u === "mwh";
+          const k = energy ? (u === "wh" ? 0.001 : u === "mwh" ? 1000 : 1) : (u === "w" ? 0.001 : u === "mw" ? 1000 : 1);
+          const pts = historySeries(res && res[id]).map(([tm, v]) => [tm, v === null ? null : v * k]);
+          return pts.filter((p) => p[1] !== null).length >= 2 ? { id, energy, pts } : null;
+        };
+        let series = src.ids.map(read).filter(Boolean);
+        // Predbat's PV power isn't recorded? use the inverters' own PV power instead
+        if (!series.length && src.alt.length) series = src.alt.map(read).filter(Boolean);
+        this._pvAct = { key, at: Date.now(), series, used: series.map((x) => x.id), missing: [] };
+      })
+      .catch((err) => { this._pvAct = { key, at: Date.now() - 4 * 60e3, series: [], used: [], error: String(err?.message || err) }; })
+      .finally(() => { this._pvActBusy = false; this._pvActVer = (this._pvActVer || 0) + 1; this._chartSig = ""; this._safeRender(); });
+  }
+
+  /** Actual solar in kWh between a and b (b no later than now), from power or energy sensors. */
+  _pvActKwh(a, b) {
+    const act = this._pvAct;
+    if (!act || !act.series.length || b <= a) return null;
+    let total = 0, any = false;
+    for (const s of act.series) {
+      const pts = s.pts;
+      if (s.energy) {
+        // a daily total: what it went up by (a drop is a reset, so count from zero again)
+        let prev = null, sum = 0, seen = false;
+        for (const [tm, v] of pts) {
+          if (v === null) continue;
+          if (tm <= a) { prev = v; continue; }
+          if (tm > b) break;
+          if (prev !== null) { sum += v >= prev ? v - prev : v; seen = true; }
+          prev = v;
+        }
+        if (seen) { total += sum; any = true; }
+      } else {
+        // power: the area under the line, holding each reading until the next one
+        let sum = 0, seen = false;
+        for (let i = 0; i < pts.length; i++) {
+          const [tm, v] = pts[i];
+          const next = i + 1 < pts.length ? pts[i + 1][0] : Date.now();
+          const from = Math.max(a, tm), to = Math.min(b, next);
+          if (to <= from || v === null) continue;
+          sum += (Math.max(0, v) * (to - from)) / 3600e3;
+          seen = true;
+        }
+        if (seen) { total += sum; any = true; }
+      }
+    }
+    return any ? total : null;
   }
 
   /* ---------- carbon ---------- */
@@ -3895,7 +4041,7 @@ ${esc(navigator.userAgent)}</pre></details>
     const own = CAR_OWN_KEYS.map((k) => this._carOwn(k, 0)).filter(Boolean).map((id) => this._hass.states[id]?.state).join(",");
     const solcast = SOLCAST_DAYS.map((id) => this._hass.states[id]?.last_updated || "-").join(",");
     const sig = keys.map((k) => this._st(k)?.last_updated || "-").join("|") +
-      `|${this._chartWidth}|${Math.floor(Date.now() / 60000)}|${this._tab}|${this._scale()}|dq${this._dqVer || 0}|${own}|${solcast}|${this._pvDay || 0}`;
+      `|${this._chartWidth}|${Math.floor(Date.now() / 60000)}|${this._tab}|${this._scale()}|dq${this._dqVer || 0}|${own}|${solcast}|${this._pvDay || 0}|pa${this._pvActVer || 0}`;
     if (!force && sig === this._chartSig) return;
     this._chartSig = sig;
     this.shadowRoot.querySelectorAll(".chart[data-chart]").forEach((el) => {
@@ -4503,7 +4649,7 @@ class PredbatCardEditor extends HTMLElement {
   _data() {
     const c = { ...DEFAULT_CONFIG, ...this._config };
     c.entities = { ...defaultEntities(c.prefix), ...(this._config.entities || {}) };
-    for (const k of ["load_today", "load_power", ...CAR_OWN_KEYS, ...INV_OWN_KEYS]) {
+    for (const k of ["load_today", "load_power", "pv_actual", ...CAR_OWN_KEYS, ...INV_OWN_KEYS]) {
       const v = c.entities[k];
       c.entities[k] = Array.isArray(v) ? v : typeof v === "string" && v ? v.split(",").map((x) => x.trim()).filter(Boolean) : [];
     }
@@ -4551,8 +4697,13 @@ class PredbatCardEditor extends HTMLElement {
       ]),
       section(t("sec_inverters"), "mdi:solar-power-variant", [
         grid(select("show_solar", ["auto", "on", "off"], "show_"), select("show_carbon", ["auto", "on", "off"], "show_")),
+        grid(bool("show_pv_actual"), bool("next_include_hold")),
         grid(select("show_inverters", ["auto", "on", "off"], "show_"), bool("inverter_power_invert")),
         { name: "inverter_names", selector: { text: {} } },
+        {
+          type: "expandable", name: "entities", title: t("ed_pv_sensors"), icon: "mdi:solar-power",
+          schema: [{ name: "pv_actual", selector: { entity: { multiple: true, filter: { domain: "sensor" } } } }],
+        },
         {
           type: "expandable", name: "entities", title: t("ed_inv_sensors"), icon: "mdi:home-battery-outline",
           schema: INV_OWN_KEYS.map((k) => ({ name: k, selector: { entity: { multiple: true,

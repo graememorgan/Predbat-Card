@@ -12,11 +12,16 @@ jobs:
     name: Attach card to release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check version matches tag
         run: |
           TAG="${GITHUB_REF_NAME#v}"
-          grep -q "CARD_VERSION = \"$TAG\"" dist/predbat-card.js || { echo "CARD_VERSION does not match tag $TAG"; exit 1; }
+          FOUND=$(grep -o 'CARD_VERSION = "[^"]*"' dist/predbat-card.js | cut -d'"' -f2)
+          if [ "$FOUND" != "$TAG" ]; then
+            echo "::error::dist/predbat-card.js says $FOUND but the release tag is $TAG. Upload the new file into the dist folder, then make the release again."
+            exit 1
+          fi
+          echo "dist/predbat-card.js is version $FOUND"
       - name: Upload predbat-card.js
         env:
           GH_TOKEN: ${{ github.token }}

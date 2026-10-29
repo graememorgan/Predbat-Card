@@ -23,10 +23,10 @@ A Home Assistant Lovelace card that shows what [Predbat](https://github.com/spri
 ## Features
 
 - **Status header** – current Predbat status, mode, last update and version. Tap to open more-info.
-- **Overview tiles** – battery SoC ring, what the battery is doing now with current import/export rates, cost today with a forecast for the rest of the day, predicted saving today (with yesterday's actual saving), next charge and next export windows.
+- **Overview tiles** – battery SoC ring, what the battery is doing now with current import/export rates, cost today with a forecast for the rest of the day, predicted saving today (with yesterday's actual saving), next charge and next export windows (real charge and export slots only; hold and freeze can be included with `next_include_hold`).
 - **Battery forecast chart** – the best-plan SoC over the next hours, the baseline for comparison, the import rate as a step line, reserve level and shaded charge/export windows. Hover or tap for details.
 - **Grid import & export chart** – predicted export (up) and import (down) for every plan slot, with Predbat's solar and house load forecast drawn over the top and totals for the period.
-- **Solar forecast** – a Solar tab for today, tomorrow and the next two days: the forecast line, the 10–90% range as a shaded band, Predbat's calibrated forecast against the raw one, plus a Solar today tile. See [Solar, carbon and inverters](#solar-carbon-and-inverters).
+- **Solar forecast** – a Solar tab for today, tomorrow and the next two days: today's actual generation against the forecast, the forecast line, the 10–90% range as a shaded band, Predbat's calibrated forecast against the raw one, plus a Solar today tile. See [Solar, carbon and inverters](#solar-carbon-and-inverters).
 - **Carbon intensity** – when Predbat's carbon option is on: a Grid carbon tile and a Carbon tab with the grid's carbon intensity per slot, the cleanest hour and the plan's total.
 - **Per-inverter breakdown** – with two or more inverters, each one's battery level, charging or discharging power and solar power.
 - **Energy rates chart** – import and export rates as step lines with charge/export windows shaded.
@@ -51,7 +51,7 @@ A Home Assistant Lovelace card that shows what [Predbat](https://github.com/spri
 - Predbat running and publishing its entities (default prefix `predbat`).
 - The plan timeline, upcoming actions and table read the JSON plan in the `raw` attribute of `predbat.plan_html`. Use a recent Predbat release that publishes it.
 
-Excluding Predbat entities from the recorder does not affect this card; it only reads their current state.
+Excluding Predbat entities from the recorder doesn't affect the card, which reads their current state. The only exception is **actual solar** on the Solar chart: it reads today's history of `predbat.pv_power`. If that isn't recorded, the card falls back to your inverters' PV power sensors, or the sensor you set in `pv_actual`.
 
 ## Installation
 
@@ -126,6 +126,8 @@ The **Entity check** at the bottom shows how many entities were found. It opens 
 | `car_battery_size` | – | Car battery size in kWh, comma separated per car. Only needed to turn a kWh charge level (or Predbat's manual SoC) into %. |
 | `show_load_forecast` | `true` | House load forecast line on the grid chart. |
 | `show_grid_pv` | `true` | Solar forecast line on the grid chart. |
+| `show_pv_actual` | `true` | Today's actual solar generation on the Solar chart, next to the forecast. |
+| `next_include_hold` | `false` | Count hold and freeze slots as the **Next charge** / **Next export**. By default those tiles only show real charge and export slots, where the battery is filled or emptied. |
 | `show_solar` | `auto` | Solar tab and Solar today tile. `auto` shows them when a solar forecast is found; `on` or `off` to force. |
 | `show_carbon` | `auto` | Carbon tab and Grid carbon tile. `auto` shows them when Predbat's `carbon_enable` is on. |
 | `show_inverters` | `auto` | Per-inverter breakdown. `auto` shows it when two or more inverters are found. `on` shows it for one inverter too. |
@@ -198,6 +200,7 @@ Defaults for the `predbat` prefix. Only add the ones you want to change.
 | `car_charging_sensor` | – | Charging now (on/off, or a power sensor in W/kW) |
 | `pv_today` / `pv_tomorrow` / `pv_d2` / `pv_d3` | `sensor.predbat_pv_today` / `_pv_tomorrow` / `_pv_d2` / `_pv_d3` | Solar forecast per day. If Predbat's aren't there, the Solcast integration's `sensor.solcast_pv_forecast_forecast_today` (and tomorrow, day 3, day 4) are used. |
 | `pv_now` | `sensor.predbat_pv_forecast_h0` | Solar forecast now |
+| `pv_actual` | auto | Actual solar for the Solar chart: one or more PV **power** sensors (W/kW) or PV **today** energy sensors (kWh), added together. By default the card uses `predbat.pv_power`, then your inverters' PV power. |
 | `carbon_now` | `predbat.carbon_now` | Grid carbon intensity now |
 | `carbon_best` / `carbon_today` | `predbat.carbon_best` / `predbat.carbon_today` | Planned carbon and carbon so far today |
 | `carbon_intensity` | `sensor.predbat_carbon_intensity` | Carbon forecast, used when the plan has no carbon column |
@@ -255,6 +258,8 @@ show_rates: true         # import rate line on the battery chart
 show_load_forecast: true # house load line on the grid chart
 show_grid_pv: true       # solar line on the grid chart
 show_solar: auto         # auto | on | off – Solar tab and tile
+show_pv_actual: true     # today's actual solar on the Solar chart
+next_include_hold: false # hold/freeze slots count as Next charge/export
 show_carbon: auto        # auto | on | off – Carbon tab and tile
 
 # Inverters
@@ -346,6 +351,7 @@ entities:
   pv_d2: sensor.predbat_pv_d2
   pv_d3: sensor.predbat_pv_d3
   pv_now: sensor.predbat_pv_forecast_h0
+  # pv_actual: [sensor.givtcp_XXXX_pv_power]   # actual solar; auto if left out
   carbon_now: predbat.carbon_now
   carbon_best: predbat.carbon_best
   carbon_today: predbat.carbon_today
@@ -500,10 +506,12 @@ Name your cars with `car_names: Tesla, Leaf`. Predbat numbers its car entities f
 ![Inverters, solar forecast, grid chart with house load, carbon intensity](https://github.com/mimikm/Predbat-Card/raw/main/images/solar-carbon.png)
 
 **Solar forecast.** Predbat publishes its solar forecast (from Solcast, Forecast.Solar or its own solar API) as `sensor.predbat_pv_today`, `_pv_tomorrow`, `_pv_d2` and `_pv_d3`, with a half-hour forecast and the 10% and 90% versions. The Solar tab shows:
-- the forecast in kW across the whole day, with the **10–90% range** as a shaded band (90% of the time solar should land inside it),
+- the forecast in kW across the whole day, with the **10–90% range** as a shaded band (solar should land inside it about 8 days out of 10),
 - the day's total and range, and on today how much is still to come,
 - when Predbat's PV calibration is on, the calibrated forecast Predbat plans with, and the raw forecast as a dashed line,
 - buttons to switch between today, tomorrow and the next two days.
+
+**Actual solar.** On today's chart, green bars show what your panels actually made in each half hour, next to the forecast line, and the legend compares the total so far with what the forecast expected by now (for example *Actual 15.6 kWh vs 20.7 forecast so far (75%)*). The card reads today's history of `predbat.pv_power`. If that isn't recorded, it adds up your inverters' PV power sensors instead. You can set your own sensors in the editor (*Solar sensors*) or with `pv_actual`, either power sensors or a "PV today" energy total. History is read every 5 minutes. Turn it off with `show_pv_actual: false`.
 
 The **Solar today** tile shows today's total, what's left and tomorrow's total. If Predbat's sensors aren't there, the card uses the Solcast integration's own forecast sensors. If neither is there, the tab falls back to the solar in Predbat's plan (no range, and only as far ahead as the plan goes).
 
@@ -597,6 +605,7 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 | 0.4.4 | Drag-and-drop layout in the visual editor: reorder and hide sections, overview tiles and chart tabs, with a separate phone layout |
 | 0.4.5 | Inverter breakdown no longer counts one inverter twice: skips unavailable leftover sensors and GivEnergy Gateway totals, never shows more than Predbat's own inverter count; the editor shows what was found and what was left out. New battery level (kWh) and battery size slots per inverter, so each shows % and kWh |
 | 0.4.6 | Plan table escapes the currency symbol like the rest of the card (HACS review); README install leads with HACS search |
+| 0.4.7 | Actual solar today on the Solar chart against the forecast ([#3](https://github.com/mimikm/Predbat-Card/issues/3)); Next charge / Next export only show real charge and export slots, with an option to include hold and freeze ([#4](https://github.com/mimikm/Predbat-Card/issues/4)) |
 
 ### 🔜 0.4.x – More of Predbat's data
 
@@ -636,7 +645,6 @@ Want something added or moved up? [Open an issue](https://github.com/mimikm/Pred
 Not planned yet. Comment on an issue if you'd use one of these.
 
 - Weather alongside the plan
-- Actual solar so far today drawn against the forecast
 - Notifications or a banner when Predbat's plan changes a lot
 - A separate small "badge" card for the dashboard header
 - Tariff comparison view
