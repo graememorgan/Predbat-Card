@@ -149,6 +149,10 @@ const TRANSLATIONS = {
     st_freeze_export: "Freeze export",
     st_hold_export: "Hold export",
     st_demand: "Demand",
+    st_mixed_charge_export: "Charge + Export (mixed)",
+    st_mixed_charge_export_untimed: "Charge + Export (mixed; transition time unspecified)",
+    st_mixed_charge_export_action: "Charge + Export (mixed slot)",
+    st_hold_for_car: "Hold for car",
     col_time: "Time",
     col_state: "State",
     col_import: "Imp",
@@ -400,6 +404,10 @@ const TRANSLATIONS = {
     st_freeze_export: "Zamrożone oddawanie",
     st_hold_export: "Wstrzymane oddawanie",
     st_demand: "Zużycie",
+    st_mixed_charge_export: "Ładowanie + oddawanie (stan mieszany)",
+    st_mixed_charge_export_untimed: "Ładowanie + oddawanie (stan mieszany; nieznany czas przełączenia)",
+    st_mixed_charge_export_action: "Ładowanie + oddawanie (mieszany przedział)",
+    st_hold_for_car: "Zachowanie energii dla samochodu",
     col_time: "Czas",
     col_state: "Stan",
     col_import: "Pob.",
@@ -656,6 +664,10 @@ const TRANSLATIONS = {
     st_freeze_export: "Exportación congelada",
     st_hold_export: "Mantener exportación",
     st_demand: "Demanda",
+    st_mixed_charge_export: "Carga + exportación (mixto)",
+    st_mixed_charge_export_untimed: "Carga + exportación (mixto; hora de transición no especificada)",
+    st_mixed_charge_export_action: "Carga + exportación (franja mixta)",
+    st_hold_for_car: "Reserva para el coche",
     col_time: "Hora",
     col_state: "Estado",
     col_import: "Imp",
@@ -2295,9 +2307,12 @@ ${esc(navigator.userAgent)}</pre></details>
       const preCat = before?.code === "hold_for_car_before_export" ? "hold_charge" : "demand";
       if (typeof clock === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(clock)) {
         const minute = Number(clock.slice(0, 2)) * 60 + Number(clock.slice(3, 5));
-        const startMinute = d.getUTCHours() * 60 + d.getUTCMinutes();
-        const delta = (minute - startMinute + 1440) % 1440;
-        if (delta > 0) splitAt = d.getTime() + delta * 60000;
+        const startClock = String(r.time).match(/[T ](\d{2}):(\d{2})/);
+        if (startClock) {
+          const startMinute = Number(startClock[1]) * 60 + Number(startClock[2]);
+          const delta = (minute - startMinute + 1440) % 1440;
+          if (delta > 0) splitAt = d.getTime() + delta * 60000;
+        }
       }
       const hasCharge = reasons.some(x =>
         ["charge_low_rate", "freeze_charge", "hold_charge_at_target"].includes(x?.code));
@@ -3987,11 +4002,11 @@ ${esc(navigator.userAgent)}</pre></details>
       if (r.cat === "demand") continue;
       const x1 = f.X(r.t), x2 = f.X(r.end);
       if (x2 - x1 < 0.5) continue;
-     const col = r.mixedChargeExport
-       ? `url(#${hatchId})`
-       : `var(--pb-${r.cat})`;
-     parts.push(`<rect class="band" x="${x1.toFixed(1)}" y="${f.padT}" width="${(x2 - x1).toFixed(1)}" height="${f.ih}" fill="${col}" opacity="${opacity}"/>`);
-     parts.push(`<rect x="${x1.toFixed(1)}" y="${(f.padT + f.ih - 3).toFixed(1)}" width="${(x2 - x1).toFixed(1)}" height="3" fill="${col}" opacity=".9"/>`);
+      const col = r.mixedChargeExport
+        ? `url(#${hatchId})`
+        : `var(--pb-${r.cat})`;
+      parts.push(`<rect class="band" x="${x1.toFixed(1)}" y="${f.padT}" width="${(x2 - x1).toFixed(1)}" height="${f.ih}" fill="${col}" opacity="${opacity}"/>`);
+      parts.push(`<rect x="${x1.toFixed(1)}" y="${(f.padT + f.ih - 3).toFixed(1)}" width="${(x2 - x1).toFixed(1)}" height="3" fill="${col}" opacity=".9"/>`);
     }
   }
 
@@ -4030,7 +4045,7 @@ ${esc(navigator.userAgent)}</pre></details>
   _tipState(row) {
     if (!row) return "";
     const t = this.t;
-    return `<div class="row"><span class="tag"><i style="--c:var(--pb-${row.cat === "demand" ? "neutral" : row.cat})"></i>${esc(row.mixedChargeExport ? "Charge + Export (mixed)" : t("st_" + row.cat))}</span><span>${!row.mixedChargeExport && row.target !== null && row.cat !== "demand" ? Math.round(row.target) + "%" : ""}</span></div>`;
+    return `<div class="row"><span class="tag"><i style="--c:var(--pb-${row.cat === "demand" ? "neutral" : row.cat})"></i>${esc(row.mixedChargeExport ? t("st_mixed_charge_export") : row.holdForCar ? t("st_hold_for_car") : t("st_" + row.cat))}</span><span>${!row.mixedChargeExport && row.target !== null && row.cat !== "demand" ? Math.round(row.target) + "%" : ""}</span></div>`;
   }
 
   /* Battery SoC forecast */
@@ -4347,7 +4362,7 @@ ${esc(navigator.userAgent)}</pre></details>
     const used = cells.reduce((a, c) => a + (c.e - c.s), 0);
     const html = cells.map((c) => {
       const w = ((c.e - c.s) / span) * 100;
-      const label = c.mixed ? "Charge + Export (mixed; transition time unspecified)" : c.holdForCar ? "Hold for car" : t("st_" + c.cat);
+      const label = c.mixed ? t("st_mixed_charge_export_untimed") : c.holdForCar ? t("st_hold_for_car") : t("st_" + c.cat);
       const title = `${this._hm(c.s)}–${this._hm(c.e)} · ${label}${!c.mixed && !c.holdForCar && c.target !== null && c.cat !== "demand" ? " " + Math.round(c.target) + "%" : ""}`;
       // Diagonal stripes indicate a mixed slot, NOT a change at its midpoint.
       const bg = c.mixed ? "background:repeating-linear-gradient(135deg,var(--pb-charge) 0px,var(--pb-charge) 5px,var(--pb-export) 5px,var(--pb-export) 10px);" : "";
@@ -4381,7 +4396,7 @@ ${esc(navigator.userAgent)}</pre></details>
         <div class="ribbon">${html}</div>
         ${lanes.html}
         <div class="ticks">${ticks.join("")}</div>
-        <div class="legend">${legend}${cells.some(c => c.mixed) ? '<span><i style="--c:var(--pb-export);background:repeating-linear-gradient(135deg,var(--pb-charge) 0px,var(--pb-charge) 5px,var(--pb-export) 5px,var(--pb-export) 10px)"></i>Charge + Export (mixed)</span>' : ""}${lanes.legend}</div>
+        <div class="legend">${legend}${cells.some(c => c.mixed) ? `<span><i style="--c:var(--pb-export);background:repeating-linear-gradient(135deg,var(--pb-charge) 0px,var(--pb-charge) 5px,var(--pb-export) 5px,var(--pb-export) 10px)"></i>${esc(t("st_mixed_charge_export"))}</span>` : ""}${lanes.legend}</div>
       </div>`;
   }
 
@@ -4391,7 +4406,7 @@ ${esc(navigator.userAgent)}</pre></details>
       return [
         { ...r,
           cat: r.preCat,
-          state: r.preCat === "hold_charge" ? "Hold for car" : "Demand",
+          state: r.preCat === "hold_charge" ? "HoldChrg" : "Demand",
           target: null,
           mixedChargeExport: false,
           holdForCar: r.preCat === "hold_charge",
@@ -4442,7 +4457,7 @@ ${esc(navigator.userAgent)}</pre></details>
           const nxt = rows[idx + 1];
           return nxt && nxt.soc !== null ? nxt.soc : last.soc;
         })();
-        const what = g.mixed ? "Charge + Export (mixed slot)" : g.holdForCar ? "Hold for car" : t("st_" + g.cat) + (g.target !== null && !/hold/.test(g.cat) ? " " + t("target", { v: Math.round(g.target) }) : "");
+        const what = g.mixed ? t("st_mixed_charge_export_action") : g.holdForCar ? t("st_hold_for_car") : t("st_" + g.cat) + (g.target !== null && !/hold/.test(g.cat) ? " " + t("target", { v: Math.round(g.target) }) : "");
         const dur = Math.round((g.e - g.s) / 60000);
         const durTxt = dur >= 60 ? `${Math.floor(dur / 60)}h${dur % 60 ? " " + (dur % 60) + "m" : ""}` : `${dur}m`;
         return `<div class="action" style="--c:var(--pb-${g.cat})">
@@ -4471,7 +4486,7 @@ ${esc(navigator.userAgent)}</pre></details>
     const ibCol = this._iboostShown() && rows.some((r) => r.iboostKwh !== null);
     const body = rows.map((r) => `<tr>
         <td>${esc(this._hm(r.t))}</td>
-        <td><span class="tag"><i style="--c:var(--pb-${r.cat === "demand" ? "neutral" : r.cat})"></i>${esc(r.mixedChargeExport ? "Charge + Export (mixed)" : t("st_" + r.cat))}${!r.mixedChargeExport && r.target !== null && r.cat !== "demand" ? " " + Math.round(r.target) + "%" : ""}</span></td>
+        <td><span class="tag"><i style="--c:var(--pb-${r.cat === "demand" ? "neutral" : r.cat})"></i>${esc(r.mixedChargeExport ? t("st_mixed_charge_export") : t("st_" + r.cat))}${!r.mixedChargeExport && r.target !== null && r.cat !== "demand" ? " " + Math.round(r.target) + "%" : ""}</span></td>
         <td>${esc(this._rate(r.imp, cur))}</td>
         <td>${esc(this._rate(r.exp, cur))}</td>
         <td>${f(r.pv)}</td>
